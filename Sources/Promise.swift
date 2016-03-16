@@ -12,15 +12,14 @@ import Foundation
 
 // First, create a Promise, or use firstly() for neatness.
 // Use .flatMap to chain additional monadic tasks. Failures skip over mapped tasks.
-// Use .waitAndShowErrorInViewController to wrap previous tasks in a wait state.
-// Use .success or .failure to process a success or failure value, then contine.
-// After building up your composite promise, call .call to begin it.
+// Use .success or .failure to process a success or failure value, then continue.
+// After building up your composite promise, begin it with .call.
 
 struct Promise<T> {
 
     typealias Value = T
-    typealias Fulfill = (Result<Value>) -> Void
-    typealias Task = (Fulfill) -> Void
+    typealias Observer = (Result<Value>) -> Void
+    typealias Task = (Observer) -> Void
 
     private let task: Task
 
@@ -57,14 +56,14 @@ struct Promise<T> {
     // then calling the produced promise.
     func flatMap<U>(nextTask: (Value) -> Promise<U>) -> Promise<U> {
         // Promise AB's task is the following:
-        // Run task A (self.task).
+        // Run task A (self.call).
         // If A fails, fail AB.
-        // If A succeeds, run task B (nextTask).
+        // If A succeeds, run task B (nextTask(value).call).
         // If B fails, fail AB.
         // If B succeeds, succeed AB.
 
         return Promise<U> { fulfill in
-            self.task { result in
+            self.call { result in
                 switch result {
                 case .Failure(let error):
                     fulfill(.Failure(error))
@@ -111,7 +110,7 @@ struct Promise<T> {
     // Produces a composite promise that resolves by calling this promise, but also performs another task if successful.
     func success(successTask: (Value) -> Void) -> Promise<Value> {
         return Promise { fulfill in
-            self.task { result in
+            self.call { result in
                 if case .Success(let value) = result {
                     successTask(value)
                 }
@@ -123,7 +122,7 @@ struct Promise<T> {
     // Produces a composite promise that resolves by calling this promise, but also performs another task if failed.
     func failure(errorTask: (ErrorType) -> Void) -> Promise<Value> {
         return Promise { fulfill in
-            self.task { result in
+            self.call { result in
                 if case .Failure(let error) = result {
                     errorTask(error)
                 }
@@ -134,7 +133,7 @@ struct Promise<T> {
 
     // Performs work defined by the promise and eventually calls completion.
     // Promises won't do any work until you call this.
-    func call(completion: Fulfill?) {
+    func call(completion: Observer?) {
         task { result in
             completion?(result)
         }
