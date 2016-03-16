@@ -15,22 +15,40 @@ enum Result<T> {
     case Failure(ErrorType)
     case Success(SuccessType)
 
-    func map<U>(@noescape transform: (SuccessType) throws -> U) rethrows -> Result<U> {
+    // Unwrap a success value or throw a failure value.
+    func value() throws -> SuccessType {
         switch self {
         case .Failure(let error):
-            return .Failure(error)
+            throw error
         case .Success(let value):
-            let transformedValue = try transform(value)
-            return .Success(transformedValue)
+            return value
         }
     }
 
-    func flatMap<U>(@noescape transform: (SuccessType) throws -> Result<U>) rethrows -> Result<U> {
+    func map<U>(@noescape transform: (SuccessType) throws -> U) -> Result<U> {
         switch self {
         case .Failure(let error):
             return .Failure(error)
         case .Success(let value):
-            return try transform(value)
+            do {
+                let transformedValue = try transform(value)
+                return .Success(transformedValue)
+            } catch {
+                return .Failure(error)
+            }
+        }
+    }
+
+    func flatMap<U>(@noescape transform: (SuccessType) throws -> Result<U>) -> Result<U> {
+        switch self {
+        case .Failure(let error):
+            return .Failure(error)
+        case .Success(let value):
+            do {
+                return try transform(value)
+            } catch {
+                return .Failure(error)
+            }
         }
     }
 

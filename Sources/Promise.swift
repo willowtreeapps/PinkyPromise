@@ -14,6 +14,7 @@ import Foundation
 // Use .flatMap to chain additional monadic tasks. Failures skip over mapped tasks.
 // Use .success or .failure to process a success or failure value, then continue.
 // After building up your composite promise, begin it with .call.
+// Use the result enum directly, or call .value() to unwrap it and have failures thrown.
 
 struct Promise<T> {
 
@@ -46,15 +47,20 @@ struct Promise<T> {
     }
 
     // Produces a composite promise that resolves by calling this promise, then transforming its success value.
-    func map<U>(transform: Value -> U) -> Promise<U> {
+    func map<U>(transform: Value throws -> U) -> Promise<U> {
         return flatMap { value in
-            return Promise<U>(value: transform(value))
+            do {
+                let mappedValue = try transform(value)
+                return Promise<U>(value: mappedValue)
+            } catch {
+                return Promise<U>(error: error)
+            }
         }
     }
 
     // Produces a composite promise that resolves by calling this promise, passing its result to the next task,
     // then calling the produced promise.
-    func flatMap<U>(nextTask: (Value) -> Promise<U>) -> Promise<U> {
+    func flatMap<U>(nextTask: (Value) throws -> Promise<U>) -> Promise<U> {
         // Promise AB's task is the following:
         // Run task A (self.call).
         // If A fails, fail AB.
@@ -68,7 +74,12 @@ struct Promise<T> {
                 case .Failure(let error):
                     fulfill(.Failure(error))
                 case .Success(let value):
-                    nextTask(value).task(fulfill)
+                    do {
+                        let nextPromise = try nextTask(value)
+                        nextPromise.call(fulfill)
+                    } catch {
+                        fulfill(.Failure(error))
+                    }
                 }
             }
         }
@@ -76,13 +87,20 @@ struct Promise<T> {
 
     // Produces a composite promise that resolves by running the next task on a background queue,
     // calling its produced promise on the same background queue, then fulfilling on the main thread.
-    func flatMapInBackground<U>(nextTask: (Value) -> Promise<U>) -> Promise<U> {
+    func flatMapInBackground<U>(nextTask: (Value) throws -> Promise<U>) -> Promise<U> {
         return flatMap { value in
             return Promise<U> { fulfill in
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    nextTask(value).task { result in
+                    do {
+                        let nextPromise = try nextTask(value)
+                        nextPromise.call { result in
+                            dispatch_async(dispatch_get_main_queue()) {
+                                fulfill(result)
+                            }
+                        }
+                    } catch {
                         dispatch_async(dispatch_get_main_queue()) {
-                            fulfill(result)
+                            fulfill(.Failure(error))
                         }
                     }
                 }
@@ -92,16 +110,21 @@ struct Promise<T> {
 
     // Produces a composite promise that resolves by calling this promise, then the next, and if successful combines
     // their results in the produced promise.
-    func combine<U>(nextTask: () -> Promise<U>) -> Promise<(T, U)> {
+    func combine<U>(nextTask: () throws -> Promise<U>) -> Promise<(T, U)> {
         return flatMap { value1 in
             return Promise<(T, U)> { fulfill in
-                nextTask().task { (result2: Result<U>) in
-                    switch result2 {
-                    case .Failure(let error):
-                        fulfill(.Failure(error))
-                    case .Success(let value2):
-                        fulfill(.Success((value1, value2)))
+                do {
+                    let nextPromise = try nextTask()
+                    nextPromise.call { (result2: Result<U>) in
+                        switch result2 {
+                        case .Failure(let error):
+                            fulfill(.Failure(error))
+                        case .Success(let value2):
+                            fulfill(.Success((value1, value2)))
+                        }
                     }
+                } catch {
+                    fulfill(.Failure(error))
                 }
             }
         }
