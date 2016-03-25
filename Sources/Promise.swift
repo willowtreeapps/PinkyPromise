@@ -46,63 +46,27 @@ struct Promise<T> {
         self.init(result: .Failure(error))
     }
 
+    // MARK: Promise transformations
+
     // Produces a composite promise that resolves by calling this promise, then transforming its success value.
     func map<U>(transform: Value throws -> U) -> Promise<U> {
         return flatMap { value in
-            do {
-                let mappedValue = try transform(value)
-                return Promise<U>(value: mappedValue)
-            } catch {
-                return Promise<U>(error: error)
-            }
+            let mappedValue = try transform(value)
+            return Promise<U>(value: mappedValue)
         }
     }
 
     // Produces a composite promise that resolves by calling this promise, passing its result to the next task,
     // then calling the produced promise.
-    func flatMap<U>(nextTask: (Value) throws -> Promise<U>) -> Promise<U> {
-        // Promise AB's task is the following:
-        // Run task A (self.call).
-        // If A fails, fail AB.
-        // If A succeeds, run task B (nextTask(value).call).
-        // If B fails, fail AB.
-        // If B succeeds, succeed AB.
-
+    func flatMap<U>(transform: (Value) throws -> Promise<U>) -> Promise<U> {
         return Promise<U> { fulfill in
             self.call { result in
-                switch result {
-                case .Failure(let error):
+                do {
+                    let value = try result.value()
+                    let mappedPromise = try transform(value)
+                    mappedPromise.call(fulfill)
+                } catch {
                     fulfill(.Failure(error))
-                case .Success(let value):
-                    do {
-                        let nextPromise = try nextTask(value)
-                        nextPromise.call(fulfill)
-                    } catch {
-                        fulfill(.Failure(error))
-                    }
-                }
-            }
-        }
-    }
-
-    // Produces a composite promise that resolves by running the next task on a background queue,
-    // calling its produced promise on the same background queue, then fulfilling on the main thread.
-    func flatMapInBackground<U>(nextTask: (Value) throws -> Promise<U>) -> Promise<U> {
-        return flatMap { value in
-            return Promise<U> { fulfill in
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    do {
-                        let nextPromise = try nextTask(value)
-                        nextPromise.call { result in
-                            dispatch_async(dispatch_get_main_queue()) {
-                                fulfill(result)
-                            }
-                        }
-                    } catch {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            fulfill(.Failure(error))
-                        }
-                    }
                 }
             }
         }
@@ -110,25 +74,31 @@ struct Promise<T> {
 
     // Produces a composite promise that resolves by calling this promise, then the next, and if successful combines
     // their results in the produced promise.
-    func combine<U>(nextTask: () throws -> Promise<U>) -> Promise<(T, U)> {
+    // This is a like zip() in that you want multiple results, but the first step must complete before beginning the second step.
+    func combine<U>(transform: (Value) throws -> Promise<U>) -> Promise<(Value, U)> {
         return flatMap { value1 in
-            return Promise<(T, U)> { fulfill in
-                do {
-                    let nextPromise = try nextTask()
-                    nextPromise.call { (result2: Result<U>) in
-                        switch result2 {
-                        case .Failure(let error):
-                            fulfill(.Failure(error))
-                        case .Success(let value2):
-                            fulfill(.Success((value1, value2)))
-                        }
+            let mappedPromise = try transform(value1)
+            return mappedPromise.map { (value2) -> (Value, U) in
+                return (value1, value2)
+            }
+        }
+    }
+
+    // Produces a composite promise that resolves by running this promise in the background queue,
+    // then fulfills on the main queue.
+    func background() -> Promise<Value> {
+        return Promise { fulfill in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                self.task { result in
+                    dispatch_async(dispatch_get_main_queue()) {
+                        fulfill(result)
                     }
-                } catch {
-                    fulfill(.Failure(error))
                 }
             }
         }
     }
+
+    // MARK: Result delivery
 
     // Produces a composite promise that resolves by calling this promise, but also performs another task if successful.
     func success(successTask: (Value) -> Void) -> Promise<Value> {
@@ -143,11 +113,11 @@ struct Promise<T> {
     }
 
     // Produces a composite promise that resolves by calling this promise, but also performs another task if failed.
-    func failure(errorTask: (ErrorType) -> Void) -> Promise<Value> {
+    func failure(failureTask: (ErrorType) -> Void) -> Promise<Value> {
         return Promise { fulfill in
             self.call { result in
                 if case .Failure(let error) = result {
-                    errorTask(error)
+                    failureTask(error)
                 }
                 fulfill(result)
             }
