@@ -34,10 +34,9 @@ import Foundation
 // Result<T> is used by Promise<T> to represent success or failure outside the normal flow of synchronous execution.
 
 // Result is a functor and monad; you can map and flatMap.
-// map transforms success values but merely forwards errors.
-// flatMap also forwards errors, but transforms to a new Result, meaning a success may be transformed a failure.
-// flatMap's transformation closure can return a failure result, but it can also throw to produce the same effect.
-// map's transformation closure cannot throw, since map should never transform a success to a failure.
+// map transforms success values into new success values but merely forwards errors.
+// flatMap also forwards errors, but transforms to a new Result, meaning it may produce a new failure.
+// catchMap transforms success values but can throw errors, which are caught and encoded as new failures.
 
 public enum Result<T> {
 
