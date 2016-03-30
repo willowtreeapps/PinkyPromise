@@ -39,15 +39,15 @@ import Foundation
 // flatMap's transformation closure can return a failure result, but it can also throw to produce the same effect.
 // map's transformation closure cannot throw, since map should never transform a success to a failure.
 
-enum Result<T> {
+public enum Result<T> {
 
-    typealias Value = T
+    public typealias Value = T
 
     case Failure(ErrorType)
     case Success(Value)
 
     // Unwrap a success value or throw a failure value.
-    func value() throws -> Value {
+    public func value() throws -> Value {
         switch self {
         case .Failure(let error):
             throw error
@@ -58,14 +58,14 @@ enum Result<T> {
 
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value.
-    func map<U>(@noescape transform: (Value) -> U) -> Result<U> {
+    public func map<U>(@noescape transform: (Value) -> U) -> Result<U> {
         return catchMap(transform)
     }
 
     // The canonical flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success or failure.
-    func flatMap<U>(@noescape transform: (Value) -> Result<U>) -> Result<U> {
+    public func flatMap<U>(@noescape transform: (Value) -> Result<U>) -> Result<U> {
         return catchMap { value in
             let mappedResult = transform(value)
             let mappedValue = try mappedResult.value()
@@ -76,7 +76,7 @@ enum Result<T> {
     // An error-catching variation on flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value, or fail if an error if thrown.
-    func catchMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
+    public func catchMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
         do {
             let successValue = try value()
             let mappedValue = try transform(successValue)
@@ -89,7 +89,7 @@ enum Result<T> {
 }
 
 // From two Results, return one Result of their values or the first failure.
-func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
+public func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
     return resultA.catchMap { a in
         let b = try resultB.value()
         return (a, b)
@@ -97,7 +97,7 @@ func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
 }
 
 // From three Results, return one Result of their values or the first failure.
-func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
+public func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
     return zip(resultA, resultB).catchMap { a, b in
         let c = try resultC.value()
         return (a, b, c)
@@ -105,7 +105,7 @@ func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>
 }
 
 // From four Results, return one Result of their values or the first failure.
-func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
+public func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
     return zip(resultA, resultB, resultC).catchMap { a, b, c in
         let d = try resultD.value()
         return (a, b, c, d)
@@ -113,7 +113,7 @@ func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result
 }
 
 // From an array of Results, return one Result of an array of their values or the first failure.
-func zipArray<T>(results: [Result<T>]) -> Result<[T]> {
+public func zipArray<T>(results: [Result<T>]) -> Result<[T]> {
     return results.reduce(.Success([])) { (arrayResult, itemResult) in
         return arrayResult.catchMap { array in
             let item = try itemResult.value()
