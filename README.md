@@ -17,6 +17,6 @@ Please see `PinkyPromise.playground` for examples and insight.
 
 ## Project Roadmap
 
-- Complete the documentation playground.
+- Add a Playground page with example Promise factory methods and call sites.
 - CocoaPods? Carthage?
 - More Promise transformations?

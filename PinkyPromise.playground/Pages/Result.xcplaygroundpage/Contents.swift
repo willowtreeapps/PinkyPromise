@@ -12,7 +12,7 @@ import XCPlayground
 XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
-//: First, here are some values that a `Result` can be. Note that for each `Result<T>`, you can have either a value of `T` or an error.
+//: First, here are some values that a Result can be. Note that for each `Result<T>`, you can have either a value of `T` or an error.
 
 let successfulString: Result<String> = .Success("Hello, world")
 let failedString:     Result<String> = .Failure(someError)
@@ -37,8 +37,8 @@ print()
 /*:
  > Look at the Debug console to see what's printed.
 
- But it's even more Swifty to use the `value()` function to determine the case.
- `value()` returns the value for .Success or throws the error for .Failure.
+ But it's even more Swifty to use the `value` function to determine the case.
+ `value` returns the value for `.Success` or throws the error for `.Failure`.
  */
 
 func printResult<T>(result: Result<T>) {
@@ -64,9 +64,9 @@ print()
 /*:
  ## Value transformations
 
- A `Result` can be transformed in useful ways:
+ A Result can be transformed in useful ways:
 
- - `zip` to combine many `Result`s into one `Result` of a tuple or array.
+ - `zip` to combine many Results into one Result of a tuple or array.
  - `map` to transform successful values by returning values. (`Result` is a functor.)
  - `flatMap` to transform successful values by returning success or failure results. (`Result` is a monad.)
  - `catchMap` to transform successful values by returning values or throwing errors.
@@ -107,17 +107,17 @@ print()
 
  ## How `Result` improves asynchronous code
 
- Asynchronous operations in iOS code often expect completion blocks. Those completion blocks communicate a successful result or a failure. Such a block might be of type `(T?, ErrorType?) -> Void`. Both arguments are optional, because only one or the other is expected. But this is a loose contract. It requires that we unwrap both optional arguments. It also leads us to assume that exactly one result is `nil`, rather than checking. The compiler will check that the values passed back are the right types, but it won't check anything else. If your project contains a lot of completion blocks for lots of asynchronous operations, your project may contain a lot of error-prone boilerplate.
+ Asynchronous operations in iOS code often expect completion blocks. Those completion blocks communicate a success value or a failure. Such a block might be of type `(T?, ErrorType?) -> Void`. Both arguments are optional, because only one or the other is expected. But this is a loose contract. It requires that we unwrap both optional arguments. It also leads us to assume that exactly one argument is `nil`, rather than checking. The compiler will check that the values passed back are the right types, but it won't check anything else. If your project contains a lot of completion blocks for lots of asynchronous operations, your project may contain a lot of error-prone boilerplate.
 
- Synchronous operations (regular function calls) can avoid this problem because they have two ways to produce a value: `return` and `throw`. The Swifty thing to do is for a failable function to either return its result or throw an error. No optionals are involved, and only one or the other case will happen. Writing code to handle both cases is straightforward. This is a nice strict contract, but it doesn't solve our problem for asynchronous operations. You can only throw errors up the call stack, not down into a completion block.
+ Synchronous operations (regular function calls) can avoid this problem because they have two ways to produce a value: `return` and `throw`. The Swifty thing to do is for a failable function to either return its value or throw an error. No optionals are involved, and only one or the other case will happen. Writing code to handle both cases is straightforward. This is a nice strict contract, but it doesn't solve our problem for asynchronous operations. You can only throw errors up the call stack, not down into a completion block.
 
  `Result<T>` is an `enum` with two cases: `.Success(T)` and `.Failure(ErrorType)`. These are the same two cases as above, but they are expressed in a single value that can be sent back to a completion block. Instead of a completion block type of `(T?, ErrorType?) -> Void`, you can use `(Result<T>) -> Void`. There are no optionals to unwrap, no possibility of getting both or neither, and the compiler will still require you to handle both cases.
 
- Let's use Result in an asynchronous context with a completion block, where `throw` can't be used to return an error. Here, our function is like a network request function, and our completion block neatly handles two cases.
+ Let's use `Result` in an asynchronous context with a completion block, where `throw` can't be used to return an error. Here, our function is like a network request function, and our completion block neatly handles two cases.
  */
 
 func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC * 3)), dispatch_get_main_queue()) {
+    delay(3.0) {
         // Suppose we did a network request to get this response body from an API.
         let jsonStringResult = Result.Success("{ \"key\": 101 }")
 
@@ -158,6 +158,6 @@ getJSONAndParseValueWithCompletion { result in
     XCPlaygroundPage.currentPage.finishExecution()
 }
 
-//: > Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing `Result`. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result` lets us work cleanly across asynchronous boundaries.
+//: > Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
 
 //: [Index](Index) • [Promise >>](@next)
