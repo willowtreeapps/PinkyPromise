@@ -113,6 +113,26 @@ public struct Promise<T> {
         }
     }
 
+    // Produces a composite promise that resolves by calling this promise until it succeeds,
+    // up to a given number of tries. When `attemptCount` failures occur, the promise produces the final failure.
+    // For this to be meaningful you should use an `attemptCount` of at least 2.
+    public func retry(attemptCount: Int) -> Promise<Value> {
+        return Promise { fulfill in
+            func attempt(remainingAttempts: Int) {
+                self.task { result in
+                    switch (result, remainingAttempts) {
+                    case (.Success, _), (.Failure, 0):
+                        fulfill(result)
+                    case (.Failure, _):
+                        attempt(remainingAttempts - 1)
+                    }
+                }
+            }
+
+            attempt(max(0, attemptCount - 1))
+        }
+    }
+
     // Produces a composite promise that resolves by running this promise in the background queue,
     // then fulfills on the main queue.
     public func background() -> Promise<Value> {
