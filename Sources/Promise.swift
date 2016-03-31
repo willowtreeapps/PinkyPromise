@@ -92,6 +92,27 @@ public struct Promise<T> {
         }
     }
 
+    // Produces a composite promise that resolves by calling this promise, passing its error to the next task,
+    // then calling the produced promise.
+    // If this promise succeeds, the transformation is skipped.
+    public func recover(transform: (ErrorType) throws -> Promise<Value>) -> Promise<Value> {
+        return Promise { fulfill in
+            self.call { (result: Result<Value>) -> Void in
+                do {
+                    let value = try result.value()
+                    fulfill(.Success(value))
+                } catch {
+                    do {
+                        let mappedPromise = try transform(error)
+                        mappedPromise.call(fulfill)
+                    } catch {
+                        fulfill(.Failure(error))
+                    }
+                }
+            }
+        }
+    }
+
     // Produces a composite promise that resolves by calling this promise, then the next, and if successful combines
     // their results in the produced promise.
     // This is a like zip() in that you want multiple results, but the first step must complete before beginning the second step.
