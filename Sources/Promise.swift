@@ -113,18 +113,6 @@ public struct Promise<T> {
         }
     }
 
-    // Produces a composite promise that resolves by calling this promise, then the next, and if successful combines
-    // their results in the produced promise.
-    // This is a like zip() in that you want multiple results, but the first step must complete before beginning the second step.
-    public func flatMapAndJoin<U>(transform: (Value) throws -> Promise<U>) -> Promise<(Value, U)> {
-        return flatMap { value1 in
-            let mappedPromise = try transform(value1)
-            return mappedPromise.map { (value2) -> (Value, U) in
-                return (value1, value2)
-            }
-        }
-    }
-
     // Produces a composite promise that resolves by running this promise in the background queue,
     // then fulfills on the main queue.
     public func background() -> Promise<Value> {
