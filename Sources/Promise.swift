@@ -119,7 +119,7 @@ public struct Promise<T> {
     public func retry(attemptCount: Int) -> Promise<Value> {
         return Promise { fulfill in
             func attempt(remainingAttempts: Int) {
-                self.task { result in
+                self.call { result in
                     switch (result, remainingAttempts) {
                     case (.Success, _), (.Failure, 0):
                         fulfill(result)
@@ -138,7 +138,7 @@ public struct Promise<T> {
     public func background() -> Promise<Value> {
         return Promise { fulfill in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                self.task { result in
+                self.call { result in
                     dispatch_async(dispatch_get_main_queue()) {
                         fulfill(result)
                     }
@@ -175,7 +175,13 @@ public struct Promise<T> {
 
     // Performs work defined by the promise and eventually calls completion.
     // Promises won't do any work until you call this.
-    public func call(completion: Observer?) {
+    public func call(completion: Observer) {
+        task(completion)
+    }
+
+    // Performs work defined by the promise and, if you supplied a completion block, eventually calls it.
+    // Promises won't do you any work until you call this.
+    public func call(completion: Observer? = nil) {
         task { result in
             completion?(result)
         }
