@@ -6,5 +6,5 @@
  ## Index
 
  1. [`Result`](Result) - A value or error. `Result` adapts the return-or-throw function pattern for asynchronous operations with callbacks.
- 2. [`Promise`](Promise) - An operation that produces a `Result` sometime after it is called. `Promise`s can be composed and sequenced.
+ 2. [`Promise`](Promise) - An operation that produces a `Result` sometime after it is started. `Promise`s can be composed and sequenced.
  */
