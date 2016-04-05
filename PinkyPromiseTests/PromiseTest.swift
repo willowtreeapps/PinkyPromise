@@ -27,6 +27,7 @@
 //
 
 import XCTest
+import PinkyPromise
 
 class PromiseTest: XCTestCase {
     

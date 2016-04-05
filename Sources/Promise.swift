@@ -30,11 +30,11 @@ import Foundation
 
 // A task that can resolve to a value or an error asynchronously.
 
-// First, create a Promise, or use firstly() for neatness.
+// First, create a Promise, or receive one that wraps an asynchronous task.
 // Use .flatMap to chain additional monadic tasks. Failures skip over mapped tasks.
 // Use .success or .failure to process a success or failure value, then continue.
 // After building up your composite promise, begin it with .call.
-// Use the result enum directly, or call .value() to unwrap it and have failures thrown.
+// Use Result by switching on its cases, or call .value() to unwrap it and have failures thrown.
 
 public struct Promise<T> {
 
@@ -187,11 +187,6 @@ public struct Promise<T> {
         }
     }
 
-}
-
-// Immediately runs a closure to lift regular code into Promise context.
-public func firstly<T>(@noescape firstTask: () -> Promise<T>) -> Promise<T> {
-    return firstTask()
 }
 
 // Produces a promise that runs two promises simultaneously and unifies their result.

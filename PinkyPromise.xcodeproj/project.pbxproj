@@ -25,6 +25,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A0866E31CB36C7300DDBC0D /* PinkyPromise.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PinkyPromise.playground; sourceTree = "<group>"; };
 		0AB957651CB34A1100512B06 /* PinkyPromiseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PinkyPromiseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB957691CB34A1100512B06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTest.swift; sourceTree = "<group>"; };
@@ -68,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				__PBXFileRef_Package.swift /* Package.swift */,
+				0A0866E31CB36C7300DDBC0D /* PinkyPromise.playground */,
 				"_____Sources_" /* Sources */,
 				"_______Tests_" /* Tests */,
 				0AB957661CB34A1100512B06 /* PinkyPromiseTests */,
