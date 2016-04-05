@@ -21,6 +21,7 @@ We use `scan` from [Fastlane Tools](https://fastlane.tools) to run tests. You ca
 
 ## Project Roadmap
 
+- Fill out PromiseTests.
 - Add a Playground page with example Promise factory methods and call sites.
 - CocoaPods? Carthage?
 - More Promise transformations?
