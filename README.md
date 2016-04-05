@@ -15,6 +15,10 @@ PinkyPromise is meant to be a lightweight functional tool that does a lot of hea
 
 Please see `PinkyPromise.playground` for examples and insight.
 
+## Tests
+
+We use `scan` from [Fastlane Tools](https://fastlane.tools) to run tests. You can also run them in Xcode.
+
 ## Project Roadmap
 
 - Add a Playground page with example Promise factory methods and call sites.
