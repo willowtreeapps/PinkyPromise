@@ -1,3 +1,11 @@
+# OS X
 .DS_Store
-.build
+
+# Xcode
 xcuserdata
+
+# swift-build
+.build
+
+# scan
+test_output
