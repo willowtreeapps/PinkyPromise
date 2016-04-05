@@ -1,0 +1,153 @@
+// !$*UTF8*$!
+{
+    archiveVersion = 1;
+    classes = {};
+    objectVersion = 46;
+    rootObject = __RootObject_;
+    objects = {
+        __RootObject_ = {
+            isa = PBXProject;
+            attributes = {LastUpgradeCheck = 9999;};
+            buildConfigurationList = ___RootConfs_;
+            compatibilityVersion = 'Xcode 3.2';
+            developmentRegion = English;
+            hasScannedForEncodings = 0;
+            knownRegions = (en);
+            mainGroup = ___RootGroup_;
+            productRefGroup = ____Products_;
+            projectDirPath = '';
+            projectRoot = '';
+            targets = (______Target_PinkyPromise);
+        };
+        '__PBXFileRef_Package.swift' = {
+            isa = PBXFileReference;
+            lastKnownFileType = sourcecode.swift;
+            name = 'Package.swift';
+            path = '/Users/kevin/src/willowtreeapps/PinkyPromise/Package.swift';
+            sourceTree = '<group>';
+        };
+        ___RootGroup_ = {
+            isa = PBXGroup;
+            children = ('__PBXFileRef_Package.swift', _____Sources_, _______Tests_, ____Products_);
+            sourceTree = '<group>';
+        };
+        _______Group_PinkyPromise = {
+            isa = PBXGroup;
+            name = PinkyPromise;
+            path = 'Sources';
+            sourceTree = '<group>';
+            children = ('__PBXFileRef_Sources/Promise.swift', '__PBXFileRef_Sources/Result.swift');
+        };
+        '__PBXFileRef_Sources/Promise.swift' = {
+            isa = PBXFileReference;
+            lastKnownFileType = sourcecode.swift;
+            name = 'Promise.swift';
+            sourceTree = '<group>';
+        };
+        '__PBXFileRef_Sources/Result.swift' = {
+            isa = PBXFileReference;
+            lastKnownFileType = sourcecode.swift;
+            name = 'Result.swift';
+            sourceTree = '<group>';
+        };
+        ______Target_PinkyPromise = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = _______Confs_PinkyPromise;
+            buildPhases = (CompilePhase_PinkyPromise, ___LinkPhase_PinkyPromise);
+            buildRules = ();
+            dependencies = ();
+            name = PinkyPromise;
+            productName = PinkyPromise;
+            productReference = _____Product_PinkyPromise;
+            productType = 'com.apple.product-type.library.dynamic';
+        };
+        _____Product_PinkyPromise = {
+            isa = PBXFileReference;
+            explicitFileType = 'compiled.mach-o.dylib';
+            path = 'PinkyPromise.dylib';
+            sourceTree = BUILT_PRODUCTS_DIR;
+        };
+        CompilePhase_PinkyPromise = {
+            isa = PBXSourcesBuildPhase;
+            files = ('__src_cc_ref_Sources/Promise.swift', '__src_cc_ref_Sources/Result.swift');
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        ___LinkPhase_PinkyPromise = {
+            isa = PBXFrameworksBuildPhase;
+            files = ();
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        '__src_cc_ref_Sources/Promise.swift' = {
+            isa = PBXBuildFile;
+            fileRef = '__PBXFileRef_Sources/Promise.swift';
+        };
+        '__src_cc_ref_Sources/Result.swift' = {
+            isa = PBXBuildFile;
+            fileRef = '__PBXFileRef_Sources/Result.swift';
+        };
+        _LinkFileRef_PinkyPromise = {
+            isa = PBXBuildFile;
+            fileRef = _____Product_PinkyPromise;
+        };
+        _______Confs_PinkyPromise = {
+            isa = XCConfigurationList;
+            buildConfigurations = (___DebugConf_PinkyPromise, _ReleaseConf_PinkyPromise);
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Debug;
+        };
+        ___DebugConf_PinkyPromise = {
+            isa = XCBuildConfiguration;
+            buildSettings = { DYLIB_INSTALL_NAME_BASE = '$(CONFIGURATION_BUILD_DIR)'; LD_RUNPATH_SEARCH_PATHS = '$(TOOLCHAIN_DIR)/usr/lib/swift/macosx'; PRODUCT_MODULE_NAME = PinkyPromise; ENABLE_TESTABILITY = YES; OTHER_SWIFT_FLAGS = -DXcode; COMBINE_HIDPI_IMAGES = YES; MACOSX_DEPLOYMENT_TARGET = '10.10'; SWIFT_OPTIMIZATION_LEVEL = -Onone; PRODUCT_NAME = 'lib$(TARGET_NAME)'; };
+            name = Debug;
+        };
+        _ReleaseConf_PinkyPromise = {
+            isa = XCBuildConfiguration;
+            buildSettings = { DYLIB_INSTALL_NAME_BASE = '$(CONFIGURATION_BUILD_DIR)'; LD_RUNPATH_SEARCH_PATHS = '$(TOOLCHAIN_DIR)/usr/lib/swift/macosx'; PRODUCT_MODULE_NAME = PinkyPromise; ENABLE_TESTABILITY = YES; OTHER_SWIFT_FLAGS = -DXcode; COMBINE_HIDPI_IMAGES = YES; MACOSX_DEPLOYMENT_TARGET = '10.10'; PRODUCT_NAME = 'lib$(TARGET_NAME)'; };
+            name = Release;
+        };
+        __Dependency_PinkyPromise = {
+            isa = PBXTargetDependency;
+            target = ______Target_PinkyPromise;
+        };
+        _____Sources_ = {
+            isa = PBXGroup;
+            children = (_______Group_PinkyPromise);
+            name = Sources;
+            sourceTree = '<group>';
+        };
+        _______Tests_ = {
+            isa = PBXGroup;
+            children = ();
+            name = Tests;
+            sourceTree = '<group>';
+        };
+        _______Tests_ = {
+            isa = PBXGroup;
+            children = ();
+            name = Tests;
+            sourceTree = '<group>';
+        };
+        ____Products_ = {
+            isa = PBXGroup;
+            children = (_____Product_PinkyPromise);
+            name = Products;
+            sourceTree = '<group>';
+        };
+        _______Debug_ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {};
+            name = Debug;
+        };
+        _____Release_ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {};
+            name = Release;
+        };
+        ___RootConfs_ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (_______Debug_, _____Release_);
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Debug;
+        };
+    };
+}
