@@ -23,9 +23,7 @@ let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
 let trivialSuccess: Promise<String> = Promise(value: "8675309")
 let trivialFailure: Promise<String> = Promise(error: someError)
-
-let successOrFailure: Result<String> = Result.Success("Hello, world")
-let trivialResult: Promise<String> = Promise(result: successOrFailure)
+let trivialResult: Promise<String> = Promise(result: .Success("Hello, world"))
 
 trivialSuccess.call { result in
     print(result)
@@ -121,21 +119,22 @@ let multipleOfTwoPromise = Promise<Int> { fulfill in
     }
 }
 
-let complexPromise = zip(
-    multipleOfTwoPromise.recover { _ in
-        return Promise(value: 2)
-    },
-    getStringPromiseWithAgument("computed in the background")
-        .background()
-        .map { "\($0) then extended on the main queue" }
-)
-.retry(3)
-.success { int, string in
-    print("Complex promise succeeded. Multiple of two: \(int), string: \(string)")
-}
-.failure { error in
-    print("Complex promise failed: \(error)")
-}
+let complexPromise =
+    zip(
+        multipleOfTwoPromise.recover { _ in
+            return Promise(value: 2)
+        },
+        getStringPromiseWithAgument("computed in the background")
+            .background()
+            .map { "\($0) then extended on the main queue" }
+    )
+    .retry(3)
+    .success { int, string in
+        print("Complex promise succeeded. Multiple of two: \(int), string: \(string)")
+    }
+    .failure { error in
+        print("Complex promise failed: \(error)")
+    }
 
 /*:
  Each of these transformations produced a new Promise but did not start it.
