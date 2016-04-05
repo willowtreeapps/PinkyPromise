@@ -35,10 +35,16 @@ class ResultTest: XCTestCase {
     private struct Fixtures {
         let object: NSObject
         let error: NSError
+
         let successfulInt: Result<Int>
         let failedInt: Result<Int>
         let successfulObject: Result<NSObject>
         let failedObject: Result<NSObject>
+        let successfulNumberString: Result<String>
+        let successfulJSONArrayString: Result<String>
+        let failedString: Result<String>
+
+        let integerFormatter: NSNumberFormatter
     }
 
     private var fixtures: Fixtures!
@@ -47,15 +53,23 @@ class ResultTest: XCTestCase {
         super.setUp()
 
         let object = NSObject()
-        let anError = NSError(domain: "TestDomain", code: 1, userInfo: nil)
+        let error = uniqueError()
+
+        let integerFormatter = NSNumberFormatter()
+        integerFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        integerFormatter.maximumFractionDigits = 0
 
         fixtures = Fixtures(
             object: object,
-            error: anError,
+            error: error,
             successfulInt: .Success(3),
-            failedInt: .Failure(anError),
+            failedInt: .Failure(error),
             successfulObject: .Success(object),
-            failedObject: .Failure(anError)
+            failedObject: .Failure(error),
+            successfulNumberString: .Success("123"),
+            successfulJSONArrayString: .Success("[1, 2, 3]"),
+            failedString: .Failure(error),
+            integerFormatter: integerFormatter
         )
     }
     
@@ -84,7 +98,67 @@ class ResultTest: XCTestCase {
         expectFailure(fixtures.error, result: failedThirty)
     }
 
+    func testFlatMap() {
+        let parseError = uniqueError()
+
+        let stringAsInt: (String) -> Result<Int> = { string in
+            if let number = self.fixtures.integerFormatter.numberFromString(string) as? Int {
+                return .Success(number)
+            } else {
+                return .Failure(parseError)
+            }
+        }
+
+        let successfulNumberParse = fixtures.successfulNumberString.flatMap(stringAsInt)
+        let failedArrayParse = fixtures.successfulJSONArrayString.flatMap(stringAsInt)
+        let sameFailedString = fixtures.failedString.flatMap(stringAsInt)
+
+        expectSuccess(123, result: successfulNumberParse, message: "Expected to parse \"123\" as 123.")
+        expectFailure(parseError, result: failedArrayParse)
+        expectFailure(fixtures.error, result: sameFailedString)
+    }
+
+    func testTryMap() {
+        let encodeDataError = uniqueError()
+        let parseJSONError = uniqueError()
+        let castToIntArrayError = uniqueError()
+
+        let jsonStringAsIntSet: (String) throws -> Set<Int> = { string in
+            guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+                throw encodeDataError
+            }
+
+            let object: AnyObject
+            do {
+                object = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+            } catch {
+                throw parseJSONError
+            }
+
+            guard let array = object as? [Int] else {
+                throw castToIntArrayError
+            }
+
+            return Set(array)
+        }
+
+        let successfulSetParse: Result<Set<Int>> = fixtures.successfulJSONArrayString.tryMap(jsonStringAsIntSet)
+        let failedNumberParse = fixtures.successfulNumberString.tryMap(jsonStringAsIntSet)
+        let sameFailedString = fixtures.failedString.tryMap(jsonStringAsIntSet)
+
+        expectSuccess([1, 2, 3] as Set<Int>, result: successfulSetParse, message: "Expected to parse \"[1, 2, 3]\" as [1, 2, 3].")
+        expectFailure(parseJSONError, result: failedNumberParse)
+        expectFailure(fixtures.error, result: sameFailedString)
+    }
+
     // MARK: Helpers
+
+    private var lastErrorCode = 0
+
+    private func uniqueError() -> NSError {
+        lastErrorCode += 1
+        return NSError(domain: "Test", code: lastErrorCode, userInfo: nil)
+    }
 
     private func expectSuccess<T: Equatable>(expected: T, result: Result<T>, message: String) {
         do {
