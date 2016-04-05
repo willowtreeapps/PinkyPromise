@@ -69,7 +69,7 @@ print()
  - `zip` to combine many Results into one Result of a tuple or array.
  - `map` to transform successful values by returning values. (`Result` is a functor.)
  - `flatMap` to transform successful values by returning success or failure results. (`Result` is a monad.)
- - `catchMap` to transform successful values by returning values or throwing errors.
+ - `tryMap` to transform successful values by returning values or throwing errors.
  */
 
 let stringAndIntArray = zip(successfulString, successfulIntArray)
@@ -90,7 +90,7 @@ let firstInt: Result<Int> = successfulIntArray.flatMap { intArray in
     }
 }
 
-let dataInFile = successfulString.catchMap { path in
+let dataInFile = successfulString.tryMap { path in
     try NSData(contentsOfFile: path, options: [])
 }
 
@@ -121,7 +121,7 @@ func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
         // Suppose we did a network request to get this response body from an API.
         let jsonStringResult = Result.Success("{ \"key\": 101 }")
 
-        let parsedValueResult: Result<Int> = jsonStringResult.catchMap { jsonString in
+        let parsedValueResult: Result<Int> = jsonStringResult.tryMap { jsonString in
             // Interpret the response body as JSON.
 
             // Fail if the string wasn't encodable in UTF-8.
@@ -131,7 +131,7 @@ func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
 
             // Fail if the data isn't valid JSON.
             return try NSJSONSerialization.JSONObjectWithData(data, options: [])
-        }.catchMap { (jsonObject: AnyObject) in
+        }.tryMap { (jsonObject: AnyObject) in
             // Parse the expected value from JSON.
 
             // Fail if it's not the right format.

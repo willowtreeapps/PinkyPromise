@@ -36,7 +36,7 @@ import Foundation
 // Result is a functor and monad; you can map and flatMap.
 // map transforms success values into new success values but merely forwards errors.
 // flatMap also forwards errors, but transforms to a new Result, meaning it may produce a new failure.
-// catchMap transforms success values but can throw errors, which are caught and encoded as new failures.
+// tryMap transforms success values but can throw errors, which are caught and encoded as new failures.
 
 public enum Result<T> {
 
@@ -58,14 +58,14 @@ public enum Result<T> {
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value.
     public func map<U>(@noescape transform: (Value) -> U) -> Result<U> {
-        return catchMap(transform)
+        return tryMap(transform)
     }
 
     // The canonical flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success or failure.
     public func flatMap<U>(@noescape transform: (Value) -> Result<U>) -> Result<U> {
-        return catchMap { value in
+        return tryMap { value in
             let mappedResult = transform(value)
             let mappedValue = try mappedResult.value()
             return mappedValue
@@ -75,7 +75,7 @@ public enum Result<T> {
     // An error-catching variation on flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value, or fail if an error if thrown.
-    public func catchMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
+    public func tryMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
         do {
             let successValue = try value()
             let mappedValue = try transform(successValue)
@@ -89,7 +89,7 @@ public enum Result<T> {
 
 // From two Results, return one Result of their values or the first failure.
 public func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
-    return resultA.catchMap { a in
+    return resultA.tryMap { a in
         let b = try resultB.value()
         return (a, b)
     }
@@ -97,7 +97,7 @@ public func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)
 
 // From three Results, return one Result of their values or the first failure.
 public func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
-    return zip(resultA, resultB).catchMap { a, b in
+    return zip(resultA, resultB).tryMap { a, b in
         let c = try resultC.value()
         return (a, b, c)
     }
@@ -105,7 +105,7 @@ public func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Re
 
 // From four Results, return one Result of their values or the first failure.
 public func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
-    return zip(resultA, resultB, resultC).catchMap { a, b, c in
+    return zip(resultA, resultB, resultC).tryMap { a, b, c in
         let d = try resultD.value()
         return (a, b, c, d)
     }
@@ -114,7 +114,7 @@ public func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC:
 // From an array of Results, return one Result of an array of their values or the first failure.
 public func zipArray<T>(results: [Result<T>]) -> Result<[T]> {
     return results.reduce(.Success([])) { (arrayResult, itemResult) in
-        return arrayResult.catchMap { array in
+        return arrayResult.tryMap { array in
             let item = try itemResult.value()
             return (array + [item])
         }
