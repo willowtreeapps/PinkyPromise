@@ -62,34 +62,47 @@ class ResultTest: XCTestCase {
     override func tearDown() {
         super.tearDown()
     }
-    
-    func testValue() {
-        do {
-            let int = try fixtures.successfulInt.value()
-            XCTAssertEqual(3, int, "Expected the same value as supplied to .Success().")
 
-            let object = try fixtures.successfulObject.value()
-            XCTAssertEqual(fixtures.object, object, "Expected the same object as supplied to .Success().")
-            XCTAssertTrue(fixtures.object === object, "Expected the same object, not just an equal object.")
+    func testValue() {
+        expectSuccess(3, result: fixtures.successfulInt, message: "Expected the same value as supplied to .Success().")
+        expectSuccess(fixtures.object, result: fixtures.successfulObject, message: "Expected the same object as supplied to .Success().")
+        expectFailure(fixtures.error, result: fixtures.failedInt)
+        expectFailure(fixtures.error, result: fixtures.failedObject)
+    }
+
+    func testMap() {
+        let plusThree: (Int) -> Int = { $0 + 3 }
+        let successfulSix = fixtures.successfulInt.map(plusThree)
+        let failedSix = fixtures.failedInt.map(plusThree)
+        expectSuccess(6, result: successfulSix, message: "Expected 3 + 3 = 6.")
+        expectFailure(fixtures.error, result: failedSix)
+
+        let timesTenAsString: (Int) -> String = { String($0 * 10) }
+        let successfulThirty = fixtures.successfulInt.map(timesTenAsString)
+        let failedThirty = fixtures.failedInt.map(timesTenAsString)
+        expectSuccess("30", result: successfulThirty, message: "Expected String(3 * 10) = \"30\".")
+        expectFailure(fixtures.error, result: failedThirty)
+    }
+
+    // MARK: Helpers
+
+    private func expectSuccess<T: Equatable>(expected: T, result: Result<T>, message: String) {
+        do {
+            let value = try result.value()
+            XCTAssertEqual(expected, value, message)
         } catch {
             XCTFail("Expected not to catch an error.")
         }
+    }
 
+    private func expectFailure<T>(expected: NSError, result: Result<T>) {
         do {
-            try fixtures.failedInt.value()
+            try result.value()
             XCTFail("Expected to throw an error.")
         } catch {
-            XCTAssertEqual(fixtures.error, error as NSError, "Expected the same error as supplied to .Failure().")
-            XCTAssertTrue(fixtures.error === error as NSError, "Expected the same error, not just an equal error.")
-        }
-
-        do {
-            try fixtures.failedObject.value()
-            XCTFail("Expected to throw an error.")
-        } catch {
-            XCTAssertEqual(fixtures.error, error as NSError, "Expected the same error as supplied to .Failure().")
-            XCTAssertTrue(fixtures.error === error as NSError, "Expected the same error, not just an equal error.")
+            XCTAssertEqual(expected, error as NSError, "Expected the same error as supplied to .Failure().")
+            XCTAssertTrue(expected === error as NSError, "Expected the same error, not just an equal error.")
         }
     }
-    
+
 }
