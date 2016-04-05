@@ -27,18 +27,69 @@
 //
 
 import XCTest
+import Foundation
+import PinkyPromise
 
 class ResultTest: XCTestCase {
+
+    private struct Fixtures {
+        let object: NSObject
+        let error: NSError
+        let successfulInt: Result<Int>
+        let failedInt: Result<Int>
+        let successfulObject: Result<NSObject>
+        let failedObject: Result<NSObject>
+    }
+
+    private var fixtures: Fixtures!
     
     override func setUp() {
         super.setUp()
+
+        let object = NSObject()
+        let anError = NSError(domain: "TestDomain", code: 1, userInfo: nil)
+
+        fixtures = Fixtures(
+            object: object,
+            error: anError,
+            successfulInt: .Success(3),
+            failedInt: .Failure(anError),
+            successfulObject: .Success(object),
+            failedObject: .Failure(anError)
+        )
     }
     
     override func tearDown() {
         super.tearDown()
     }
     
-    func testExample() {
+    func testValue() {
+        do {
+            let int = try fixtures.successfulInt.value()
+            XCTAssertEqual(3, int, "Expected the same value as supplied to .Success().")
+
+            let object = try fixtures.successfulObject.value()
+            XCTAssertEqual(fixtures.object, object, "Expected the same object as supplied to .Success().")
+            XCTAssertTrue(fixtures.object === object, "Expected the same object, not just an equal object.")
+        } catch {
+            XCTFail("Expected not to catch an error.")
+        }
+
+        do {
+            try fixtures.failedInt.value()
+            XCTFail("Expected to throw an error.")
+        } catch {
+            XCTAssertEqual(fixtures.error, error as NSError, "Expected the same error as supplied to .Failure().")
+            XCTAssertTrue(fixtures.error === error as NSError, "Expected the same error, not just an equal error.")
+        }
+
+        do {
+            try fixtures.failedObject.value()
+            XCTFail("Expected to throw an error.")
+        } catch {
+            XCTAssertEqual(fixtures.error, error as NSError, "Expected the same error as supplied to .Failure().")
+            XCTAssertTrue(fixtures.error === error as NSError, "Expected the same error, not just an equal error.")
+        }
     }
     
 }
