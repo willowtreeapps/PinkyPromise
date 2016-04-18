@@ -44,7 +44,7 @@ public enum Result<T> {
 
     case Success(Value)
     case Failure(ErrorType)
-    
+
     // Create a Result by returning a value or throwing an error.
     public init(@noescape create: () throws -> Value) {
         do {
@@ -76,9 +76,7 @@ public enum Result<T> {
     // Otherwise, transform the success value into a new success or failure.
     public func flatMap<U>(@noescape transform: (Value) -> Result<U>) -> Result<U> {
         return tryMap { value in
-            let mappedResult = transform(value)
-            let mappedValue = try mappedResult.value()
-            return mappedValue
+            try transform(value).value()
         }
     }
 
@@ -86,12 +84,8 @@ public enum Result<T> {
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value, or fail if an error is thrown.
     public func tryMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
-        do {
-            let successValue = try value()
-            let mappedValue = try transform(successValue)
-            return .Success(mappedValue)
-        } catch {
-            return .Failure(error)
+        return Result<U> {
+            try transform(try value())
         }
     }
 
@@ -100,33 +94,29 @@ public enum Result<T> {
 // From two Results, return one Result of their values or the first failure.
 public func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
     return resultA.tryMap { a in
-        let b = try resultB.value()
-        return (a, b)
+        (a, try resultB.value())
     }
 }
 
 // From three Results, return one Result of their values or the first failure.
 public func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
     return zip(resultA, resultB).tryMap { a, b in
-        let c = try resultC.value()
-        return (a, b, c)
+        (a, b, try resultC.value())
     }
 }
 
 // From four Results, return one Result of their values or the first failure.
 public func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
     return zip(resultA, resultB, resultC).tryMap { a, b, c in
-        let d = try resultD.value()
-        return (a, b, c, d)
+        (a, b, c, try resultD.value())
     }
 }
 
 // From an array of Results, return one Result of an array of their values or the first failure.
 public func zipArray<T>(results: [Result<T>]) -> Result<[T]> {
-    return results.reduce(.Success([])) { (arrayResult, itemResult) in
-        return arrayResult.tryMap { array in
-            let item = try itemResult.value()
-            return (array + [item])
+    return results.reduce(Result { [] }) { arrayResult, itemResult in
+        arrayResult.tryMap { array in
+            array + [try itemResult.value()]
         }
     }
 }
