@@ -3,7 +3,7 @@
 
  # Result
 
- PinkyPromise's `Result` type represents, in one value, the concept of a returned value or a thrown error. `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback. `Result` is based on the Either type from functional languages and on the Result type from LlamaKit.
+ PinkyPromise's `Result` type represents, in one value, the concept of a returned value or a thrown error. `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback. `Result` is based on the Either type from functional languages and the Result type from the [Result framework](https://github.com/antitypical/Result).
  */
 
 import Foundation
