@@ -30,7 +30,7 @@
 		0AB957691CB34A1100512B06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTest.swift; sourceTree = "<group>"; };
 		0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultTest.swift; sourceTree = "<group>"; };
-		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = /Users/kevin/src/willowtreeapps/PinkyPromise/Package.swift; sourceTree = "<group>"; };
+		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Promise.swift /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Result.swift /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		"_____Product_PinkyPromise" /* libPinkyPromise.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libPinkyPromise.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,7 +71,6 @@
 				__PBXFileRef_Package.swift /* Package.swift */,
 				0A0866E31CB36C7300DDBC0D /* PinkyPromise.playground */,
 				"_____Sources_" /* Sources */,
-				"_______Tests_" /* Tests */,
 				0AB957661CB34A1100512B06 /* PinkyPromiseTests */,
 				"____Products_" /* Products */,
 			);
@@ -89,26 +88,10 @@
 		"_____Sources_" /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				"_______Group_PinkyPromise" /* PinkyPromise */,
-			);
-			name = Sources;
-			sourceTree = "<group>";
-		};
-		"_______Group_PinkyPromise" /* PinkyPromise */ = {
-			isa = PBXGroup;
-			children = (
 				__PBXFileRef_Sources/Result.swift /* Result.swift */,
 				__PBXFileRef_Sources/Promise.swift /* Promise.swift */,
 			);
-			name = PinkyPromise;
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		"_______Tests_" /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
