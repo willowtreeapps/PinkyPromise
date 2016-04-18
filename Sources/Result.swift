@@ -44,6 +44,16 @@ public enum Result<T> {
 
     case Success(Value)
     case Failure(ErrorType)
+    
+    // Create a Result by returning a value or throwing an error.
+    public init(create: () throws -> Value) {
+        do {
+            let value = try create()
+            self = .Success(value)
+        } catch {
+            self = .Failure(error)
+        }
+    }
 
     // Unwrap a success value or throw a failure value.
     public func value() throws -> Value {

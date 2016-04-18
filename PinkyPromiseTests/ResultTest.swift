@@ -77,6 +77,13 @@ class ResultTest: XCTestCase {
         super.tearDown()
     }
 
+    func testInit_create() {
+        expectSuccess(3, result: Result { return 3 }, message: "Expected the same value as returned.")
+        expectSuccess(fixtures.object, result: Result { return self.fixtures.object }, message: "Expected the same object as returned.")
+        expectFailure(fixtures.error, result: Result<Int> { throw self.fixtures.error })
+        expectFailure(fixtures.error, result: Result<NSObject> { throw self.fixtures.error })
+    }
+
     func testValue() {
         expectSuccess(3, result: fixtures.successfulInt, message: "Expected the same value as supplied to .Success().")
         expectSuccess(fixtures.object, result: fixtures.successfulObject, message: "Expected the same object as supplied to .Success().")
@@ -287,7 +294,7 @@ class ResultTest: XCTestCase {
             try result.value()
             XCTFail("Expected to throw an error.")
         } catch {
-            XCTAssertEqual(expected, error as NSError, "Expected the same error as supplied to .Failure().")
+            XCTAssertEqual(expected, error as NSError, "Expected the same error as supplied to .Failure() or thrown.")
             XCTAssertTrue(expected === error as NSError, "Expected the same error, not just an equal error.")
         }
     }
