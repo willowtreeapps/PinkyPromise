@@ -17,9 +17,6 @@ let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 let successfulString: Result<String> = .Success("Hello, world")
 let failedString:     Result<String> = .Failure(someError)
 
-let successfulIntArray: Result<[Int]> = .Success([1, 2, 3, 4])
-let failedIntArray:     Result<[Int]> = .Failure(someError)
-
 let successfulVoid: Result<Void> = .Success()
 let failedVoid:     Result<Void> = .Failure(someError)
 
@@ -52,12 +49,30 @@ func printResult<T>(result: Result<T>) {
 }
 
 printResult(successfulString)
-printResult(successfulIntArray)
 printResult(successfulVoid)
 
 printResult(failedString)
-printResult(failedIntArray)
 printResult(failedVoid)
+
+print()
+
+/*:
+ Similarly, you can use a special initializer to create a Result with a returning-or-throwing function.
+ Here we create two Results and then print their values without ever touching enum cases or switch statements.
+
+ > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
+ */
+
+let successfulIntArray = Result {
+    return [1, 2, 3, 4]
+}
+
+let failedIntArray = Result<[Int]> {
+    throw someError
+}
+
+printResult(successfulIntArray)
+printResult(failedIntArray)
 
 print()
 
