@@ -33,9 +33,34 @@ print()
 
 /*:
  > Look at the Debug console to see what's printed.
+ 
+ But it's even more Swifty to use the return-and-throw pattern to create Results and read their values and errors.
+ You can use a special initializer to create a Result with a returning-or-throwing function. Then you can call `value`, which returns the value or throws the error.
 
- But it's even more Swifty to use the `value` function to determine the case.
- `value` returns the value for `.Success` or throws the error for `.Failure`.
+ Here we create two Results and then print their values, without ever writing enum cases or switch statements.
+ */
+
+let successfulIntArray = Result { [1, 2, 3, 4] }
+let failedIntArray = Result<[Int]> { throw someError }
+
+do {
+    print(try successfulIntArray.value())
+} catch {
+    print(error)
+}
+
+do {
+    print(try failedIntArray.value())
+} catch {
+    print(error)
+}
+
+print()
+
+/*:
+ With this initializer and the `value` function, our code is simple and compact. Creating a Result encodes a returned value or thrown error, and then `value` can return or throw in a new context.
+ 
+ > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
  */
 
 func printResult<T>(result: Result<T>) {
@@ -53,26 +78,6 @@ printResult(successfulVoid)
 
 printResult(failedString)
 printResult(failedVoid)
-
-print()
-
-/*:
- Similarly, you can use a special initializer to create a Result with a returning-or-throwing function.
- Here we create two Results and then print their values without ever touching enum cases or switch statements.
-
- > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
- */
-
-let successfulIntArray = Result {
-    return [1, 2, 3, 4]
-}
-
-let failedIntArray = Result<[Int]> {
-    throw someError
-}
-
-printResult(successfulIntArray)
-printResult(failedIntArray)
 
 print()
 
@@ -98,10 +103,12 @@ let sumOfIntsAsString = successfulIntArray.map { intArray in
 }
 
 let firstInt: Result<Int> = successfulIntArray.flatMap { intArray in
-    if let first = intArray.first {
-        return .Success(first)
-    } else {
-        return .Failure(someError)
+    return Result {
+        if let first = intArray.first {
+            return first
+        } else {
+            throw someError
+        }
     }
 }
 
@@ -134,7 +141,7 @@ print()
 func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
     delay(3.0) {
         // Suppose we did a network request to get this response body from an API.
-        let jsonStringResult = Result.Success("{ \"key\": 101 }")
+        let jsonStringResult = Result { "{ \"key\": 101 }" }
 
         let parsedValueResult: Result<Int> = jsonStringResult.tryMap { jsonString in
             // Interpret the response body as JSON.
@@ -173,6 +180,6 @@ getJSONAndParseValueWithCompletion { result in
     XCPlaygroundPage.currentPage.finishExecution()
 }
 
-//: > Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
+//: Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
 
 //: [Index](Index) • [Promise >>](@next)
