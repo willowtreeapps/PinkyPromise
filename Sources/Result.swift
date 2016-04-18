@@ -42,16 +42,16 @@ public enum Result<T> {
 
     public typealias Value = T
 
-    case Failure(ErrorType)
     case Success(Value)
+    case Failure(ErrorType)
 
     // Unwrap a success value or throw a failure value.
     public func value() throws -> Value {
         switch self {
-        case .Failure(let error):
-            throw error
         case .Success(let value):
             return value
+        case .Failure(let error):
+            throw error
         }
     }
 
