@@ -23,7 +23,7 @@ let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
 let trivialSuccess: Promise<String> = Promise(value: "8675309")
 let trivialFailure: Promise<String> = Promise(error: someError)
-let trivialResult: Promise<String> = Promise(result: .Success("Hello, world"))
+let trivialResult: Promise<String> = Promise(result: Result { "Hello, world" })
 
 trivialSuccess.call { result in
     print(result)
@@ -112,11 +112,13 @@ let twoStepPromise = stringPromise.flatMap { string in
 
 let multipleOfTwoPromise = Promise<Int> { fulfill in
     let number = Int(arc4random_uniform(100))
-    if number % 2 == 0 {
-        fulfill(.Success(number))
-    } else {
-        fulfill(.Failure(someError))
-    }
+    fulfill(Result {
+        if number % 2 == 0 {
+            return number
+        } else {
+            throw someError
+        }
+    })
 }
 
 let complexPromise =

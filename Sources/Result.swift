@@ -42,16 +42,26 @@ public enum Result<T> {
 
     public typealias Value = T
 
-    case Failure(ErrorType)
     case Success(Value)
+    case Failure(ErrorType)
+    
+    // Create a Result by returning a value or throwing an error.
+    public init(create: () throws -> Value) {
+        do {
+            let value = try create()
+            self = .Success(value)
+        } catch {
+            self = .Failure(error)
+        }
+    }
 
     // Unwrap a success value or throw a failure value.
     public func value() throws -> Value {
         switch self {
-        case .Failure(let error):
-            throw error
         case .Success(let value):
             return value
+        case .Failure(let error):
+            throw error
         }
     }
 
@@ -74,7 +84,7 @@ public enum Result<T> {
 
     // An error-catching variation on flatMap.
     // Return a failure if we have one.
-    // Otherwise, transform the success value into a new success value, or fail if an error if thrown.
+    // Otherwise, transform the success value into a new success value, or fail if an error is thrown.
     public func tryMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
         do {
             let successValue = try value()

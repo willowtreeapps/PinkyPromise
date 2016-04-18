@@ -3,7 +3,7 @@
 
  # Result
 
- PinkyPromise's `Result` type represents, in one value, the concept of a returned value or a thrown error. `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback. `Result` is based on the Either type from functional languages and on the Result type from LlamaKit.
+ PinkyPromise's `Result` type represents, in one value, the concept of a returned value or a thrown error. `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback. `Result` is based on the Either type from functional languages and the Result type from the [Result framework](https://github.com/antitypical/Result).
  */
 
 import Foundation
@@ -16,9 +16,6 @@ let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
 let successfulString: Result<String> = .Success("Hello, world")
 let failedString:     Result<String> = .Failure(someError)
-
-let successfulIntArray: Result<[Int]> = .Success([1, 2, 3, 4])
-let failedIntArray:     Result<[Int]> = .Failure(someError)
 
 let successfulVoid: Result<Void> = .Success()
 let failedVoid:     Result<Void> = .Failure(someError)
@@ -36,9 +33,34 @@ print()
 
 /*:
  > Look at the Debug console to see what's printed.
+ 
+ But it's even more Swifty to use the return-and-throw pattern to create Results and read their values and errors.
+ You can use a special initializer to create a Result with a returning-or-throwing function. Then you can call `value`, which returns the value or throws the error.
 
- But it's even more Swifty to use the `value` function to determine the case.
- `value` returns the value for `.Success` or throws the error for `.Failure`.
+ Here we create two Results and then print their values, without ever writing enum cases or switch statements.
+ */
+
+let successfulIntArray = Result { [1, 2, 3, 4] }
+let failedIntArray = Result<[Int]> { throw someError }
+
+do {
+    print(try successfulIntArray.value())
+} catch {
+    print(error)
+}
+
+do {
+    print(try failedIntArray.value())
+} catch {
+    print(error)
+}
+
+print()
+
+/*:
+ With this initializer and the `value` function, our code is simple and compact. Creating a Result encodes a returned value or thrown error, and then `value` can return or throw in a new context.
+ 
+ > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
  */
 
 func printResult<T>(result: Result<T>) {
@@ -52,11 +74,9 @@ func printResult<T>(result: Result<T>) {
 }
 
 printResult(successfulString)
-printResult(successfulIntArray)
 printResult(successfulVoid)
 
 printResult(failedString)
-printResult(failedIntArray)
 printResult(failedVoid)
 
 print()
@@ -83,10 +103,12 @@ let sumOfIntsAsString = successfulIntArray.map { intArray in
 }
 
 let firstInt: Result<Int> = successfulIntArray.flatMap { intArray in
-    if let first = intArray.first {
-        return .Success(first)
-    } else {
-        return .Failure(someError)
+    return Result {
+        if let first = intArray.first {
+            return first
+        } else {
+            throw someError
+        }
     }
 }
 
@@ -119,7 +141,7 @@ print()
 func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
     delay(3.0) {
         // Suppose we did a network request to get this response body from an API.
-        let jsonStringResult = Result.Success("{ \"key\": 101 }")
+        let jsonStringResult = Result { "{ \"key\": 101 }" }
 
         let parsedValueResult: Result<Int> = jsonStringResult.tryMap { jsonString in
             // Interpret the response body as JSON.
@@ -158,6 +180,6 @@ getJSONAndParseValueWithCompletion { result in
     XCPlaygroundPage.currentPage.finishExecution()
 }
 
-//: > Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
+//: Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
 
 //: [Index](Index) • [Promise >>](@next)
