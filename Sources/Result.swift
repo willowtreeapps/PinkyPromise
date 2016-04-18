@@ -46,7 +46,7 @@ public enum Result<T> {
     case Failure(ErrorType)
     
     // Create a Result by returning a value or throwing an error.
-    public init(create: () throws -> Value) {
+    public init(@noescape create: () throws -> Value) {
         do {
             let value = try create()
             self = .Success(value)
