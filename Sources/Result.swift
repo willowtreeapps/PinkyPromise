@@ -84,7 +84,7 @@ public enum Result<T> {
 
     // An error-catching variation on flatMap.
     // Return a failure if we have one.
-    // Otherwise, transform the success value into a new success value, or fail if an error if thrown.
+    // Otherwise, transform the success value into a new success value, or fail if an error is thrown.
     public func tryMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
         do {
             let successValue = try value()
