@@ -134,7 +134,7 @@ public struct Promise<T> {
 
     // Produces a composite promise that resolves by running this promise in the background queue,
     // then fulfills on the main queue.
-    public func background() -> Promise<Value> {
+    public func inBackground() -> Promise<Value> {
         return Promise { fulfill in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.call { result in
@@ -142,6 +142,18 @@ public struct Promise<T> {
                         fulfill(result)
                     }
                 }
+            }
+        }
+    }
+
+    // Produces a composite promise that resolves by participating in a dispatch group while running this promise.
+    // The dispatch group is exited only after the completion step.
+    public func inDispatchGroup(group: dispatch_group_t) -> Promise<Value> {
+        return Promise { fulfill in
+            dispatch_group_enter(group)
+            self.call { result in
+                fulfill(result)
+                dispatch_group_leave(group)
             }
         }
     }
@@ -196,16 +208,12 @@ public func zip<A, B>(promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise<(
         var resultA: Result<A>!
         var resultB: Result<B>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -223,22 +231,16 @@ public func zip<A, B, C>(promiseA: Promise<A>, _ promiseB: Promise<B>, _ promise
         var resultB: Result<B>!
         var resultC: Result<C>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseC.call { result in
+        promiseC.inDispatchGroup(group).call { result in
             resultC = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -257,28 +259,20 @@ public func zip<A, B, C, D>(promiseA: Promise<A>, _ promiseB: Promise<B>, _ prom
         var resultC: Result<C>!
         var resultD: Result<D>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseC.call { result in
+        promiseC.inDispatchGroup(group).call { result in
             resultC = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseD.call { result in
+        promiseD.inDispatchGroup(group).call { result in
             resultD = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -294,10 +288,8 @@ public func zipArray<T>(promises: [Promise<T>]) -> Promise<[T]> {
         var results: [Result<T>?] = Array(count: promises.count, repeatedValue: nil)
 
         for (index, promise) in promises.enumerate() {
-            dispatch_group_enter(group)
-            promise.call { result in
+            promise.inDispatchGroup(group).call { result in
                 results[index] = result
-                dispatch_group_leave(group)
             }
         }
         
