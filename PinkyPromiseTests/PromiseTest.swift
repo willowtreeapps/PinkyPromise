@@ -38,8 +38,99 @@ class PromiseTest: XCTestCase {
     override func tearDown() {
         super.tearDown()
     }
-    
-    func testExample() {
+
+    func testInit_task() {
+        // Create with successful task
+        do {
+            let expectedValue = 3
+            let result = Result { expectedValue }
+            var taskWasRun = false
+            let promise = Promise<Int> { fulfill in
+                taskWasRun = true
+                fulfill(result)
+            }
+
+            promise.call { result in
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given task's return value.")
+            }
+
+            XCTAssertTrue(taskWasRun, "Expected the given task to be run.")
+        }
+
+        // Create with failing task
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let result = Result<String> { throw expectedError }
+            var taskWasRun = false
+            let promise = Promise<String> { fulfill in
+                taskWasRun = true
+                fulfill(result)
+            }
+
+            promise.call { result in
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertTrue(taskWasRun, "Expected the given task to be run.")
+        }
     }
     
+    func testInit_result() {
+        // Create with successful result
+        do {
+            let expectedValue = "Hi there"
+            let result = Result { expectedValue }
+            let promise = Promise(result: result)
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given result.")
+            }
+
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Create with failed result
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let result = Result<String> { throw expectedError }
+            let promise = Promise(result: result)
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+
+    func testInit_value() {
+        let expectedValue = [3, 6, 9]        
+        let promise = Promise(value: expectedValue)
+
+        var completionWasRun = false
+        promise.call { result in
+            completionWasRun = true
+            TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given value.")
+        }
+
+        XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+    }
+
+    func testInit_error() {
+        let expectedError = TestHelpers.uniqueError()        
+        let promise = Promise<[String: Int]>(error: expectedError)
+
+        var completionWasRun = false
+        promise.call { result in
+            completionWasRun = true
+            TestHelpers.expectFailure(expectedError, result: result)
+        }
+
+        XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+    }
+
 }
