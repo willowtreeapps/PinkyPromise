@@ -95,7 +95,8 @@ stringPromise.call { result in
  - `flatMap` to transform a produced success value by running a whole new Promise that can succeed or fail. (`Promise` is a monad.)
  - `recover` to handle a failure by running another Promise that might succeed.
  - `retry` to repeat the Promise until it's successful, or until a failure count is reached.
- - `background` to run a Promise in the background, then complete on the main queue.
+ - `inBackground` to run a Promise in the background, then complete on the main queue.
+ - `inDispatchGroup` to run a Promise as a task in a GCD dispatch group.
  - `success` to add a step to perform only when successful.
  - `failure` to add a step to perform only when failing.
  
@@ -127,7 +128,7 @@ let complexPromise =
             return Promise(value: 2)
         },
         getStringPromiseWithAgument("computed in the background")
-            .background()
+            .inBackground()
             .map { "\($0) then extended on the main queue" }
     )
     .retry(3)
