@@ -82,8 +82,7 @@ public struct Promise<T> {
         return Promise<U> { fulfill in
             self.call { result in
                 do {
-                    let value = try result.value()
-                    let mappedPromise = try transform(value)
+                    let mappedPromise = try transform(try result.value())
                     mappedPromise.call(fulfill)
                 } catch {
                     fulfill(.Failure(error))
