@@ -53,7 +53,7 @@ class ResultTest: XCTestCase {
         super.setUp()
 
         let object = NSObject()
-        let error = uniqueError()
+        let error = TestHelpers.uniqueError()
 
         let integerFormatter = NSNumberFormatter()
         integerFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
@@ -78,35 +78,35 @@ class ResultTest: XCTestCase {
     }
 
     func testInit_create() {
-        expectSuccess(3, result: Result { return 3 }, message: "Expected the same value as returned.")
-        expectSuccess(fixtures.object, result: Result { return self.fixtures.object }, message: "Expected the same object as returned.")
-        expectFailure(fixtures.error, result: Result<Int> { throw self.fixtures.error })
-        expectFailure(fixtures.error, result: Result<NSObject> { throw self.fixtures.error })
+        TestHelpers.expectSuccess(3, result: Result { return 3 }, message: "Expected the same value as returned.")
+        TestHelpers.expectSuccess(fixtures.object, result: Result { return self.fixtures.object }, message: "Expected the same object as returned.")
+        TestHelpers.expectFailure(fixtures.error, result: Result<Int> { throw self.fixtures.error })
+        TestHelpers.expectFailure(fixtures.error, result: Result<NSObject> { throw self.fixtures.error })
     }
 
     func testValue() {
-        expectSuccess(3, result: fixtures.successfulInt, message: "Expected the same value as supplied to .Success().")
-        expectSuccess(fixtures.object, result: fixtures.successfulObject, message: "Expected the same object as supplied to .Success().")
-        expectFailure(fixtures.error, result: fixtures.failedInt)
-        expectFailure(fixtures.error, result: fixtures.failedObject)
+        TestHelpers.expectSuccess(3, result: fixtures.successfulInt, message: "Expected the same value as supplied to .Success().")
+        TestHelpers.expectSuccess(fixtures.object, result: fixtures.successfulObject, message: "Expected the same object as supplied to .Success().")
+        TestHelpers.expectFailure(fixtures.error, result: fixtures.failedInt)
+        TestHelpers.expectFailure(fixtures.error, result: fixtures.failedObject)
     }
 
     func testMap() {
         let plusThree: (Int) -> Int = { $0 + 3 }
         let successfulSix = fixtures.successfulInt.map(plusThree)
         let failedSix = fixtures.failedInt.map(plusThree)
-        expectSuccess(6, result: successfulSix, message: "Expected 3 + 3 = 6.")
-        expectFailure(fixtures.error, result: failedSix)
+        TestHelpers.expectSuccess(6, result: successfulSix, message: "Expected 3 + 3 = 6.")
+        TestHelpers.expectFailure(fixtures.error, result: failedSix)
 
         let timesTenAsString: (Int) -> String = { String($0 * 10) }
         let successfulThirty = fixtures.successfulInt.map(timesTenAsString)
         let failedThirty = fixtures.failedInt.map(timesTenAsString)
-        expectSuccess("30", result: successfulThirty, message: "Expected String(3 * 10) = \"30\".")
-        expectFailure(fixtures.error, result: failedThirty)
+        TestHelpers.expectSuccess("30", result: successfulThirty, message: "Expected String(3 * 10) = \"30\".")
+        TestHelpers.expectFailure(fixtures.error, result: failedThirty)
     }
 
     func testFlatMap() {
-        let parseError = uniqueError()
+        let parseError = TestHelpers.uniqueError()
 
         let stringAsInt: (String) -> Result<Int> = { string in
             if let number = self.fixtures.integerFormatter.numberFromString(string) as? Int {
@@ -120,15 +120,15 @@ class ResultTest: XCTestCase {
         let failedArrayParse = fixtures.successfulJSONArrayString.flatMap(stringAsInt)
         let sameFailedString = fixtures.failedString.flatMap(stringAsInt)
 
-        expectSuccess(123, result: successfulNumberParse, message: "Expected to parse \"123\" as 123.")
-        expectFailure(parseError, result: failedArrayParse)
-        expectFailure(fixtures.error, result: sameFailedString)
+        TestHelpers.expectSuccess(123, result: successfulNumberParse, message: "Expected to parse \"123\" as 123.")
+        TestHelpers.expectFailure(parseError, result: failedArrayParse)
+        TestHelpers.expectFailure(fixtures.error, result: sameFailedString)
     }
 
     func testTryMap() {
-        let encodeDataError = uniqueError()
-        let parseJSONError = uniqueError()
-        let castToIntArrayError = uniqueError()
+        let encodeDataError = TestHelpers.uniqueError()
+        let parseJSONError = TestHelpers.uniqueError()
+        let castToIntArrayError = TestHelpers.uniqueError()
 
         let jsonStringAsIntSet: (String) throws -> Set<Int> = { string in
             guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
@@ -153,16 +153,16 @@ class ResultTest: XCTestCase {
         let failedNumberParse = fixtures.successfulNumberString.tryMap(jsonStringAsIntSet)
         let sameFailedString = fixtures.failedString.tryMap(jsonStringAsIntSet)
 
-        expectSuccess([1, 2, 3] as Set<Int>, result: successfulSetParse, message: "Expected to parse \"[1, 2, 3]\" as [1, 2, 3].")
-        expectFailure(parseJSONError, result: failedNumberParse)
-        expectFailure(fixtures.error, result: sameFailedString)
+        TestHelpers.expectSuccess([1, 2, 3] as Set<Int>, result: successfulSetParse, message: "Expected to parse \"[1, 2, 3]\" as [1, 2, 3].")
+        TestHelpers.expectFailure(parseJSONError, result: failedNumberParse)
+        TestHelpers.expectFailure(fixtures.error, result: sameFailedString)
     }
 
     func testZip() {
-        let error1 = uniqueError()
-        let error2 = uniqueError()
-        let error3 = uniqueError()
-        let error4 = uniqueError()
+        let error1 = TestHelpers.uniqueError()
+        let error2 = TestHelpers.uniqueError()
+        let error3 = TestHelpers.uniqueError()
+        let error4 = TestHelpers.uniqueError()
 
         let success1: Result<Int> = .Success(1)
         let success2: Result<String> = .Success("hi")
@@ -174,42 +174,42 @@ class ResultTest: XCTestCase {
         let failure3: Result<Int> = .Failure(error3)
         let failure4: Result<String> = .Failure(error4)
 
-        expectSuccess((1, "hi"), result: zip(success1, success2), message: "Expected to zip 1 and \"hi\" into (1, \"hi\").")
-        expectFailure(error2, result: zip(success1, failure2))
-        expectFailure(error1, result: zip(failure1, success2))
-        expectFailure(error1, result: zip(failure1, failure2))
+        TestHelpers.expectSuccess((1, "hi"), result: zip(success1, success2), message: "Expected to zip 1 and \"hi\" into (1, \"hi\").")
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2))
 
-        expectSuccess((1, "hi", 3), result: zip(success1, success2, success3), message: "Expected to zip 1, \"hi\", and 3 into (1, \"hi\", 3).")
-        expectFailure(error3, result: zip(success1, success2, failure3))
-        expectFailure(error2, result: zip(success1, failure2, success3))
-        expectFailure(error2, result: zip(success1, failure2, failure3))
-        expectFailure(error1, result: zip(failure1, success2, success3))
-        expectFailure(error1, result: zip(failure1, success2, failure3))
-        expectFailure(error1, result: zip(failure1, failure2, success3))
-        expectFailure(error1, result: zip(failure1, failure2, failure3))
+        TestHelpers.expectSuccess((1, "hi", 3), result: zip(success1, success2, success3), message: "Expected to zip 1, \"hi\", and 3 into (1, \"hi\", 3).")
+        TestHelpers.expectFailure(error3, result: zip(success1, success2, failure3))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, success3))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, failure3))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, success3))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, failure3))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, success3))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, failure3))
 
-        expectSuccess((1, "hi", 3, "bye"), result: zip(success1, success2, success3, success4), message: "Expected to zip 1, \"hi\", 3, and \"bye\" into (1, \"hi\", 3, \"bye\").")
-        expectFailure(error4, result: zip(success1, success2, success3, failure4))
-        expectFailure(error3, result: zip(success1, success2, failure3, success4))
-        expectFailure(error3, result: zip(success1, success2, failure3, failure4))
-        expectFailure(error2, result: zip(success1, failure2, success3, success4))
-        expectFailure(error2, result: zip(success1, failure2, success3, failure4))
-        expectFailure(error2, result: zip(success1, failure2, failure3, success4))
-        expectFailure(error2, result: zip(success1, failure2, failure3, failure4))
-        expectFailure(error1, result: zip(failure1, success2, success3, success4))
-        expectFailure(error1, result: zip(failure1, success2, success3, failure4))
-        expectFailure(error1, result: zip(failure1, success2, failure3, success4))
-        expectFailure(error1, result: zip(failure1, success2, failure3, failure4))
-        expectFailure(error1, result: zip(failure1, failure2, success3, success4))
-        expectFailure(error1, result: zip(failure1, failure2, success3, failure4))
-        expectFailure(error1, result: zip(failure1, failure2, failure3, success4))
-        expectFailure(error1, result: zip(failure1, failure2, failure3, failure4))
+        TestHelpers.expectSuccess((1, "hi", 3, "bye"), result: zip(success1, success2, success3, success4), message: "Expected to zip 1, \"hi\", 3, and \"bye\" into (1, \"hi\", 3, \"bye\").")
+        TestHelpers.expectFailure(error4, result: zip(success1, success2, success3, failure4))
+        TestHelpers.expectFailure(error3, result: zip(success1, success2, failure3, success4))
+        TestHelpers.expectFailure(error3, result: zip(success1, success2, failure3, failure4))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, success3, success4))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, success3, failure4))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, failure3, success4))
+        TestHelpers.expectFailure(error2, result: zip(success1, failure2, failure3, failure4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, success3, success4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, success3, failure4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, failure3, success4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, success2, failure3, failure4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, success3, success4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, success3, failure4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, failure3, success4))
+        TestHelpers.expectFailure(error1, result: zip(failure1, failure2, failure3, failure4))
     }
 
     func testZipArray() {
-        let error1 = uniqueError()
-        let error2 = uniqueError()
-        let error3 = uniqueError()
+        let error1 = TestHelpers.uniqueError()
+        let error2 = TestHelpers.uniqueError()
+        let error3 = TestHelpers.uniqueError()
 
         let success1: Result<Int> = .Success(112)
         let success2: Result<Int> = .Success(-15)
@@ -219,84 +219,14 @@ class ResultTest: XCTestCase {
         let failure2: Result<Int> = .Failure(error2)
         let failure3: Result<Int> = .Failure(error3)
 
-        expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into ([112, -15, 3]).")
-        expectFailure(error3, result: zipArray([success1, success2, failure3]))
-        expectFailure(error2, result: zipArray([success1, failure2, success3]))
-        expectFailure(error2, result: zipArray([success1, failure2, failure3]))
-        expectFailure(error1, result: zipArray([failure1, success2, success3]))
-        expectFailure(error1, result: zipArray([failure1, success2, failure3]))
-        expectFailure(error1, result: zipArray([failure1, failure2, success3]))
-        expectFailure(error1, result: zipArray([failure1, failure2, failure3]))
-    }
-
-    // MARK: Helpers
-
-    private var lastErrorCode = 0
-
-    private func uniqueError() -> NSError {
-        lastErrorCode += 1
-        return NSError(domain: "Test", code: lastErrorCode, userInfo: nil)
-    }
-
-    private func expectSuccess<T: Equatable>(expected: T, result: Result<T>, message: String) {
-        do {
-            let value = try result.value()
-            XCTAssertEqual(expected, value, message)
-        } catch {
-            XCTFail("Expected not to catch an error.")
-        }
-    }
-
-    private func expectSuccess<A: Equatable, B: Equatable>(expected: (A, B), result: Result<(A, B)>, message: String) {
-        do {
-            let value = try result.value()
-            XCTAssertEqual(expected.0, value.0, message)
-            XCTAssertEqual(expected.1, value.1, message)
-        } catch {
-            XCTFail("Expected not to catch an error.")
-        }
-    }
-
-    private func expectSuccess<A: Equatable, B: Equatable, C: Equatable>(expected: (A, B, C), result: Result<(A, B, C)>, message: String) {
-        do {
-            let value = try result.value()
-            XCTAssertEqual(expected.0, value.0, message)
-            XCTAssertEqual(expected.1, value.1, message)
-            XCTAssertEqual(expected.2, value.2, message)
-        } catch {
-            XCTFail("Expected not to catch an error.")
-        }
-    }
-
-    private func expectSuccess<A: Equatable, B: Equatable, C: Equatable, D: Equatable>(expected: (A, B, C, D), result: Result<(A, B, C, D)>, message: String) {
-        do {
-            let value = try result.value()
-            XCTAssertEqual(expected.0, value.0, message)
-            XCTAssertEqual(expected.1, value.1, message)
-            XCTAssertEqual(expected.2, value.2, message)
-            XCTAssertEqual(expected.3, value.3, message)
-        } catch {
-            XCTFail("Expected not to catch an error.")
-        }
-    }
-
-    private func expectSuccess<T: Equatable>(expected: [T], result: Result<[T]>, message: String) {
-        do {
-            let value = try result.value()
-            XCTAssertEqual(expected, value, message)
-        } catch {
-            XCTFail("Expected not to catch an error.")
-        }
-    }
-
-    private func expectFailure<T>(expected: NSError, result: Result<T>) {
-        do {
-            try result.value()
-            XCTFail("Expected to throw an error.")
-        } catch {
-            XCTAssertEqual(expected, error as NSError, "Expected the same error as supplied to .Failure() or thrown.")
-            XCTAssertTrue(expected === error as NSError, "Expected the same error, not just an equal error.")
-        }
+        TestHelpers.expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into ([112, -15, 3]).")
+        TestHelpers.expectFailure(error3, result: zipArray([success1, success2, failure3]))
+        TestHelpers.expectFailure(error2, result: zipArray([success1, failure2, success3]))
+        TestHelpers.expectFailure(error2, result: zipArray([success1, failure2, failure3]))
+        TestHelpers.expectFailure(error1, result: zipArray([failure1, success2, success3]))
+        TestHelpers.expectFailure(error1, result: zipArray([failure1, success2, failure3]))
+        TestHelpers.expectFailure(error1, result: zipArray([failure1, failure2, success3]))
+        TestHelpers.expectFailure(error1, result: zipArray([failure1, failure2, failure3]))
     }
 
 }
