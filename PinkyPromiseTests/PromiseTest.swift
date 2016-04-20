@@ -395,4 +395,39 @@ class PromiseTest: XCTestCase {
         waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
+    func testInDispatchGroup() {
+        let expectedValue = 3
+
+        var taskWasRun = false
+        let promise = Promise<Int> { fulfill in
+            taskWasRun = true
+
+            XCTAssertTrue(NSThread.isMainThread(), "Expected the task to run on the main thread.")
+
+            fulfill(Result { expectedValue })
+        }
+
+        let group = dispatch_group_create()
+
+        var promiseCompletionWasRun = false
+        let groupCompletionExpectation = expectationWithDescription("Dispatch group completed.")
+
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            XCTAssertTrue(taskWasRun, "Expected the task closure to be called.")
+            XCTAssertTrue(promiseCompletionWasRun, "Expected the promise completion block to be called before the group completion block.")
+
+            groupCompletionExpectation.fulfill()
+        }
+
+        promise.inDispatchGroup(group).call { result in
+            XCTAssertTrue(NSThread.isMainThread(), "Expected the completion block to run on the main thread.")
+
+            TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
+
+            promiseCompletionWasRun = true
+        }
+
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
 }
