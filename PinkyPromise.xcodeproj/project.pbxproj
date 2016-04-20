@@ -10,6 +10,7 @@
 		0AB9576A1CB34A1100512B06 /* libPinkyPromise.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_PinkyPromise" /* libPinkyPromise.dylib */; };
 		0AD6F7A21CB34ECD001DB5E2 /* PromiseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */; };
 		0AD6F7A31CB34ECD001DB5E2 /* ResultTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */; };
+		0ADAE5A31CC6EFC0009565F9 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAE5A21CC6EFC0009565F9 /* TestHelpers.swift */; };
 		__src_cc_ref_Sources/Promise.swift /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Promise.swift /* Promise.swift */; };
 		__src_cc_ref_Sources/Result.swift /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Result.swift /* Result.swift */; };
 /* End PBXBuildFile section */
@@ -30,6 +31,7 @@
 		0AB957691CB34A1100512B06 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTest.swift; sourceTree = "<group>"; };
 		0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultTest.swift; sourceTree = "<group>"; };
+		0ADAE5A21CC6EFC0009565F9 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Promise.swift /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Result.swift /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				0AB957691CB34A1100512B06 /* Info.plist */,
+				0ADAE5A21CC6EFC0009565F9 /* TestHelpers.swift */,
 				0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */,
 				0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */,
 			);
@@ -180,6 +183,7 @@
 			files = (
 				0AD6F7A31CB34ECD001DB5E2 /* ResultTest.swift in Sources */,
 				0AD6F7A21CB34ECD001DB5E2 /* PromiseTest.swift in Sources */,
+				0ADAE5A31CC6EFC0009565F9 /* TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
