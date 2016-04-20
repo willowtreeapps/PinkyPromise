@@ -503,4 +503,91 @@ class PromiseTest: XCTestCase {
         waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
+    func testSuccess() {
+        // Succeed
+        do {
+            let expectedValue = 3
+            let initialPromise = Promise(value: expectedValue)
+
+            var successWasRun = false
+            let promise = initialPromise.success { value in
+                successWasRun = true
+                XCTAssertEqual(expectedValue, value, "Expected the given success value.")
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+            }
+
+            XCTAssertTrue(successWasRun, "Expected the success block to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Don't succeed
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let initialPromise = Promise<Int>(error: expectedError)
+
+            var successWasRun = false
+            let promise = initialPromise.success { value in
+                successWasRun = true
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertFalse(successWasRun, "Expected the success block not to be called.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+    
+    func testFailure() {
+        // Fail
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let initialPromise = Promise<Int>(error: expectedError)
+
+            var successWasRun = false
+            let promise = initialPromise.failure { error in
+                successWasRun = true
+                XCTAssertEqual(expectedError, error as NSError, "Expected the given error.")
+                XCTAssertTrue(expectedError === error as NSError, "Expected the same error, not just an equal error.")
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertTrue(successWasRun, "Expected the failure block to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Don't fail
+        do {
+            let expectedValue = 3
+            let initialPromise = Promise(value: expectedValue)
+
+            var successWasRun = false
+            let promise = initialPromise.failure { error in
+                successWasRun = true
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+            }
+
+            XCTAssertFalse(successWasRun, "Expected the failure block not to be called.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+    
 }

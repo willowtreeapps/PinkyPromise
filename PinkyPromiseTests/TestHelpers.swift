@@ -95,7 +95,7 @@ enum TestHelpers {
             try result.value()
             XCTFail("Expected to throw an error.")
         } catch {
-            XCTAssertEqual(expected, error as NSError, "Expected the same error as supplied to .Failure() or thrown.")
+            XCTAssertEqual(expected, error as NSError, "Expected the given error.")
             XCTAssertTrue(expected === error as NSError, "Expected the same error, not just an equal error.")
         }
     }
