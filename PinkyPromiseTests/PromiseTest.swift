@@ -369,4 +369,30 @@ class PromiseTest: XCTestCase {
         }
     }
 
+    func testInBackground() {
+        let expectedValue = 3
+
+        var taskWasRun = false
+        let promise = Promise<Int> { fulfill in
+            taskWasRun = true
+
+            XCTAssertFalse(NSThread.isMainThread(), "Expected the task to run in the background.")
+
+            fulfill(Result { expectedValue })
+        }
+
+        let completionExpectation = expectationWithDescription("Promise completed.")
+
+        promise.inBackground().call { result in
+            XCTAssertTrue(taskWasRun, "Expected the task closure to be called.")
+            XCTAssertTrue(NSThread.isMainThread(), "Expected the completion block to run on the main thread.")
+
+            TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
 }
