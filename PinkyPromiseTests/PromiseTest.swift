@@ -589,5 +589,60 @@ class PromiseTest: XCTestCase {
             XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
         }
     }
-    
+
+    func testCall_completion() {
+        let expectedResult = 3
+
+        let taskCalled = expectationWithDescription("Task was called")
+        let promise = Promise<Int> { fulfill in
+            taskCalled.fulfill()
+
+            fulfill(Result { expectedResult })
+        }
+
+        let completionCalled = expectationWithDescription("Completion was called")
+        promise.call { result in
+            completionCalled.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
+    func testCall_optionalCompletion() {
+        // Completion is called when included
+        do {
+            let expectedResult = 3
+
+            let taskCalled = expectationWithDescription("Task was called")
+            let promise = Promise<Int> { fulfill in
+                taskCalled.fulfill()
+
+                fulfill(Result { expectedResult })
+            }
+
+            let completionCalled = expectationWithDescription("Completion was called")
+            promise.call { result in
+                completionCalled.fulfill()
+            }
+
+            waitForExpectationsWithTimeout(1.0, handler: nil)
+        }
+
+        // Even without a completion block, the work is done
+        do {
+            let expectedResult = 3
+
+            let taskCalled = expectationWithDescription("Task was called")
+            let promise = Promise<Int> { fulfill in
+                taskCalled.fulfill()
+
+                fulfill(Result { expectedResult })
+            }
+
+            promise.call()
+
+            waitForExpectationsWithTimeout(1.0, handler: nil)
+        }
+    }
+
 }
