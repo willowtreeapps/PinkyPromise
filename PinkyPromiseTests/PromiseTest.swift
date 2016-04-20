@@ -175,7 +175,71 @@ class PromiseTest: XCTestCase {
             XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
         }
     }
+    
+    func testTryMap() {
+        // Try-map success to success
+        do {
+            let initialPromise = Promise(value: 3)
 
+            var transformWasRun = false
+            let promise = initialPromise.tryMap { value -> Int in
+                transformWasRun = true
+                return value + 10
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
+            }
+
+            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Try-map success to failure
+        do {
+            let initialPromise = Promise(value: 3)
+            let expectedError = TestHelpers.uniqueError()
+
+            var transformWasRun = false
+            let promise = initialPromise.tryMap { value -> Int in
+                transformWasRun = true
+                throw expectedError
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Try-map failure to failure
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let initialPromise = Promise<Int>(error: expectedError)
+
+            var transformWasRun = false
+            let promise = initialPromise.tryMap { value -> Int in
+                transformWasRun = true
+                return value + 10
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+    
     func testFlatMap() {
         // Flat-map success to success
         do {
