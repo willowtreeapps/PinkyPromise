@@ -154,28 +154,7 @@ class PromiseTest: XCTestCase {
             XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
         }
 
-        // Map success to thrown error
-        do {
-            let initialPromise = Promise(value: 3)
-            let expectedError = TestHelpers.uniqueError()
-
-            var transformWasRun = false
-            let promise = initialPromise.map { value -> Int in
-                transformWasRun = true
-                throw expectedError
-            }
-
-            var completionWasRun = false
-            promise.call { result in
-                completionWasRun = true
-                TestHelpers.expectFailure(expectedError, result: result)
-            }
-
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
-        }
-
-        // Map failure to anything
+        // Map failure to failure
         do {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
@@ -239,28 +218,7 @@ class PromiseTest: XCTestCase {
             XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
         }
 
-        // Flat-map success to thrown error
-        do {
-            let initialPromise = Promise(value: 3)
-            let expectedError = TestHelpers.uniqueError()
-
-            var transformWasRun = false
-            let promise = initialPromise.flatMap { value -> Promise<Int> in
-                transformWasRun = true
-                throw expectedError
-            }
-
-            var completionWasRun = false
-            promise.call { result in
-                completionWasRun = true
-                TestHelpers.expectFailure(expectedError, result: result)
-            }
-
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
-        }
-
-        // Flat-map failure to anything
+        // Flat-map failure to failure
         do {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)

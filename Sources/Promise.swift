@@ -69,20 +69,29 @@ public struct Promise<T> {
     // MARK: Promise transformations
 
     // Produces a composite promise that resolves by calling this promise, then transforming its success value.
-    public func map<U>(transform: (Value) throws -> U) -> Promise<U> {
+    public func map<U>(transform: (Value) -> U) -> Promise<U> {
         return flatMap { value in
-            let mappedValue = try transform(value)
-            return Promise<U>(value: mappedValue)
+            return Promise<U>(value: transform(value))
+        }
+    }
+
+    // Produces a composite promise that resolves by calling this promise, then transforming its success value.
+    // You may transform a success to a failure by throwing an error.
+    public func tryMap<U>(transform: (Value) throws -> U) -> Promise<U> {
+        return flatMap { value in
+            return Promise<U>(result: Result {
+                try transform(value)
+            })
         }
     }
 
     // Produces a composite promise that resolves by calling this promise, passing its result to the next task,
     // then calling the produced promise.
-    public func flatMap<U>(transform: (Value) throws -> Promise<U>) -> Promise<U> {
+    public func flatMap<U>(transform: (Value) -> Promise<U>) -> Promise<U> {
         return Promise<U> { fulfill in
             self.call { result in
                 do {
-                    let mappedPromise = try transform(try result.value())
+                    let mappedPromise = transform(try result.value())
                     mappedPromise.call(fulfill)
                 } catch {
                     fulfill(.Failure(error))
@@ -94,19 +103,15 @@ public struct Promise<T> {
     // Produces a composite promise that resolves by calling this promise, passing its error to the next task,
     // then calling the produced promise.
     // If this promise succeeds, the transformation is skipped.
-    public func recover(transform: (ErrorType) throws -> Promise<Value>) -> Promise<Value> {
+    public func recover(transform: (ErrorType) -> Promise<Value>) -> Promise<Value> {
         return Promise { fulfill in
             self.call { (result: Result<Value>) -> Void in
                 do {
                     let value = try result.value()
                     fulfill(.Success(value))
                 } catch {
-                    do {
-                        let mappedPromise = try transform(error)
-                        mappedPromise.call(fulfill)
-                    } catch {
-                        fulfill(.Failure(error))
-                    }
+                    let mappedPromise = transform(error)
+                    mappedPromise.call(fulfill)
                 }
             }
         }
