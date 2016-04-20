@@ -369,6 +369,79 @@ class PromiseTest: XCTestCase {
         }
     }
 
+    func testRetry() {
+        // Succeed on the first try
+        do {
+            let expectedValue = 3
+
+            var taskRunCount = 0
+            let promise = Promise<Int> { fulfill in
+                taskRunCount += 1
+
+                fulfill(Result { expectedValue })
+            }
+
+            let attemptCount = 3
+            var completionWasRun = false
+            promise.retry(attemptCount).call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+            }
+
+            XCTAssertEqual(1, taskRunCount, "Expected the task to succeed on the first try.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+        
+        // Succeed on the second try
+        do {
+            let error1 = TestHelpers.uniqueError()
+            let expectedValue = 3
+            var results: [Result<Int>] = [Result { throw error1 }, Result { expectedValue }]
+
+            var taskRunCount = 0
+            let promise = Promise<Int> { fulfill in
+                taskRunCount += 1
+
+                fulfill(results.removeFirst())
+            }
+
+            let attemptCount = 3
+            var completionWasRun = false
+            promise.retry(attemptCount).call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+            }
+
+            XCTAssertEqual(2, taskRunCount, "Expected the task to succeed on the second try.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+        
+        // Retry until the all attempts are used up
+        do {
+            let error1 = TestHelpers.uniqueError()
+            let error2 = TestHelpers.uniqueError()
+            let expectedError = TestHelpers.uniqueError()
+            var results: [Result<Int>] = [Result { throw error1 }, Result { throw error2 }, Result { throw expectedError }]
+
+            var taskRunCount = 0
+            let promise = Promise<Int> { fulfill in
+                taskRunCount += 1
+
+                fulfill(results.removeFirst())
+            }
+
+            let attemptCount = 3
+            var completionWasRun = false
+            promise.retry(attemptCount).call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertEqual(attemptCount, taskRunCount, "Expected the task to run until it ran out of attempts.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+
     func testInBackground() {
         let expectedValue = 3
 
