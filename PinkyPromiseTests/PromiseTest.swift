@@ -44,9 +44,9 @@ class PromiseTest: XCTestCase {
         do {
             let expectedValue = 3
             let result = Result { expectedValue }
-            var taskWasRun = false
+            let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<Int> { fulfill in
-                taskWasRun = true
+                taskCalled.fulfill()
                 fulfill(result)
             }
 
@@ -54,16 +54,16 @@ class PromiseTest: XCTestCase {
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given task's return value.")
             }
 
-            XCTAssertTrue(taskWasRun, "Expected the given task to be run.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Create with failing task
         do {
             let expectedError = TestHelpers.uniqueError()
             let result = Result<String> { throw expectedError }
-            var taskWasRun = false
+            let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<String> { fulfill in
-                taskWasRun = true
+                taskCalled.fulfill()
                 fulfill(result)
             }
 
@@ -71,7 +71,7 @@ class PromiseTest: XCTestCase {
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(taskWasRun, "Expected the given task to be run.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
     
@@ -82,13 +82,13 @@ class PromiseTest: XCTestCase {
             let result = Result { expectedValue }
             let promise = Promise(result: result)
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given result.")
             }
 
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Create with failed result
@@ -97,13 +97,13 @@ class PromiseTest: XCTestCase {
             let result = Result<String> { throw expectedError }
             let promise = Promise(result: result)
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
 
@@ -111,26 +111,26 @@ class PromiseTest: XCTestCase {
         let expectedValue = [3, 6, 9]        
         let promise = Promise(value: expectedValue)
 
-        var completionWasRun = false
+        let completionCalled = expectationWithDescription("Completion was called")
         promise.call { result in
-            completionWasRun = true
+            completionCalled.fulfill()
             TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given value.")
         }
 
-        XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
     func testInit_error() {
         let expectedError = TestHelpers.uniqueError()        
         let promise = Promise<[String: Int]>(error: expectedError)
 
-        var completionWasRun = false
+        let completionCalled = expectationWithDescription("Completion was called")
         promise.call { result in
-            completionWasRun = true
+            completionCalled.fulfill()
             TestHelpers.expectFailure(expectedError, result: result)
         }
 
-        XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
     func testMap() {
@@ -138,20 +138,19 @@ class PromiseTest: XCTestCase {
         do {
             let initialPromise = Promise(value: 3)
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.map { value -> Int in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return value + 10
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Map failure to failure
@@ -159,20 +158,18 @@ class PromiseTest: XCTestCase {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
 
-            var transformWasRun = false
             let promise = initialPromise.map { value -> Int in
-                transformWasRun = true
+                XCTFail("Expected the transform closure not to be called.")
                 return value + 10
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
     
@@ -181,20 +178,19 @@ class PromiseTest: XCTestCase {
         do {
             let initialPromise = Promise(value: 3)
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.tryMap { value -> Int in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return value + 10
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Try-map success to failure
@@ -202,20 +198,19 @@ class PromiseTest: XCTestCase {
             let initialPromise = Promise(value: 3)
             let expectedError = TestHelpers.uniqueError()
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.tryMap { value -> Int in
-                transformWasRun = true
+                transformCalled.fulfill()
                 throw expectedError
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Try-map failure to failure
@@ -223,20 +218,18 @@ class PromiseTest: XCTestCase {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
 
-            var transformWasRun = false
             let promise = initialPromise.tryMap { value -> Int in
-                transformWasRun = true
+                XCTFail("Expected the transform closure not to be called.")
                 return value + 10
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
     
@@ -245,20 +238,19 @@ class PromiseTest: XCTestCase {
         do {
             let initialPromise = Promise(value: 3)
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.flatMap { value -> Promise<Int> in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return Promise(value: value + 10)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Flat-map success to failure
@@ -266,20 +258,19 @@ class PromiseTest: XCTestCase {
             let initialPromise = Promise(value: 3)
             let expectedError = TestHelpers.uniqueError()
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.flatMap { value -> Promise<Int> in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return Promise(error: expectedError)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Flat-map failure to failure
@@ -287,20 +278,18 @@ class PromiseTest: XCTestCase {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
 
-            var transformWasRun = false
             let promise = initialPromise.flatMap { value -> Promise<Int> in
-                transformWasRun = true
+                XCTFail("Expected the transform closure not to be called.")
                 return Promise(value: value + 10)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
 
@@ -310,20 +299,18 @@ class PromiseTest: XCTestCase {
             let expectedValue = 3
             let initialPromise = Promise(value: expectedValue)
 
-            var transformWasRun = false
             let promise = initialPromise.recover { error in
-                transformWasRun = true
+                XCTFail("Expected the transform closure not to be called.")
                 return Promise(value: 1000)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the value to stay the same.")
             }
 
-            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Recover failure to success
@@ -331,20 +318,19 @@ class PromiseTest: XCTestCase {
             let initialPromise = Promise<Int>(error: TestHelpers.uniqueError())
             let expectedValue = 1000
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.recover { error in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return Promise(value: expectedValue)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Recover failure to failure
@@ -352,20 +338,19 @@ class PromiseTest: XCTestCase {
             let initialPromise = Promise<Int>(error: TestHelpers.uniqueError())
             let expectedError = TestHelpers.uniqueError()
 
-            var transformWasRun = false
+            let transformCalled = expectationWithDescription("Transform was called")
             let promise = initialPromise.recover { error in
-                transformWasRun = true
+                transformCalled.fulfill()
                 return Promise(error: expectedError)
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
 
@@ -382,14 +367,14 @@ class PromiseTest: XCTestCase {
             }
 
             let attemptCount = 3
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
             }
 
             XCTAssertEqual(1, taskRunCount, "Expected the task to succeed on the first try.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
         
         // Succeed on the second try
@@ -406,14 +391,14 @@ class PromiseTest: XCTestCase {
             }
 
             let attemptCount = 3
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
             }
 
             XCTAssertEqual(2, taskRunCount, "Expected the task to succeed on the second try.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
         
         // Retry until the all attempts are used up
@@ -431,38 +416,37 @@ class PromiseTest: XCTestCase {
             }
 
             let attemptCount = 3
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
             XCTAssertEqual(attemptCount, taskRunCount, "Expected the task to run until it ran out of attempts.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
 
     func testInBackground() {
         let expectedValue = 3
 
-        var taskWasRun = false
+        let taskCalled = expectationWithDescription("Task was called")
         let promise = Promise<Int> { fulfill in
-            taskWasRun = true
+            taskCalled.fulfill()
 
             XCTAssertFalse(NSThread.isMainThread(), "Expected the task to run in the background.")
 
             fulfill(Result { expectedValue })
         }
 
-        let completionExpectation = expectationWithDescription("Promise completed.")
+        let completionCalled = expectationWithDescription("Promise completed.")
 
         promise.inBackground().call { result in
-            XCTAssertTrue(taskWasRun, "Expected the task closure to be called.")
             XCTAssertTrue(NSThread.isMainThread(), "Expected the completion block to run on the main thread.")
 
             TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
 
-            completionExpectation.fulfill()
+            completionCalled.fulfill()
         }
 
         waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -471,9 +455,9 @@ class PromiseTest: XCTestCase {
     func testInDispatchGroup() {
         let expectedValue = 3
 
-        var taskWasRun = false
+        let taskCalled = expectationWithDescription("Task was called")
         let promise = Promise<Int> { fulfill in
-            taskWasRun = true
+            taskCalled.fulfill()
 
             XCTAssertTrue(NSThread.isMainThread(), "Expected the task to run on the main thread.")
 
@@ -482,14 +466,11 @@ class PromiseTest: XCTestCase {
 
         let group = dispatch_group_create()
 
-        var promiseCompletionWasRun = false
-        let groupCompletionExpectation = expectationWithDescription("Dispatch group completed.")
+        let promiseCompletionCalled = expectationWithDescription("Promise completed.")
+        let groupCompletionCalled = expectationWithDescription("Dispatch group completed.")
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
-            XCTAssertTrue(taskWasRun, "Expected the task closure to be called.")
-            XCTAssertTrue(promiseCompletionWasRun, "Expected the promise completion block to be called before the group completion block.")
-
-            groupCompletionExpectation.fulfill()
+            groupCompletionCalled.fulfill()
         }
 
         promise.inDispatchGroup(group).call { result in
@@ -497,7 +478,7 @@ class PromiseTest: XCTestCase {
 
             TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
 
-            promiseCompletionWasRun = true
+            promiseCompletionCalled.fulfill()
         }
 
         waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -509,20 +490,19 @@ class PromiseTest: XCTestCase {
             let expectedValue = 3
             let initialPromise = Promise(value: expectedValue)
 
-            var successWasRun = false
+            let successCalled = expectationWithDescription("Success block was called")
             let promise = initialPromise.success { value in
-                successWasRun = true
+                successCalled.fulfill()
                 XCTAssertEqual(expectedValue, value, "Expected the given success value.")
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
             }
 
-            XCTAssertTrue(successWasRun, "Expected the success block to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Don't succeed
@@ -530,19 +510,17 @@ class PromiseTest: XCTestCase {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
 
-            var successWasRun = false
             let promise = initialPromise.success { value in
-                successWasRun = true
+                XCTFail("Expected the success block not to be called.")
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertFalse(successWasRun, "Expected the success block not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
     
@@ -552,21 +530,20 @@ class PromiseTest: XCTestCase {
             let expectedError = TestHelpers.uniqueError()
             let initialPromise = Promise<Int>(error: expectedError)
 
-            var successWasRun = false
+            let failureCalled = expectationWithDescription("Failure block was called")
             let promise = initialPromise.failure { error in
-                successWasRun = true
+                failureCalled.fulfill()
                 XCTAssertEqual(expectedError, error as NSError, "Expected the given error.")
                 XCTAssertTrue(expectedError === error as NSError, "Expected the same error, not just an equal error.")
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
             }
 
-            XCTAssertTrue(successWasRun, "Expected the failure block to be called immediately.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
 
         // Don't fail
@@ -574,19 +551,17 @@ class PromiseTest: XCTestCase {
             let expectedValue = 3
             let initialPromise = Promise(value: expectedValue)
 
-            var successWasRun = false
             let promise = initialPromise.failure { error in
-                successWasRun = true
+                XCTFail("Expected the failure block not to be called.")
             }
 
-            var completionWasRun = false
+            let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionWasRun = true
+                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
             }
 
-            XCTAssertFalse(successWasRun, "Expected the failure block not to be called.")
-            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+            waitForExpectationsWithTimeout(1.0, handler: nil)
         }
     }
 
