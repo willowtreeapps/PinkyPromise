@@ -304,4 +304,69 @@ class PromiseTest: XCTestCase {
         }
     }
 
+    func testRecover() {
+        // Recover success to success
+        do {
+            let expectedValue = 3
+            let initialPromise = Promise(value: expectedValue)
+
+            var transformWasRun = false
+            let promise = initialPromise.recover { error in
+                transformWasRun = true
+                return Promise(value: 1000)
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the value to stay the same.")
+            }
+
+            XCTAssertFalse(transformWasRun, "Expected the transform closure not to be called.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Recover failure to success
+        do {
+            let initialPromise = Promise<Int>(error: TestHelpers.uniqueError())
+            let expectedValue = 1000
+
+            var transformWasRun = false
+            let promise = initialPromise.recover { error in
+                transformWasRun = true
+                return Promise(value: expectedValue)
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
+            }
+
+            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+
+        // Recover failure to failure
+        do {
+            let initialPromise = Promise<Int>(error: TestHelpers.uniqueError())
+            let expectedError = TestHelpers.uniqueError()
+
+            var transformWasRun = false
+            let promise = initialPromise.recover { error in
+                transformWasRun = true
+                return Promise(error: expectedError)
+            }
+
+            var completionWasRun = false
+            promise.call { result in
+                completionWasRun = true
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+            XCTAssertTrue(transformWasRun, "Expected the transform closure to be called immediately.")
+            XCTAssertTrue(completionWasRun, "Expected the completion block to be called immediately.")
+        }
+    }
+
 }
