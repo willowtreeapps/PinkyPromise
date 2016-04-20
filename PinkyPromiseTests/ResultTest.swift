@@ -219,7 +219,7 @@ class ResultTest: XCTestCase {
         let failure2: Result<Int> = .Failure(error2)
         let failure3: Result<Int> = .Failure(error3)
 
-        TestHelpers.expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into ([112, -15, 3]).")
+        TestHelpers.expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
         TestHelpers.expectFailure(error3, result: zipArray([success1, success2, failure3]))
         TestHelpers.expectFailure(error2, result: zipArray([success1, failure2, success3]))
         TestHelpers.expectFailure(error2, result: zipArray([success1, failure2, failure3]))

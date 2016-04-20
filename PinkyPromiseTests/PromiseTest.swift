@@ -620,4 +620,167 @@ class PromiseTest: XCTestCase {
         }
     }
 
+    func testZip() {
+        let error1 = TestHelpers.uniqueError()
+        let error2 = TestHelpers.uniqueError()
+        let error3 = TestHelpers.uniqueError()
+        let error4 = TestHelpers.uniqueError()
+
+        let success1: Promise<Int> = Promise(value: 1)
+        let success2: Promise<String> = Promise(value: "hi")
+        let success3: Promise<Int> = Promise(value: 3)
+        let success4: Promise<String> = Promise(value: "bye")
+
+        let failure1: Promise<Int> = Promise(error: error1)
+        let failure2: Promise<String> = Promise(error: error2)
+        let failure3: Promise<Int> = Promise(error: error3)
+        let failure4: Promise<String> = Promise(error: error4)
+
+        func callAndTestCompletion<T>(promise: Promise<T>, completion outerCompletion: (Result<T>) -> Void) {
+            let completionCalled = expectationWithDescription("Completed")
+            promise.call { result in
+                completionCalled.fulfill()
+                outerCompletion(result)
+            }
+        }
+
+        callAndTestCompletion(zip(success1, success2)) {
+            TestHelpers.expectSuccess((1, "hi"), result: $0, message: "Expected to zip 1 and \"hi\" into (1, \"hi\").")
+        }
+        callAndTestCompletion(zip(success1, failure2)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+
+        callAndTestCompletion(zip(success1, success2, success3)) {
+            TestHelpers.expectSuccess((1, "hi", 3), result: $0, message: "Expected to zip 1, \"hi\", and 3 into (1, \"hi\", 3).")
+        }
+        callAndTestCompletion(zip(success1, success2, failure3)) {
+            TestHelpers.expectFailure(error3, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, success3)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, failure3)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, success3)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, failure3)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, success3)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, failure3)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+
+        callAndTestCompletion(zip(success1, success2, success3, success4)) {
+            TestHelpers.expectSuccess((1, "hi", 3, "bye"), result: $0, message: "Expected to zip 1, \"hi\", 3, and \"bye\" into (1, \"hi\", 3, \"bye\").")
+        }
+        callAndTestCompletion(zip(success1, success2, success3, failure4)) {
+            TestHelpers.expectFailure(error4, result: $0)
+        }
+        callAndTestCompletion(zip(success1, success2, failure3, success4)) {
+            TestHelpers.expectFailure(error3, result: $0)
+        }
+        callAndTestCompletion(zip(success1, success2, failure3, failure4)) {
+            TestHelpers.expectFailure(error3, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, success3, success4)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, success3, failure4)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, failure3, success4)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(success1, failure2, failure3, failure4)) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, success3, success4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, success3, failure4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, failure3, success4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, success2, failure3, failure4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, success3, success4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, success3, failure4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, failure3, success4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zip(failure1, failure2, failure3, failure4)) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
+    func testZipArray() {
+        let error1 = TestHelpers.uniqueError()
+        let error2 = TestHelpers.uniqueError()
+        let error3 = TestHelpers.uniqueError()
+
+        let success1: Promise<Int> = Promise(value: 112)
+        let success2: Promise<Int> = Promise(value: -15)
+        let success3: Promise<Int> = Promise(value: 3)
+
+        let failure1: Promise<Int> = Promise(error: error1)
+        let failure2: Promise<Int> = Promise(error: error2)
+        let failure3: Promise<Int> = Promise(error: error3)
+
+        func callAndTestCompletion<T>(promise: Promise<T>, completion outerCompletion: (Result<T>) -> Void) {
+            let completionCalled = expectationWithDescription("Completed")
+            promise.call { result in
+                completionCalled.fulfill()
+                outerCompletion(result)
+            }
+        }
+
+        callAndTestCompletion(zipArray([success1, success2, success3])) {
+            TestHelpers.expectSuccess([112, -15, 3], result: $0, message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
+        }
+        callAndTestCompletion(zipArray([success1, success2, failure3])) {
+            TestHelpers.expectFailure(error3, result: $0)
+        }
+        callAndTestCompletion(zipArray([success1, failure2, success3])) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zipArray([success1, failure2, failure3])) {
+            TestHelpers.expectFailure(error2, result: $0)
+        }
+        callAndTestCompletion(zipArray([failure1, success2, success3])) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zipArray([failure1, success2, failure3])) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zipArray([failure1, failure2, success3])) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+        callAndTestCompletion(zipArray([failure1, failure2, failure3])) {
+            TestHelpers.expectFailure(error1, result: $0)
+        }
+
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
 }
