@@ -32,9 +32,13 @@ We've also written a playground to demonstrate the benefits and usage of PinkyPr
 
 A natural next step beyond Results and Promises is the [Observable](https://www.youtube.com/watch?v=looJcaeboBY) type. You might use PinkyPromise as a first step toward learning [RxSwift](https://github.com/ReactiveX/RxSwift), which we recommend.
 
-## Example
+## Examples
 
 A Promise is best at running an asynchronous operation that can succeed or fail.
+
+A Result is best at representing a success or failure from such an operation.
+
+### Why Result?
 
 The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes:
 
@@ -59,9 +63,34 @@ This is a loose contract not guaranteed by the compiler. We have only assumed th
 
 Compare with the standard Swift pattern for failable synchronous methods: A function like `NSData(contentsOfFile:options:)` will either return a value or throw an error, not both, and not neither, and not optionally. This is an airtight contract. But you can't use that pattern in asynchronous calls, because you can only throw backward out of the function you're in, not forward into a completion block.
 
-Here's how you'd write that asynchronous operation as a Promise, with a tighter contract using `return` and `throw`.
+Here's how you'd write that asynchronous operation with a tighter contract, using Result. The Result is a success or failure. It can be created with `return` or `throw`, and inspected with `value`, which will either return or throw.
+
+    func getStringResultWithArgument(argument: String, completion: ((Result<String> -> Void)?) {
+        …
+        completion?(Result {
+            if successful {
+                return value
+            } else {
+                throw error
+            }
+        })
+    }
  
-To make a new Promise, you create it with a task. A task is a block that itself has a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. The Result is a success or failure, and can be created with `return` or `throw`.
+    getStringResultWithArgument("foo") { result in
+        do {
+            print(try result.value())
+        } catch {
+            print(error)
+        }
+    }
+
+Under the hood, `Result<T>` is an `enum` with two cases: `.Success(T)` and `.Failure(ErrorType)`. It's possible to create a Result using an enum case and inspect it using `switch`. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.
+
+### Why Promise?
+
+Promises are useful for combining many asynchronous operations into one. To do that, we need to be able to create an asynchronous operation without starting it right away.
+
+To make a new Promise, you create it with a task. A task is a block that itself takes a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. (Hint: The task used to create this Promise is the same as the body of `getStringResultWithArgument`.)
 
     func getStringPromiseWithArgument(argument: String) -> Promise<String> {
         return Promise { fulfill in
@@ -120,7 +149,7 @@ Here is an example of a complex Promise made of several Promises:
 4. If successful, runs simultaneous requests for each child object, producing an array.
 5. Produces either a list of up to three child objects, or an error from any step of the process.
 
-Even though this operation has many steps that depend on prior operations' success, we don't have to coordinate them by writing multiple completion blocks with loose contracts. Instead, we just handle the final result with a tight contract:
+Even though this operation has many steps that depend on prior operations' success, we don't have to coordinate them by writing multiple completion blocks. Instead, we just handle the final result, using the tight contract afforded by Result:
 
     getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
         do {
