@@ -4,14 +4,29 @@ A tiny Promises library.
 
 ## Summary
 
-PinkyPromise is an experimental implementation of Promises for Swift. It consists of two types:
+PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Futures_and_promises) for Swift. It consists of two types:
 
-- `Result` - A value or error. `Result` adapts the return-or-throw function pattern for asynchronous operations with callbacks.
+- `Result` - A value or error. `Result` adapts the return-or-throw function pattern for use with asynchronous callbacks.
 - `Promise` - An operation that produces a `Result` sometime after it is called. `Promise`s can be composed and sequenced.
 
-Please see `PinkyPromise.playground` for examples and insight.
+## Should I use this?
 
-PinkyPromise is meant to be a lightweight functional tool that does a lot of heavy lifting. A natural next step beyond these two types is an [Observable](https://www.youtube.com/watch?v=looJcaeboBY). You might use PinkyPromise as a stepping stone on the way to learning [RxSwift](https://github.com/ReactiveX/RxSwift), which we recommend.
+There are lots of promise libraries. PinkyPromise:
+
+- Is lightweight
+- Is tested
+- Embraces the Swift language with airtight type system contracts and `throw` / `catch`
+- Embraces functional style with immutable values and value transformations
+- Is a great way for Objective-C programmers to learn functional style in Swift
+- Is easy to extend with your own Promise transformations
+
+PinkyPromise is meant to be a lightweight functional tool that's easy to learn but does a lot of heavy lifting. Fuller-featured implementations include [Result](https://github.com/antitypical/Result) and [PromiseKit](http://promisekit.org).
+
+## Learning
+
+We've written a playground to demonstrate the benefits and usage of PinkyPromise. Please clone the repository and open `PinkyPromise.playground` in Xcode.
+
+A natural next step beyond Results and Promises is the [Observable](https://www.youtube.com/watch?v=looJcaeboBY) type. You might use PinkyPromise as a first step toward learning [RxSwift](https://github.com/ReactiveX/RxSwift), which we recommend.
 
 ## Installation
 
@@ -24,10 +39,11 @@ We intend to keep PinkyPromise fully unit tested.
 
 You can run tests in Xcode, or use `scan` from [Fastlane Tools](https://fastlane.tools).
 
-## Project Roadmap
+## Roadmap
 
 - Carthage?
 - More Promise transformations?
+- Swift 3?
 
 ## Contributing to PinkyPromise
 
