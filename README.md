@@ -6,21 +6,21 @@ A tiny Promises library.
 
 PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Futures_and_promises) for Swift. It consists of two types:
 
-- `Result` - A value or error. `Result` adapts the return-or-throw function pattern for use with asynchronous callbacks.
-- `Promise` - An operation that produces a `Result` sometime after it is called. `Promise`s can be composed and sequenced.
+- `Result` - A value or error. The Result type adapts the return-or-throw function pattern for use with asynchronous callbacks.
+- `Promise` - An operation that produces a Result sometime after it is called. Promises can be composed and sequenced.
 
 ## Should I use this?
 
-There are lots of promise libraries. PinkyPromise:
+PinkyPromise:
 
 - Is lightweight
 - Is tested
 - Embraces the Swift language with airtight type system contracts and `throw` / `catch`
 - Embraces functional style with immutable values and value transformations
 - Is a great way for Objective-C programmers to learn functional style in Swift
-- Is easy to extend with your own Promise transformations
+- Can be extended with your own Promise transformations
 
-PinkyPromise is meant to be a lightweight functional tool that's easy to learn but does a lot of heavy lifting. Fuller-featured implementations include [Result](https://github.com/antitypical/Result) and [PromiseKit](http://promisekit.org).
+PinkyPromise is meant to be a lightweight tool that does a lot of heavy lifting. More elaborate implementations include [Result](https://github.com/antitypical/Result) and [PromiseKit](http://promisekit.org).
 
 ## Learning
 
