@@ -58,16 +58,16 @@ getStringWithArgument("foo") { value, error in
  To make a new Promise, you create it with a task. A task is a block that itself has a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. Results must be a success or failure.
  */
 
-func getStringPromiseWithAgument(argument: String) -> Promise<String> {
+func getStringPromiseWithArgument(argument: String) -> Promise<String> {
     return Promise { fulfill in
         delay(2.0) {
             let value = "Completing: \(argument)"
-            fulfill(.Success(value))
+            fulfill(Result { value })
         }
     }
 }
 
-let stringPromise = getStringPromiseWithAgument("bar")
+let stringPromise = getStringPromiseWithArgument("bar")
 
 /*:
  `stringPromise` has captured its task, and the task has captured the argument. It is an operation waiting to begin. So with Promises you can create operations and then start them later. You can start them more than once, or not at all.
@@ -108,7 +108,7 @@ let intPromise = stringPromise.map { Int($0) }
 let stringAndIntPromise = zip(stringPromise, intPromise)
 
 let twoStepPromise = stringPromise.flatMap { string in
-    getStringPromiseWithAgument("\(string) baz")
+    getStringPromiseWithArgument("\(string) baz")
 }
 
 let multipleOfTwoPromise = Promise<Int> { fulfill in
@@ -127,7 +127,7 @@ let complexPromise =
         multipleOfTwoPromise.recover { _ in
             return Promise(value: 2)
         },
-        getStringPromiseWithAgument("computed in the background")
+        getStringPromiseWithArgument("computed in the background")
             .inBackground()
             .map { "\($0) then extended on the main queue" }
     )
