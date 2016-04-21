@@ -9,6 +9,8 @@ PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Fu
 - `Result` - A value or error. The Result type adapts the return-or-throw function pattern for use with asynchronous callbacks.
 - `Promise` - An operation that produces a Result sometime after it is called. Promises can be composed and sequenced.
 
+With PinkyPromise, you can run complex combinations of asynchronous operations with safe, clean, Swifty code.
+
 ## Should I use this?
 
 PinkyPromise:
@@ -24,9 +26,109 @@ PinkyPromise is meant to be a lightweight tool that does a lot of heavy lifting.
 
 ## Learning
 
-We've written a playground to demonstrate the benefits and usage of PinkyPromise. Please clone the repository and open `PinkyPromise.playground` in Xcode.
+Start with the [Example](#example) section below.
+
+We've also written a playground to demonstrate the benefits and usage of PinkyPromise. Please clone the repository and open `PinkyPromise.playground` in Xcode.
 
 A natural next step beyond Results and Promises is the [Observable](https://www.youtube.com/watch?v=looJcaeboBY) type. You might use PinkyPromise as a first step toward learning [RxSwift](https://github.com/ReactiveX/RxSwift), which we recommend.
+
+## Example
+
+A Promise is best at running an asynchronous operation that can succeed or fail.
+
+The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes:
+
+    func getStringWithArgument(argument: String, completion: ((String?, ErrorType?) -> Void)?) {
+        …
+        if successful {
+            completion?(value, nil)
+        } else {
+            completion?(nil, error)
+        }
+    }
+
+    getStringWithArgument("foo") { value, error in
+        if let value = value {
+            print(value)
+        } else {
+            print(error)
+        }
+    }
+
+This is a loose contract not guaranteed by the compiler. We have only assumed that `error` is not nil when `value` is nil.
+
+Compare with the standard Swift pattern for failable synchronous methods: A function like `NSData(contentsOfFile:options:)` will either return a value or throw an error, not both, and not neither, and not optionally. This is an airtight contract. But you can't use that pattern in asynchronous calls, because you can only throw backward out of the function you're in, not forward into a completion block.
+
+Here's how you'd write that asynchronous operation as a Promise, with a tighter contract using `return` and `throw`.
+ 
+To make a new Promise, you create it with a task. A task is a block that itself has a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. The Result is a success or failure, and can be created with `return` or `throw`.
+
+    func getStringPromiseWithArgument(argument: String) -> Promise<String> {
+        return Promise { fulfill in
+            …
+            fulfill(Result {
+                if successful {
+                    return value
+                } else {
+                    throw error
+                }
+            })
+        }
+    }
+
+    let stringPromise = getStringPromiseWithArgument("bar")
+
+`stringPromise` has captured its task, and the task has captured the argument. It is an operation waiting to begin. So with Promises you can create operations and then start them later. You can start them more than once, or not at all.
+ 
+Next, we ask `stringPromise` to run by passing a completion block to the `call` method. `call` runs the task and routes the Result back to the completion block. When the Promise completes, our completion block will receive the Result, and can get the value or error with `try` and `catch`.
+
+    stringPromise.call { result in
+        do {
+            print(try result.value())
+        } catch {
+            print(error)
+        }
+    }
+
+As we've seen, with Promises, supplying the arguments and supplying the completion block are separate events. The greatest strength of a Promise is that in between those two events, the task-to-be-done exists as an immutable value. And in functional style, immutable values can be transformed and combined.
+
+Here is an example of a complex Promise made of several Promises:
+
+    let getFirstThreeChildrenOfObjectWithIDPromise =
+        getStringPromiseWithArgument("baz") // Promise<String>
+        .flatMap { objectID in
+            // String -> Promise<ModelObject>
+            Queries.getObjectWithIDPromise(objectID)
+        }
+        .map { object in
+            // ModelObject -> [String]
+            let count = max(3, objects.childObjectIDs.count)
+            return objects.childObjectIDs[0..<count]
+        }
+        .flatMap { childObjectIDs in
+            // [String] -> Promise<[ModelObject]>
+            zipArray(childObjectIDs.map { childObjectID
+                Queries.getObjectWithIDPromise(childObjectID)
+            })
+        }
+
+`getFirstThreeChildrenOfObjectWithIDPromise` is a single asynchronous operation that consists of many small operations. It:
+
+1. Tries to get a String for an object ID.
+2. If successful, runs an API request for the object with that ID.
+3. If successful, collects up to three child IDs from the object.
+4. If successful, runs simultaneous requests for each child object, producing an array.
+5. Produces either a list of up to three child objects, or an error from any step of the process.
+
+Even though this operation has many steps that depend on prior operations' success, we don't have to coordinate them by writing multiple completion blocks with loose contracts. Instead, we just handle the final result with a tight contract:
+
+    getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
+        do {
+            self?.updateViewsWithObjects(try result.value())
+        } catch {
+            self?.showError(error)
+        }
+    }
 
 ## Installation
 
