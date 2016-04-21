@@ -9,9 +9,14 @@ PinkyPromise is an experimental implementation of Promises for Swift. It consist
 - `Result` - A value or error. `Result` adapts the return-or-throw function pattern for asynchronous operations with callbacks.
 - `Promise` - An operation that produces a `Result` sometime after it is called. `Promise`s can be composed and sequenced.
 
-Please see `PinkyPromise.playground` for more examples and insight.
+Please see `PinkyPromise.playground` for examples and insight.
 
 PinkyPromise is meant to be a lightweight functional tool that does a lot of heavy lifting. A natural next step beyond these two types is an [Observable](https://www.youtube.com/watch?v=looJcaeboBY). You might use PinkyPromise as a stepping stone on the way to learning [RxSwift](https://github.com/ReactiveX/RxSwift), which we recommend.
+
+## Installation
+
+- With Cocoapods: `pod 'PinkyPromise'`
+- Manually: Copy the files in the `Sources` folder into your project.
 
 ## Tests
 
@@ -21,7 +26,7 @@ You can run tests in Xcode, or use `scan` from [Fastlane Tools](https://fastlane
 
 ## Project Roadmap
 
-- CocoaPods? Carthage?
+- Carthage?
 - More Promise transformations?
 
 ## Contributing to PinkyPromise
