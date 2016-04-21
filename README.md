@@ -26,7 +26,7 @@ PinkyPromise is meant to be a lightweight tool that does a lot of heavy lifting.
 
 ## Learning
 
-Start with the [Example](#example) section below.
+Start with the [Examples](#examples) section below.
 
 We've also written a playground to demonstrate the benefits and usage of PinkyPromise. Please clone the repository and open `PinkyPromise.playground` in Xcode.
 
@@ -140,12 +140,14 @@ let getFirstThreeChildrenOfObjectWithIDPromise =
     }
     .map { object in
         // ModelObject -> [String]
-        let count = max(3, objects.childObjectIDs.count)
-        return objects.childObjectIDs[0..<count]
+        let childObjectIDs = object.childObjectIDs
+        let count = max(3, childObjectIDs.count)
+        return childObjectIDs[0..<count]
     }
     .flatMap { childObjectIDs in
         // [String] -> Promise<[ModelObject]>
         zipArray(childObjectIDs.map { childObjectID
+            // String -> Promise<ModelObject>
             Queries.getObjectWithIDPromise(childObjectID)
         })
     }
