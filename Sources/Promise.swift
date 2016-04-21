@@ -30,11 +30,11 @@ import Foundation
 
 // A task that can resolve to a value or an error asynchronously.
 
-// First, create a Promise, or use firstly() for neatness.
+// First, create a Promise, or receive one that wraps an asynchronous task.
 // Use .flatMap to chain additional monadic tasks. Failures skip over mapped tasks.
 // Use .success or .failure to process a success or failure value, then continue.
 // After building up your composite promise, begin it with .call.
-// Use the result enum directly, or call .value() to unwrap it and have failures thrown.
+// Use Result by switching on its cases, or call .value() to unwrap it and have failures thrown.
 
 public struct Promise<T> {
 
@@ -69,21 +69,29 @@ public struct Promise<T> {
     // MARK: Promise transformations
 
     // Produces a composite promise that resolves by calling this promise, then transforming its success value.
-    public func map<U>(transform: (Value) throws -> U) -> Promise<U> {
+    public func map<U>(transform: (Value) -> U) -> Promise<U> {
         return flatMap { value in
-            let mappedValue = try transform(value)
-            return Promise<U>(value: mappedValue)
+            return Promise<U>(value: transform(value))
+        }
+    }
+
+    // Produces a composite promise that resolves by calling this promise, then transforming its success value.
+    // You may transform a success to a failure by throwing an error.
+    public func tryMap<U>(transform: (Value) throws -> U) -> Promise<U> {
+        return flatMap { value in
+            return Promise<U>(result: Result {
+                try transform(value)
+            })
         }
     }
 
     // Produces a composite promise that resolves by calling this promise, passing its result to the next task,
     // then calling the produced promise.
-    public func flatMap<U>(transform: (Value) throws -> Promise<U>) -> Promise<U> {
+    public func flatMap<U>(transform: (Value) -> Promise<U>) -> Promise<U> {
         return Promise<U> { fulfill in
             self.call { result in
                 do {
-                    let value = try result.value()
-                    let mappedPromise = try transform(value)
+                    let mappedPromise = transform(try result.value())
                     mappedPromise.call(fulfill)
                 } catch {
                     fulfill(.Failure(error))
@@ -92,28 +100,65 @@ public struct Promise<T> {
         }
     }
 
-    // Produces a composite promise that resolves by calling this promise, then the next, and if successful combines
-    // their results in the produced promise.
-    // This is a like zip() in that you want multiple results, but the first step must complete before beginning the second step.
-    public func flatMapAndJoin<U>(transform: (Value) throws -> Promise<U>) -> Promise<(Value, U)> {
-        return flatMap { value1 in
-            let mappedPromise = try transform(value1)
-            return mappedPromise.map { (value2) -> (Value, U) in
-                return (value1, value2)
+    // Produces a composite promise that resolves by calling this promise, passing its error to the next task,
+    // then calling the produced promise.
+    // If this promise succeeds, the transformation is skipped.
+    public func recover(transform: (ErrorType) -> Promise<Value>) -> Promise<Value> {
+        return Promise { fulfill in
+            self.call { (result: Result<Value>) -> Void in
+                do {
+                    let value = try result.value()
+                    fulfill(.Success(value))
+                } catch {
+                    let mappedPromise = transform(error)
+                    mappedPromise.call(fulfill)
+                }
             }
+        }
+    }
+
+    // Produces a composite promise that resolves by calling this promise until it succeeds,
+    // up to a given number of tries. When `attemptCount` failures occur, the promise produces the final failure.
+    // For this to be meaningful you should use an `attemptCount` of at least 2.
+    public func retry(attemptCount: Int) -> Promise<Value> {
+        return Promise { fulfill in
+            func attempt(remainingAttempts: Int) {
+                self.call { result in
+                    switch (result, remainingAttempts) {
+                    case (.Success, _), (.Failure, 0):
+                        fulfill(result)
+                    case (.Failure, _):
+                        attempt(remainingAttempts - 1)
+                    }
+                }
+            }
+
+            attempt(max(0, attemptCount - 1))
         }
     }
 
     // Produces a composite promise that resolves by running this promise in the background queue,
     // then fulfills on the main queue.
-    public func background() -> Promise<Value> {
+    public func inBackground() -> Promise<Value> {
         return Promise { fulfill in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                self.task { result in
+                self.call { result in
                     dispatch_async(dispatch_get_main_queue()) {
                         fulfill(result)
                     }
                 }
+            }
+        }
+    }
+
+    // Produces a composite promise that resolves by participating in a dispatch group while running this promise.
+    // The dispatch group is exited only after the completion step.
+    public func inDispatchGroup(group: dispatch_group_t) -> Promise<Value> {
+        return Promise { fulfill in
+            dispatch_group_enter(group)
+            self.call { result in
+                fulfill(result)
+                dispatch_group_leave(group)
             }
         }
     }
@@ -146,17 +191,18 @@ public struct Promise<T> {
 
     // Performs work defined by the promise and eventually calls completion.
     // Promises won't do any work until you call this.
-    public func call(completion: Observer?) {
+    public func call(completion: Observer) {
+        task(completion)
+    }
+
+    // Performs work defined by the promise and, if you supplied a completion block, eventually calls it.
+    // Promises won't do you any work until you call this.
+    public func call(completion: Observer? = nil) {
         task { result in
             completion?(result)
         }
     }
 
-}
-
-// Immediately runs a closure to lift regular code into Promise context.
-public func firstly<T>(@noescape firstTask: () -> Promise<T>) -> Promise<T> {
-    return firstTask()
 }
 
 // Produces a promise that runs two promises simultaneously and unifies their result.
@@ -167,16 +213,12 @@ public func zip<A, B>(promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise<(
         var resultA: Result<A>!
         var resultB: Result<B>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -194,22 +236,16 @@ public func zip<A, B, C>(promiseA: Promise<A>, _ promiseB: Promise<B>, _ promise
         var resultB: Result<B>!
         var resultC: Result<C>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseC.call { result in
+        promiseC.inDispatchGroup(group).call { result in
             resultC = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -228,28 +264,20 @@ public func zip<A, B, C, D>(promiseA: Promise<A>, _ promiseB: Promise<B>, _ prom
         var resultC: Result<C>!
         var resultD: Result<D>!
 
-        dispatch_group_enter(group)
-        promiseA.call { result in
+        promiseA.inDispatchGroup(group).call { result in
             resultA = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseB.call { result in
+        promiseB.inDispatchGroup(group).call { result in
             resultB = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseC.call { result in
+        promiseC.inDispatchGroup(group).call { result in
             resultC = result
-            dispatch_group_leave(group)
         }
 
-        dispatch_group_enter(group)
-        promiseD.call { result in
+        promiseD.inDispatchGroup(group).call { result in
             resultD = result
-            dispatch_group_leave(group)
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -265,10 +293,8 @@ public func zipArray<T>(promises: [Promise<T>]) -> Promise<[T]> {
         var results: [Result<T>?] = Array(count: promises.count, repeatedValue: nil)
 
         for (index, promise) in promises.enumerate() {
-            dispatch_group_enter(group)
-            promise.call { result in
+            promise.inDispatchGroup(group).call { result in
                 results[index] = result
-                dispatch_group_leave(group)
             }
         }
         
