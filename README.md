@@ -42,22 +42,24 @@ A Result is best at representing a success or failure from such an operation.
 
 The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes:
 
-    func getStringWithArgument(argument: String, completion: ((String?, ErrorType?) -> Void)?) {
-        …
-        if successful {
-            completion?(value, nil)
-        } else {
-            completion?(nil, error)
-        }
+````swift
+func getStringWithArgument(argument: String, completion: ((String?, ErrorType?) -> Void)?) {
+    …
+    if successful {
+        completion?(value, nil)
+    } else {
+        completion?(nil, error)
     }
+}
 
-    getStringWithArgument("foo") { value, error in
-        if let value = value {
-            print(value)
-        } else {
-            print(error)
-        }
+getStringWithArgument("foo") { value, error in
+    if let value = value {
+        print(value)
+    } else {
+        print(error)
     }
+}
+````
 
 This is a loose contract not guaranteed by the compiler. We have only assumed that `error` is not nil when `value` is nil.
 
@@ -65,24 +67,26 @@ Compare with the standard Swift pattern for failable synchronous methods: A func
 
 Here's how you'd write that asynchronous operation with a tighter contract, using Result. The Result is a success or failure. It can be created with `return` or `throw`, and inspected with `value`, which will either return or throw.
 
-    func getStringResultWithArgument(argument: String, completion: ((Result<String> -> Void)?) {
-        …
-        completion?(Result {
-            if successful {
-                return value
-            } else {
-                throw error
-            }
-        })
-    }
- 
-    getStringResultWithArgument("foo") { result in
-        do {
-            print(try result.value())
-        } catch {
-            print(error)
+````swift
+func getStringResultWithArgument(argument: String, completion: ((Result<String> -> Void)?) {
+    …
+    completion?(Result {
+        if successful {
+            return value
+        } else {
+            throw error
         }
+    })
+}
+ 
+getStringResultWithArgument("foo") { result in
+    do {
+        print(try result.value())
+    } catch {
+        print(error)
     }
+}
+````
 
 Under the hood, `Result<T>` is an `enum` with two cases: `.Success(T)` and `.Failure(ErrorType)`. It's possible to create a Result using an enum case and inspect it using `switch`. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.
 
@@ -92,54 +96,60 @@ Promises are useful for combining many asynchronous operations into one. To do t
 
 To make a new Promise, you create it with a task. A task is a block that itself takes a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. (Hint: The task used to create this Promise is the same as the body of `getStringResultWithArgument`.)
 
-    func getStringPromiseWithArgument(argument: String) -> Promise<String> {
-        return Promise { fulfill in
-            …
-            fulfill(Result {
-                if successful {
-                    return value
-                } else {
-                    throw error
-                }
-            })
-        }
+````swift
+func getStringPromiseWithArgument(argument: String) -> Promise<String> {
+    return Promise { fulfill in
+        …
+        fulfill(Result {
+            if successful {
+                return value
+            } else {
+                throw error
+            }
+        })
     }
+}
 
-    let stringPromise = getStringPromiseWithArgument("bar")
+let stringPromise = getStringPromiseWithArgument("bar")
+````
 
 `stringPromise` has captured its task, and the task has captured the argument. It is an operation waiting to begin. So with Promises you can create operations and then start them later. You can start them more than once, or not at all.
  
 Next, we ask `stringPromise` to run by passing a completion block to the `call` method. `call` runs the task and routes the Result back to the completion block. When the Promise completes, our completion block will receive the Result, and can get the value or error with `try` and `catch`.
 
-    stringPromise.call { result in
-        do {
-            print(try result.value())
-        } catch {
-            print(error)
-        }
+````swift
+stringPromise.call { result in
+    do {
+        print(try result.value())
+    } catch {
+        print(error)
     }
+}
+````
 
 As we've seen, with Promises, supplying the arguments and supplying the completion block are separate events. The greatest strength of a Promise is that in between those two events, the task-to-be-done exists as an immutable value. And in functional style, immutable values can be transformed and combined.
 
 Here is an example of a complex Promise made of several Promises:
 
-    let getFirstThreeChildrenOfObjectWithIDPromise =
-        getStringPromiseWithArgument("baz") // Promise<String>
-        .flatMap { objectID in
-            // String -> Promise<ModelObject>
-            Queries.getObjectWithIDPromise(objectID)
-        }
-        .map { object in
-            // ModelObject -> [String]
-            let count = max(3, objects.childObjectIDs.count)
-            return objects.childObjectIDs[0..<count]
-        }
-        .flatMap { childObjectIDs in
-            // [String] -> Promise<[ModelObject]>
-            zipArray(childObjectIDs.map { childObjectID
-                Queries.getObjectWithIDPromise(childObjectID)
-            })
-        }
+````swift
+let getFirstThreeChildrenOfObjectWithIDPromise =
+    getStringPromiseWithArgument("baz") // Promise<String>
+    .flatMap { objectID in
+        // String -> Promise<ModelObject>
+        Queries.getObjectWithIDPromise(objectID)
+    }
+    .map { object in
+        // ModelObject -> [String]
+        let count = max(3, objects.childObjectIDs.count)
+        return objects.childObjectIDs[0..<count]
+    }
+    .flatMap { childObjectIDs in
+        // [String] -> Promise<[ModelObject]>
+        zipArray(childObjectIDs.map { childObjectID
+            Queries.getObjectWithIDPromise(childObjectID)
+        })
+    }
+````
 
 `getFirstThreeChildrenOfObjectWithIDPromise` is a single asynchronous operation that consists of many small operations. It:
 
@@ -151,13 +161,15 @@ Here is an example of a complex Promise made of several Promises:
 
 Even though this operation has many steps that depend on prior operations' success, we don't have to coordinate them by writing multiple completion blocks. Instead, we just handle the final result, using the tight contract afforded by Result:
 
-    getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
-        do {
-            self?.updateViewsWithObjects(try result.value())
-        } catch {
-            self?.showError(error)
-        }
+````swift
+getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
+    do {
+        self?.updateViewsWithObjects(try result.value())
+    } catch {
+        self?.showError(error)
     }
+}
+````
 
 ## Installation
 
