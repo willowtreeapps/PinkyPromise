@@ -1,6 +1,6 @@
 # PinkyPromise
 
-A tiny Promises library.
+A tiny Pr:heart:mises library.
 
 ## Summary
 
