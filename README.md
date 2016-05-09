@@ -1,6 +1,7 @@
 # PinkyPromise
-
 A tiny Promises library.
+
+[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise)
 
 ## Summary
 
