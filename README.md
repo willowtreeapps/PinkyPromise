@@ -185,6 +185,8 @@ We intend to keep PinkyPromise fully unit tested.
 
 You can run tests in Xcode, or use `scan` from [Fastlane Tools](https://fastlane.tools).
 
+We run continuous integration on [CircleCI](https://circleci.com/gh/willowtreeapps/PinkyPromise).
+
 ## Roadmap
 
 - Carthage?
