@@ -66,6 +66,15 @@ public struct Promise<T> {
         self.init(result: .Failure(error))
     }
 
+    // A promise that creates its value or error when called.
+    // Lifts the notion of producing a Result into Promise context.
+    // Or, lifts a synchonous function into asynchronous context.
+    public static func lift(produce: () throws -> Value) -> Promise<Value> {
+        return Promise { fulfill in
+            fulfill(Result(create: produce))
+        }
+    }
+
     // MARK: Promise transformations
 
     // Produces a composite promise that resolves by calling this promise, then transforming its success value.

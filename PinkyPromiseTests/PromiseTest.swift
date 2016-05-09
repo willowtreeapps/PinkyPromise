@@ -133,6 +133,37 @@ class PromiseTest: XCTestCase {
         waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
+    func testLift() {
+        do {
+            let expectedValue = "someValue"
+            let promise = Promise.lift {
+                expectedValue
+            }
+
+            let completionCalled = expectationWithDescription("Completion was called")
+            promise.call { result in
+                completionCalled.fulfill()
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given value.")
+            }
+        }
+
+        do {
+            let expectedError = TestHelpers.uniqueError()
+            let promise = Promise.lift {
+                throw expectedError
+            }
+
+            let completionCalled = expectationWithDescription("Completion was called")
+            promise.call { result in
+                completionCalled.fulfill()
+                TestHelpers.expectFailure(expectedError, result: result)
+            }
+
+        }
+
+        waitForExpectationsWithTimeout(1.0, handler: nil)
+    }
+
     func testMap() {
         // Map success to success
         do {
