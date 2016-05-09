@@ -30,6 +30,21 @@ trivialSuccess.call { result in
 }
 
 /*:
+ If you have a returning-or-throwing function, you can wrap it in a Promise.
+ The promise will run the function and return its success or failure value.
+ */
+
+func dashedLine() throws -> String {
+    let width = Int(arc4random_uniform(20)) - 10
+    guard 0 <= width else {
+        throw someError
+    }
+    return Array(count: width, repeatedValue: "-").joinWithSeparator("")
+}
+
+let dashedLinePromise = Promise.lift(dashedLine)
+
+/*:
  ## Asynchronous operations
 
  Most of the time you want a Promise to run an asynchronous operation that can succeed or fail.
