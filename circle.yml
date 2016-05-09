@@ -4,3 +4,5 @@ machine:
 test:
   override:
     - make test
+  post:
+    - bundle exec slather
