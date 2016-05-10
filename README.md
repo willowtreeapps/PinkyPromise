@@ -1,7 +1,7 @@
 # PinkyPromise
 A tiny Promises library.
 
-[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise) [![Coverage Status](https://coveralls.io/repos/github/willowtreeapps/PinkyPromise/badge.svg?branch=develop)](https://coveralls.io/github/willowtreeapps/PinkyPromise?branch=feature%2Fcoveralls)
+[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise) [![Coverage Status](https://coveralls.io/repos/github/willowtreeapps/PinkyPromise/badge.svg?branch=develop)](https://coveralls.io/github/willowtreeapps/PinkyPromise?branch=develop)
 
 ## Summary
 
