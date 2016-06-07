@@ -69,7 +69,7 @@ Compare with the standard Swift pattern for failable synchronous methods: A func
 Here's how you'd write that asynchronous operation with a tighter contract, using Result. The Result is a success or failure. It can be created with `return` or `throw`, and inspected with `value`, which will either return or throw.
 
 ````swift
-func getStringResultWithArgument(argument: String, completion: ((Result<String> -> Void)?) {
+func getStringResultWithArgument(argument: String, completion: ((Result<String>) -> Void)?) {
     …
     completion?(Result {
         if successful {
