@@ -46,8 +46,8 @@ class PromiseTest: XCTestCase {
             let result = Result { expectedValue }
             let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<Int> { fulfill in
-                taskCalled.fulfill()
                 fulfill(result)
+                taskCalled.fulfill()
             }
 
             promise.call { result in
@@ -63,8 +63,8 @@ class PromiseTest: XCTestCase {
             let result = Result<String> { throw expectedError }
             let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<String> { fulfill in
-                taskCalled.fulfill()
                 fulfill(result)
+                taskCalled.fulfill()
             }
 
             promise.call { result in
@@ -84,8 +84,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given result.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -99,8 +99,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -113,8 +113,8 @@ class PromiseTest: XCTestCase {
 
         let completionCalled = expectationWithDescription("Completion was called")
         promise.call { result in
-            completionCalled.fulfill()
             TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given value.")
+            completionCalled.fulfill()
         }
 
         waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -126,14 +126,15 @@ class PromiseTest: XCTestCase {
 
         let completionCalled = expectationWithDescription("Completion was called")
         promise.call { result in
-            completionCalled.fulfill()
             TestHelpers.expectFailure(expectedError, result: result)
+            completionCalled.fulfill()
         }
 
         waitForExpectationsWithTimeout(1.0, handler: nil)
     }
 
     func testLift() {
+        // Success
         do {
             let expectedValue = "someValue"
             let promise = Promise.lift {
@@ -142,11 +143,12 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given value.")
+                completionCalled.fulfill()
             }
         }
 
+        // Failure
         do {
             let expectedError = TestHelpers.uniqueError()
             let promise = Promise.lift {
@@ -155,8 +157,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
         }
@@ -177,8 +179,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -196,8 +198,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -217,8 +219,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -237,8 +239,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -256,8 +258,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -277,8 +279,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(13, result: result, message: "Expected the value to be transformed.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -297,8 +299,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -316,8 +318,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -337,8 +339,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the value to stay the same.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -357,8 +359,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the error to be transformed to a default value.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -377,8 +379,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -400,8 +402,8 @@ class PromiseTest: XCTestCase {
             let attemptCount = 3
             let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
             }
 
             XCTAssertEqual(1, taskRunCount, "Expected the task to succeed on the first try.")
@@ -424,8 +426,8 @@ class PromiseTest: XCTestCase {
             let attemptCount = 3
             let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
             }
 
             XCTAssertEqual(2, taskRunCount, "Expected the task to succeed on the second try.")
@@ -449,8 +451,8 @@ class PromiseTest: XCTestCase {
             let attemptCount = 3
             let completionCalled = expectationWithDescription("Completion was called")
             promise.retry(attemptCount).call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             XCTAssertEqual(attemptCount, taskRunCount, "Expected the task to run until it ran out of attempts.")
@@ -488,11 +490,11 @@ class PromiseTest: XCTestCase {
 
         let taskCalled = expectationWithDescription("Task was called")
         let promise = Promise<Int> { fulfill in
-            taskCalled.fulfill()
-
             XCTAssertTrue(NSThread.isMainThread(), "Expected the task to run on the main thread.")
 
             fulfill(Result { expectedValue })
+
+            taskCalled.fulfill()
         }
 
         let group = dispatch_group_create()
@@ -523,14 +525,14 @@ class PromiseTest: XCTestCase {
             
             let resultCalled = expectationWithDescription("Result block was called")
             let promise = initialPromise.result { result in
-                resultCalled.fulfill()
                 TestHelpers.expectSuccess(3, result: result, message: "Expected the given success value.")
+                resultCalled.fulfill()
             }
             
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
             }
             
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -543,14 +545,14 @@ class PromiseTest: XCTestCase {
 
             let resultCalled = expectationWithDescription("Failure block was called")
             let promise = initialPromise.result { result in
-                resultCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                resultCalled.fulfill()
             }
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -565,14 +567,14 @@ class PromiseTest: XCTestCase {
 
             let successCalled = expectationWithDescription("Success block was called")
             let promise = initialPromise.success { value in
-                successCalled.fulfill()
                 XCTAssertEqual(expectedValue, value, "Expected the given success value.")
+                successCalled.fulfill()
             }
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -589,8 +591,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -605,15 +607,15 @@ class PromiseTest: XCTestCase {
 
             let failureCalled = expectationWithDescription("Failure block was called")
             let promise = initialPromise.failure { error in
-                failureCalled.fulfill()
                 XCTAssertEqual(expectedError, error as NSError, "Expected the given error.")
                 XCTAssertTrue(expectedError === error as NSError, "Expected the same error, not just an equal error.")
+                failureCalled.fulfill()
             }
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectFailure(expectedError, result: result)
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -630,8 +632,8 @@ class PromiseTest: XCTestCase {
 
             let completionCalled = expectationWithDescription("Completion was called")
             promise.call { result in
-                completionCalled.fulfill()
                 TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
             }
 
             waitForExpectationsWithTimeout(1.0, handler: nil)
@@ -643,9 +645,9 @@ class PromiseTest: XCTestCase {
 
         let taskCalled = expectationWithDescription("Task was called")
         let promise = Promise<Int> { fulfill in
-            taskCalled.fulfill()
-
             fulfill(Result { expectedResult })
+
+            taskCalled.fulfill()
         }
 
         let completionCalled = expectationWithDescription("Completion was called")
@@ -663,9 +665,9 @@ class PromiseTest: XCTestCase {
 
             let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<Int> { fulfill in
-                taskCalled.fulfill()
-
                 fulfill(Result { expectedResult })
+
+                taskCalled.fulfill()
             }
 
             let completionCalled = expectationWithDescription("Completion was called")
@@ -682,9 +684,9 @@ class PromiseTest: XCTestCase {
 
             let taskCalled = expectationWithDescription("Task was called")
             let promise = Promise<Int> { fulfill in
-                taskCalled.fulfill()
-
                 fulfill(Result { expectedResult })
+
+                taskCalled.fulfill()
             }
 
             promise.call()
@@ -712,8 +714,8 @@ class PromiseTest: XCTestCase {
         func callAndTestCompletion<T>(promise: Promise<T>, completion outerCompletion: (Result<T>) -> Void) {
             let completionCalled = expectationWithDescription("Completed")
             promise.call { result in
-                completionCalled.fulfill()
                 outerCompletion(result)
+                completionCalled.fulfill()
             }
         }
 
@@ -823,8 +825,8 @@ class PromiseTest: XCTestCase {
         func callAndTestCompletion<T>(promise: Promise<T>, completion outerCompletion: (Result<T>) -> Void) {
             let completionCalled = expectationWithDescription("Completed")
             promise.call { result in
-                completionCalled.fulfill()
                 outerCompletion(result)
+                completionCalled.fulfill()
             }
         }
 

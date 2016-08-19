@@ -174,6 +174,25 @@ complexPromise.call { result in
     } catch {
         print(error)
     }
+}
+
+/*:
+ ## PromiseQueue
+
+ Promises of the same type can be run one at a time in a queue.
+ */
+
+let stringQueue = PromiseQueue<String>()
+
+//: Use `enqueue` instead of `call` to add promises one at a time and run them immediately.
+stringPromise.enqueue(in: stringQueue)
+twoStepPromise.enqueue(in: stringQueue)
+
+//: A queue can also make a batch promise that enqueues many promises and returns when the last has finished.
+let batchPromise = stringQueue.batch([stringPromise, twoStepPromise])
+
+batchPromise.call { result in
+    print("Batch produced successes or failure: \(result)")
 
     XCPlaygroundPage.currentPage.finishExecution()
 }
