@@ -174,26 +174,30 @@ public struct Promise<T> {
 
     // MARK: Result delivery
 
-    // Produces a composite promise that resolves by calling this promise, but also performs another task if successful.
-    public func success(successTask: (Value) -> Void) -> Promise<Value> {
+    // Produces a composite promise that resolves by calling this promise, but also performs another task.
+    public func result(resultTask: (Result<Value>) -> Void) -> Promise<Value> {
         return Promise { fulfill in
             self.call { result in
-                if case .Success(let value) = result {
-                    successTask(value)
-                }
+                resultTask(result)
                 fulfill(result)
+            }
+        }
+    }
+
+    // Produces a composite promise that resolves by calling this promise, but also performs another task if successful.
+    public func success(successTask: (Value) -> Void) -> Promise<Value> {
+        return result { result in
+            if case .Success(let value) = result {
+                successTask(value)
             }
         }
     }
 
     // Produces a composite promise that resolves by calling this promise, but also performs another task if failed.
     public func failure(failureTask: (ErrorType) -> Void) -> Promise<Value> {
-        return Promise { fulfill in
-            self.call { result in
-                if case .Failure(let error) = result {
-                    failureTask(error)
-                }
-                fulfill(result)
+        return result { result in
+            if case .Failure(let error) = result {
+                failureTask(error)
             }
         }
     }
