@@ -14,9 +14,9 @@
  */
 
 import Foundation
-import XCPlayground
+import PlaygroundSupport
 
-XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
+PlaygroundPage.current.needsIndefiniteExecution = true
 let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
 //: Here are some simplistic Promises. When you use the `call` method, they will complete with their given value.
@@ -39,7 +39,7 @@ func dashedLine() throws -> String {
     guard 0 <= width else {
         throw someError
     }
-    return Array(count: width, repeatedValue: "-").joinWithSeparator("")
+    return Array(repeating: "-", count: width).joined(separator: "")
 }
 
 let dashedLinePromise = Promise.lift(dashedLine)
@@ -52,14 +52,14 @@ let dashedLinePromise = Promise.lift(dashedLine)
  The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes.
  */
 
-func getStringWithArgument(argument: String, completion: ((String?, ErrorType?) -> Void)?) {
-    delay(1.0) {
+func getString(argument: String, completion: ((String?, Error?) -> Void)?) {
+    delay(interval: .seconds(1)) {
         let value = "Completing: \(argument)"
         completion?(value, nil)
     }
 }
 
-getStringWithArgument("foo") { value, error in
+getString(argument: "foo") { value, error in
     if let value = value {
         print(value)
     } else {
@@ -73,16 +73,16 @@ getStringWithArgument("foo") { value, error in
  To make a new Promise, you create it with a task. A task is a block that itself has a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. Results must be a success or failure.
  */
 
-func getStringPromiseWithArgument(argument: String) -> Promise<String> {
+func getStringPromise(argument: String) -> Promise<String> {
     return Promise { fulfill in
-        delay(2.0) {
+        delay(interval: .seconds(2)) {
             let value = "Completing: \(argument)"
             fulfill(Result { value })
         }
     }
 }
 
-let stringPromise = getStringPromiseWithArgument("bar")
+let stringPromise = getStringPromise(argument: "bar")
 
 /*:
  `stringPromise` has captured its task, and the task has captured the argument. It is an operation waiting to begin. So with Promises you can create operations and then start them later. You can start them more than once, or not at all.
@@ -112,9 +112,9 @@ stringPromise.call { result in
  - `retry` to repeat the Promise until it's successful, or until a failure count is reached.
  - `inBackground` to run a Promise in the background, then complete on the main queue.
  - `inDispatchGroup` to run a Promise as a task in a GCD dispatch group.
- - `result` to add a step to perform without modifying the result.
- - `success` to add a step to perform only when successful.
- - `failure` to add a step to perform only when failing.
+ - `onResult` to add a step to perform without modifying the result.
+ - `onSuccess` to add a step to perform only when successful.
+ - `onFailure` to add a step to perform only when failing.
 
  > Remember that a `Promise` value is an operation that hasn't been started yet and that can produce a value or error. We are transforming operations that haven't been started into other operations that we can start instead.
  */
@@ -124,7 +124,7 @@ let intPromise = stringPromise.map { Int($0) }
 let stringAndIntPromise = zip(stringPromise, intPromise)
 
 let twoStepPromise = stringPromise.flatMap { string in
-    getStringPromiseWithArgument("\(string) baz")
+    getStringPromise(argument: "\(string) baz")
 }
 
 let multipleOfTwoPromise = Promise<Int> { fulfill in
@@ -143,18 +143,18 @@ let complexPromise =
         multipleOfTwoPromise.recover { _ in
             return Promise(value: 2)
         },
-        getStringPromiseWithArgument("computed in the background")
+        getStringPromise(argument: "computed in the background")
             .inBackground()
             .map { "\($0) then extended on the main queue" }
     )
-    .retry(3)
-    .result { result in
+    .retry(attemptCount: 3)
+    .onResult { result in
         print("Complex promise produced success or failure: \(result)")
     }
-    .success { int, string in
+    .onSuccess { int, string in
         print("Complex promise succeeded. Multiple of two: \(int), string: \(string)")
     }
-    .failure { error in
+    .onFailure { error in
         print("Complex promise failed: \(error)")
     }
 
@@ -189,12 +189,12 @@ stringPromise.enqueue(in: stringQueue)
 twoStepPromise.enqueue(in: stringQueue)
 
 //: A queue can also make a batch promise that enqueues many promises and returns when the last has finished.
-let batchPromise = stringQueue.batch([stringPromise, twoStepPromise])
+let batchPromise = stringQueue.batch(promises: [stringPromise, twoStepPromise])
 
 batchPromise.call { result in
     print("Batch produced successes or failure: \(result)")
 
-    XCPlaygroundPage.currentPage.finishExecution()
+    PlaygroundPage.current.finishExecution()
 }
 
 //: [<< Result](@previous) • [Index](Index)
