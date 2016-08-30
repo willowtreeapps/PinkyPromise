@@ -112,9 +112,10 @@ stringPromise.call { result in
  - `retry` to repeat the Promise until it's successful, or until a failure count is reached.
  - `inBackground` to run a Promise in the background, then complete on the main queue.
  - `inDispatchGroup` to run a Promise as a task in a GCD dispatch group.
+ - `result` to add a step to perform without modifying the result.
  - `success` to add a step to perform only when successful.
  - `failure` to add a step to perform only when failing.
- 
+
  > Remember that a `Promise` value is an operation that hasn't been started yet and that can produce a value or error. We are transforming operations that haven't been started into other operations that we can start instead.
  */
 
@@ -147,6 +148,9 @@ let complexPromise =
             .map { "\($0) then extended on the main queue" }
     )
     .retry(3)
+    .result { result in
+        print("Complex promise produced success or failure: \(result)")
+    }
     .success { int, string in
         print("Complex promise succeeded. Multiple of two: \(int), string: \(string)")
     }
@@ -170,6 +174,25 @@ complexPromise.call { result in
     } catch {
         print(error)
     }
+}
+
+/*:
+ ## PromiseQueue
+
+ Promises of the same type can be run one at a time in a queue.
+ */
+
+let stringQueue = PromiseQueue<String>()
+
+//: Use `enqueue` instead of `call` to add promises one at a time and run them immediately.
+stringPromise.enqueue(in: stringQueue)
+twoStepPromise.enqueue(in: stringQueue)
+
+//: A queue can also make a batch promise that enqueues many promises and returns when the last has finished.
+let batchPromise = stringQueue.batch([stringPromise, twoStepPromise])
+
+batchPromise.call { result in
+    print("Batch produced successes or failure: \(result)")
 
     XCPlaygroundPage.currentPage.finishExecution()
 }

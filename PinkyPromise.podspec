@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "PinkyPromise"
-  s.version      = "0.3.0"
+  s.version      = "0.4.0"
   s.summary      = "A tiny Promises library."
   s.description  = <<-DESC
                    PinkyPromise is a lightweight tool for coordinating asynchronous code.
 
-                   It consists of a Promise type, which represents a task,
+                   It consists mainly of a Promise type, which represents a task,
                    and a Result type, which represents success or failure.
                    These are immutable values that can be transformed in functional style.
 
