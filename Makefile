@@ -6,13 +6,13 @@ usage:
 	@echo "Make manages our CI server builds and provides local build options."
 	@echo ""
 	@echo "Local usage:"
-	@echo "    make test\t\tRun Pinky Promise test suite"
+	@echo "    make test\t\tRun PinkyPromise test suite"
 
 .PHONY: test
 test:
 	make _test PROJECT=PinkyPromise \
 	           SCHEME=PinkyPromise \
-	           SDK=macosx10.11
+	           SDK=macosx10.12
 
 .PHONY: _test
 _test:
