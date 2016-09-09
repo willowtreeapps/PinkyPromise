@@ -40,12 +40,12 @@ public struct Promise<T> {
 
     public typealias Value = T
     public typealias Observer = (Result<Value>) -> Void
-    public typealias Task = (Observer) -> Void
+    public typealias Task = (@escaping Observer) -> Void
 
     private let task: Task
 
     // A promise that produces its result by running an asynchronous task.
-    public init(task: Task) {
+    public init(task: @escaping Task) {
         self.task = task
     }
 
@@ -204,7 +204,7 @@ public struct Promise<T> {
 
     // Performs work defined by the promise and eventually calls completion.
     // Promises won't do any work until you call this.
-    public func call(completion: Observer) {
+    public func call(completion: @escaping Observer) {
         task(completion)
     }
 
