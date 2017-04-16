@@ -183,7 +183,7 @@ getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
 
 We intend to keep PinkyPromise fully unit tested.
 
-You can run tests in Xcode, or use `scan` from [Fastlane Tools](https://fastlane.tools).
+You can run tests in Xcode, or use `bundle exec fastlane run_tests` with [Fastlane](https://fastlane.tools).
 
 We run continuous integration on [CircleCI](https://circleci.com/gh/willowtreeapps/PinkyPromise).
 

@@ -1,11 +1,10 @@
 machine:
   xcode:
-    version: "8.0"
-  environment:
-    XCODE_PROJECT: "PinkyPromise.xcodeproj"
-    XCODE_SCHEME: "PinkyPromise"
+    version: "8.1"
 test:
   override:
-    - make test
+    - gem install bundler
+    - bundle install
+    - bundle exec fastlane run_tests
   post:
     - bundle exec slather

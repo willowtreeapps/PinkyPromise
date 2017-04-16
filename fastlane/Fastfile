@@ -1,0 +1,12 @@
+lane :run_tests do
+    scan(
+        scheme: "PinkyPromise",
+        output_directory: ENV["CIRCLE_TEST_REPORTS"],
+        project: "PinkyPromise.xcodeproj",
+        output_style: "standard",
+        output_types: "html, junit",
+        include_simulator_logs: false,
+        code_coverage: true
+    )
+end
+
