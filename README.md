@@ -189,9 +189,8 @@ We run continuous integration on [CircleCI](https://circleci.com/gh/willowtreeap
 
 ## Roadmap
 
-- Carthage?
+- Carthage
 - More Promise transformations?
-- Swift 3?
 
 ## Contributing to PinkyPromise
 
