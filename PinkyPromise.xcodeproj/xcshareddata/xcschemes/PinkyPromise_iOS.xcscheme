@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "058778761E8AB5CB00921CF2"
-               BuildableName = "[iOS] PinkyPromise Framework.framework"
-               BlueprintName = "[iOS] PinkyPromise Framework"
+               BuildableName = "PinkyPromise.framework"
+               BlueprintName = "PinkyPromise_iOS"
                ReferencedContainer = "container:PinkyPromise.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,9 +26,29 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0AE6E5B01EA4295D0089281D"
+               BuildableName = "PinkyPromiseTests_iOS.xctest"
+               BlueprintName = "PinkyPromiseTests_iOS"
+               ReferencedContainer = "container:PinkyPromise.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "058778761E8AB5CB00921CF2"
+            BuildableName = "PinkyPromise.framework"
+            BlueprintName = "PinkyPromise_iOS"
+            ReferencedContainer = "container:PinkyPromise.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -46,8 +66,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "058778761E8AB5CB00921CF2"
-            BuildableName = "[iOS] PinkyPromise Framework.framework"
-            BlueprintName = "[iOS] PinkyPromise Framework"
+            BuildableName = "PinkyPromise.framework"
+            BlueprintName = "PinkyPromise_iOS"
             ReferencedContainer = "container:PinkyPromise.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +84,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "058778761E8AB5CB00921CF2"
-            BuildableName = "[iOS] PinkyPromise Framework.framework"
-            BlueprintName = "[iOS] PinkyPromise Framework"
+            BuildableName = "PinkyPromise.framework"
+            BlueprintName = "PinkyPromise_iOS"
             ReferencedContainer = "container:PinkyPromise.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
