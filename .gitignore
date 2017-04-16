@@ -1,4 +1,4 @@
-# OS X
+# macOS
 .DS_Store
 
 # Xcode
@@ -7,5 +7,7 @@ xcuserdata
 # swift-build
 .build
 
-# scan
-test_output
+# fastlane
+fastlane/README.md
+fastlane/report.xml
+fastlane/test_output

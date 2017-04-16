@@ -36,8 +36,8 @@ class PromiseQueueTest: XCTestCase {
 
             let promises = [promise1, promise2]
 
-            let completionCalled = expectationWithDescription("Completion was called")
-            queue.batch(promises).call { result in
+            let completionCalled = expectation(description: "Completion was called")
+            queue.batch(promises: promises).call { result in
                 TestHelpers.expectSuccess([expectedValue1, expectedValue2], result: result, message: "Expected an array with all success values.")
                 completionCalled.fulfill()
             }
@@ -55,8 +55,8 @@ class PromiseQueueTest: XCTestCase {
 
             let promises = [promise1, promise2]
 
-            let completionCalled = expectationWithDescription("Completion was called")
-            queue.batch(promises).call { result in
+            let completionCalled = expectation(description: "Completion was called")
+            queue.batch(promises: promises).call { result in
                 TestHelpers.expectFailure(expectedError, result: result)
                 completionCalled.fulfill()
             }
@@ -74,8 +74,8 @@ class PromiseQueueTest: XCTestCase {
 
             let promises = [promise1, promise2]
 
-            let completionCalled = expectationWithDescription("Completion was called")
-            queue.batch(promises).call { result in
+            let completionCalled = expectation(description: "Completion was called")
+            queue.batch(promises: promises).call { result in
                 TestHelpers.expectFailure(expectedError, result: result)
                 completionCalled.fulfill()
             }
@@ -85,8 +85,8 @@ class PromiseQueueTest: XCTestCase {
         do {
             let queue = PromiseQueue<Int>()
 
-            let completionCalled = expectationWithDescription("Completion was called")
-            queue.batch(sampleBatch()).call { _ in
+            let completionCalled = expectation(description: "Completion was called")
+            queue.batch(promises: sampleBatch()).call { _ in
                 completionCalled.fulfill()
             }
         }
@@ -96,14 +96,14 @@ class PromiseQueueTest: XCTestCase {
             let queue = PromiseQueue<Int>()
 
             let expectedValues: [Int] = []
-            let completionCalled = expectationWithDescription("Completion was called")
-            queue.batch([]).call { result in
+            let completionCalled = expectation(description: "Completion was called")
+            queue.batch(promises: []).call { result in
                 TestHelpers.expectSuccess(expectedValues, result: result, message: "Expected an empty list of success values")
                 completionCalled.fulfill()
             }
         }
 
-        waitForExpectationsWithTimeout(1.0, handler: nil)
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
 
     func testPromise_enqueue_in() {
@@ -113,27 +113,27 @@ class PromiseQueueTest: XCTestCase {
             promise.enqueue(in: queue)
         }
         
-        waitForExpectationsWithTimeout(1.0, handler: nil)
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
 
     // MARK: Helpers
 
     // A batch of promises that run one at a time, succeed and fail,
     // and validate that they were run one at a time and in order.
-    private func sampleBatch() -> [Promise<Int>] {
+    fileprivate func sampleBatch() -> [Promise<Int>] {
         var nextValue = 0
         
         return (1...10).flatMap { _ -> [Promise<Int>] in
             let expectedError = TestHelpers.uniqueError()
 
-            let successResultCalled = self.expectationWithDescription("Success result was called")
-            let failureResultCalled = self.expectationWithDescription("Failure result was called")
+            let successResultCalled = self.expectation(description: "Success result was called")
+            let failureResultCalled = self.expectation(description: "Failure result was called")
             
             return [
                 Promise.lift {
                     nextValue += 1
                     return nextValue
-                }.result { result in
+                }.onResult { result in
                     TestHelpers.expectSuccess(nextValue, result: result, message: "Expected the next success value.")
                     
                     successResultCalled.fulfill()
@@ -141,7 +141,7 @@ class PromiseQueueTest: XCTestCase {
                 Promise.lift {
                     nextValue += 1
                     throw expectedError
-                }.result { result in
+                }.onResult { result in
                     TestHelpers.expectFailure(expectedError, result: result)
 
                     failureResultCalled.fulfill()

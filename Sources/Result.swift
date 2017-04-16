@@ -42,39 +42,39 @@ public enum Result<T> {
 
     public typealias Value = T
 
-    case Success(Value)
-    case Failure(ErrorType)
+    case success(Value)
+    case failure(Error)
 
     // Create a Result by returning a value or throwing an error.
-    public init(@noescape create: () throws -> Value) {
+    public init(create: () throws -> Value) {
         do {
             let value = try create()
-            self = .Success(value)
+            self = .success(value)
         } catch {
-            self = .Failure(error)
+            self = .failure(error)
         }
     }
 
     // Unwrap a success value or throw a failure value.
     public func value() throws -> Value {
         switch self {
-        case .Success(let value):
+        case .success(let value):
             return value
-        case .Failure(let error):
+        case .failure(let error):
             throw error
         }
     }
 
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value.
-    public func map<U>(@noescape transform: (Value) -> U) -> Result<U> {
+    public func map<U>(_ transform: (Value) -> U) -> Result<U> {
         return tryMap(transform)
     }
 
     // The canonical flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success or failure.
-    public func flatMap<U>(@noescape transform: (Value) -> Result<U>) -> Result<U> {
+    public func flatMap<U>(_ transform: (Value) -> Result<U>) -> Result<U> {
         return tryMap { value in
             try transform(value).value()
         }
@@ -83,7 +83,7 @@ public enum Result<T> {
     // An error-catching variation on flatMap.
     // Return a failure if we have one.
     // Otherwise, transform the success value into a new success value, or fail if an error is thrown.
-    public func tryMap<U>(@noescape transform: (Value) throws -> U) -> Result<U> {
+    public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U> {
         return Result<U> {
             try transform(try value())
         }
@@ -92,28 +92,28 @@ public enum Result<T> {
 }
 
 // From two Results, return one Result of their values or the first failure.
-public func zip<A, B>(resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
+public func zip<A, B>(_ resultA: Result<A>, _ resultB: Result<B>) -> Result<(A, B)> {
     return resultA.tryMap { a in
         (a, try resultB.value())
     }
 }
 
 // From three Results, return one Result of their values or the first failure.
-public func zip<A, B, C>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
+public func zip<A, B, C>(_ resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>) -> Result<(A, B, C)> {
     return zip(resultA, resultB).tryMap { a, b in
         (a, b, try resultC.value())
     }
 }
 
 // From four Results, return one Result of their values or the first failure.
-public func zip<A, B, C, D>(resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
+public func zip<A, B, C, D>(_ resultA: Result<A>, _ resultB: Result<B>, _ resultC: Result<C>, _ resultD: Result<D>) -> Result<(A, B, C, D)> {
     return zip(resultA, resultB, resultC).tryMap { a, b, c in
         (a, b, c, try resultD.value())
     }
 }
 
 // From an array of Results, return one Result of an array of their values or the first failure.
-public func zipArray<T>(results: [Result<T>]) -> Result<[T]> {
+public func zipArray<T>(_ results: [Result<T>]) -> Result<[T]> {
     return results.reduce(Result { [] }) { arrayResult, itemResult in
         arrayResult.tryMap { array in
             array + [try itemResult.value()]
