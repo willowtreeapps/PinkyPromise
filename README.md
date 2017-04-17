@@ -176,6 +176,7 @@ getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
 
 ## Installation
 
+- With Carthage: `github "willowtreeapps/PinkyPromise"`
 - With Cocoapods: `pod 'PinkyPromise'`
 - Manually: Copy the files in the `Sources` folder into your project.
 
@@ -189,7 +190,6 @@ We run continuous integration on [CircleCI](https://circleci.com/gh/willowtreeap
 
 ## Roadmap
 
-- Carthage
 - More Promise transformations?
 
 ## Contributing to PinkyPromise
