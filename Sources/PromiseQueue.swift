@@ -51,14 +51,14 @@ public final class PromiseQueue<T> {
 
             for promise in promises.dropLast() {
                 promise
-                    .result { result in
+                    .onResult { result in
                         results.append(result)
                     }
                     .enqueue(in: self)
             }
 
             lastPromise
-                .result { result in
+                .onResult { result in
                     results.append(result)
                     fulfill(zipArray(results))
                 }
@@ -69,7 +69,7 @@ public final class PromiseQueue<T> {
     // MARK: Helpers
 
     // Enqueue a promise. It will run when no others remain ahead of it in the queue.
-    private func add(promise: Promise<Value>) {
+    fileprivate func add(_ promise: Promise<Value>) {
         remainingPromises.append(promise)
 
         continueIfIdle()

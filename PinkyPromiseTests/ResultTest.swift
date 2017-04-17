@@ -32,7 +32,7 @@ import PinkyPromise
 
 class ResultTest: XCTestCase {
 
-    private struct Fixtures {
+    fileprivate struct Fixtures {
         let object: NSObject
         let error: NSError
 
@@ -44,10 +44,10 @@ class ResultTest: XCTestCase {
         let successfulJSONArrayString: Result<String>
         let failedString: Result<String>
 
-        let integerFormatter: NSNumberFormatter
+        let integerFormatter: NumberFormatter
     }
 
-    private var fixtures: Fixtures!
+    fileprivate var fixtures: Fixtures!
     
     override func setUp() {
         super.setUp()
@@ -55,20 +55,20 @@ class ResultTest: XCTestCase {
         let object = NSObject()
         let error = TestHelpers.uniqueError()
 
-        let integerFormatter = NSNumberFormatter()
-        integerFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let integerFormatter = NumberFormatter()
+        integerFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
         integerFormatter.maximumFractionDigits = 0
 
         fixtures = Fixtures(
             object: object,
             error: error,
-            successfulInt: .Success(3),
-            failedInt: .Failure(error),
-            successfulObject: .Success(object),
-            failedObject: .Failure(error),
-            successfulNumberString: .Success("123"),
-            successfulJSONArrayString: .Success("[1, 2, 3]"),
-            failedString: .Failure(error),
+            successfulInt: .success(3),
+            failedInt: .failure(error),
+            successfulObject: .success(object),
+            failedObject: .failure(error),
+            successfulNumberString: .success("123"),
+            successfulJSONArrayString: .success("[1, 2, 3]"),
+            failedString: .failure(error),
             integerFormatter: integerFormatter
         )
     }
@@ -109,10 +109,10 @@ class ResultTest: XCTestCase {
         let parseError = TestHelpers.uniqueError()
 
         let stringAsInt: (String) -> Result<Int> = { string in
-            if let number = self.fixtures.integerFormatter.numberFromString(string) as? Int {
-                return .Success(number)
+            if let number = self.fixtures.integerFormatter.number(from: string) as? Int {
+                return .success(number)
             } else {
-                return .Failure(parseError)
+                return .failure(parseError)
             }
         }
 
@@ -131,13 +131,13 @@ class ResultTest: XCTestCase {
         let castToIntArrayError = TestHelpers.uniqueError()
 
         let jsonStringAsIntSet: (String) throws -> Set<Int> = { string in
-            guard let data = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+            guard let data = string.data(using: String.Encoding.utf8) else {
                 throw encodeDataError
             }
 
-            let object: AnyObject
+            let object: Any
             do {
-                object = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                object = try JSONSerialization.jsonObject(with: data, options: [])
             } catch {
                 throw parseJSONError
             }
@@ -164,15 +164,15 @@ class ResultTest: XCTestCase {
         let error3 = TestHelpers.uniqueError()
         let error4 = TestHelpers.uniqueError()
 
-        let success1: Result<Int> = .Success(1)
-        let success2: Result<String> = .Success("hi")
-        let success3: Result<Int> = .Success(3)
-        let success4: Result<String> = .Success("bye")
+        let success1: Result<Int> = .success(1)
+        let success2: Result<String> = .success("hi")
+        let success3: Result<Int> = .success(3)
+        let success4: Result<String> = .success("bye")
 
-        let failure1: Result<Int> = .Failure(error1)
-        let failure2: Result<String> = .Failure(error2)
-        let failure3: Result<Int> = .Failure(error3)
-        let failure4: Result<String> = .Failure(error4)
+        let failure1: Result<Int> = .failure(error1)
+        let failure2: Result<String> = .failure(error2)
+        let failure3: Result<Int> = .failure(error3)
+        let failure4: Result<String> = .failure(error4)
 
         TestHelpers.expectSuccess((1, "hi"), result: zip(success1, success2), message: "Expected to zip 1 and \"hi\" into (1, \"hi\").")
         TestHelpers.expectFailure(error2, result: zip(success1, failure2))
@@ -211,13 +211,13 @@ class ResultTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Result<Int> = .Success(112)
-        let success2: Result<Int> = .Success(-15)
-        let success3: Result<Int> = .Success(3)
+        let success1: Result<Int> = .success(112)
+        let success2: Result<Int> = .success(-15)
+        let success3: Result<Int> = .success(3)
 
-        let failure1: Result<Int> = .Failure(error1)
-        let failure2: Result<Int> = .Failure(error2)
-        let failure3: Result<Int> = .Failure(error3)
+        let failure1: Result<Int> = .failure(error1)
+        let failure2: Result<Int> = .failure(error2)
+        let failure3: Result<Int> = .failure(error3)
 
         TestHelpers.expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
         TestHelpers.expectFailure(error3, result: zipArray([success1, success2, failure3]))

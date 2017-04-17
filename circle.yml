@@ -1,8 +1,10 @@
 machine:
   xcode:
-    version: "7.3"
+    version: "8.1"
 test:
   override:
-    - make test
+    - gem install bundler
+    - bundle install
+    - bundle exec fastlane run_tests
   post:
     - bundle exec slather

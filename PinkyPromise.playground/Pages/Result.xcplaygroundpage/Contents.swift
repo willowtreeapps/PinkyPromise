@@ -7,25 +7,25 @@
  */
 
 import Foundation
-import XCPlayground
+import PlaygroundSupport
 
-XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
+PlaygroundPage.current.needsIndefiniteExecution = true
 let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
 
 //: First, here are some values that a Result can be. Note that for each `Result<T>`, you can have either a value of `T` or an error.
 
-let successfulString: Result<String> = .Success("Hello, world")
-let failedString:     Result<String> = .Failure(someError)
+let successfulString: Result<String> = .success("Hello, world")
+let failedString:     Result<String> = .failure(someError)
 
-let successfulVoid: Result<Void> = .Success()
-let failedVoid:     Result<Void> = .Failure(someError)
+let successfulVoid: Result<Void> = .success()
+let failedVoid:     Result<Void> = .failure(someError)
 
 //: You can `switch` to handle both cases.
 
 switch successfulString {
-case .Success(let value):
+case .success(let value):
     print("Success case: \(value)")
-case .Failure(let error):
+case .failure(let error):
     print("Failure case: \(error)")
 }
 
@@ -63,21 +63,11 @@ print()
  > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
  */
 
-func printResult<T>(result: Result<T>) {
-    let type = "\(result.dynamicType)"
-    do {
-        let value = try result.value()
-        print("\(type).Success: \(value)")
-    } catch {
-        print("\(type).Failure: \(error)")
-    }
-}
+print(successfulString)
+print(successfulVoid)
 
-printResult(successfulString)
-printResult(successfulVoid)
-
-printResult(failedString)
-printResult(failedVoid)
+print(failedString)
+print(failedVoid)
 
 print()
 
@@ -94,10 +84,10 @@ print()
 
 let stringAndIntArray = zip(successfulString, successfulIntArray)
 
-let stringLength = successfulString.map { $0.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) }
+let stringLength = successfulString.map { $0.lengthOfBytes(using: .utf8) }
 
 let sumOfIntsAsString = successfulIntArray.map { intArray in
-    intArray.reduce(0, combine: +)
+    intArray.reduce(0, +)
 }.map { sum in
     "The sum is: \(sum)"
 }
@@ -116,11 +106,11 @@ let dataInFile = successfulString.tryMap { path in
     try NSData(contentsOfFile: path, options: [])
 }
 
-printResult(stringAndIntArray)
-printResult(stringLength)
-printResult(sumOfIntsAsString)
-printResult(firstInt)
-printResult(dataInFile)
+print(stringAndIntArray)
+print(stringLength)
+print(sumOfIntsAsString)
+print(firstInt)
+print(dataInFile)
 
 print()
 
@@ -138,8 +128,8 @@ print()
  Let's use `Result` in an asynchronous context with a completion block, where `throw` can't be used to return an error. Here, our function is like a network request function, and our completion block neatly handles two cases.
  */
 
-func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
-    delay(3.0) {
+func getJSONAndParseValue(completion: ((Result<Int>) -> Void)?) {
+    delay(interval: .seconds(3)) {
         // Suppose we did a network request to get this response body from an API.
         let jsonStringResult = Result { "{ \"key\": 101 }" }
 
@@ -147,17 +137,17 @@ func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
             // Interpret the response body as JSON.
 
             // Fail if the string wasn't encodable in UTF-8.
-            guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding) else {
+            guard let data = jsonString.data(using: .utf8) else {
                 throw someError
             }
 
             // Fail if the data isn't valid JSON.
-            return try NSJSONSerialization.JSONObjectWithData(data, options: [])
-        }.tryMap { (jsonObject: AnyObject) in
+            return try JSONSerialization.jsonObject(with: data, options: [])
+        }.tryMap { (jsonValue: Any) in
             // Parse the expected value from JSON.
 
             // Fail if it's not the right format.
-            guard let dictionary = jsonObject as? NSDictionary, let value = dictionary["key"] as? Int else {
+            guard let dictionary = jsonValue as? NSDictionary, let value = dictionary["key"] as? Int else {
                 throw someError
             }
 
@@ -169,7 +159,7 @@ func getJSONAndParseValueWithCompletion(completion: ((Result<Int>) -> Void)?) {
 }
 
 print("Asynchronous operation starting.")
-getJSONAndParseValueWithCompletion { result in
+getJSONAndParseValue { result in
     print("Asynchronous operation completed:")
     do {
         print(try result.value())
@@ -177,7 +167,7 @@ getJSONAndParseValueWithCompletion { result in
         print(error)
     }
 
-    XCPlaygroundPage.currentPage.finishExecution()
+    PlaygroundPage.current.finishExecution()
 }
 
 //: Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.

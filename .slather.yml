@@ -3,5 +3,5 @@
 ci_service: circleci
 coverage_service: coveralls
 xcodeproj: PinkyPromise.xcodeproj
-scheme: PinkyPromise
+scheme: PinkyPromise_iOS
 output_directory: <%= ENV["CIRCLE_TEST_REPORTS"] %>
