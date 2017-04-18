@@ -1,0 +1,6 @@
+output: Documentation
+skip_undocumented: true
+min_acl: public
+author: Kevin Conner
+author_url: https://github.com/kconner
+github_url: https://github.com/willowtreeapps/PinkyPromise
