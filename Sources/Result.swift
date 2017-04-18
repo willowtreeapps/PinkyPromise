@@ -29,7 +29,7 @@
 import Foundation
 
 /**
- A model for a success or failure case.
+ A model for a success or failure.
 
  This type precisely represents the domain of results of a function call that either returns a value or throws an error.
  
@@ -48,6 +48,8 @@ public enum Result<Value> {
     /// A failed result wrapping a thrown error.
     case failure(Error)
 
+    // MARK: Wrapping
+
     /**
      Creates a result by immediately invoking a function that returns or throws.
 
@@ -63,6 +65,8 @@ public enum Result<Value> {
             self = .failure(error)
         }
     }
+
+    // MARK: Unwrapping
 
     /**
      Returns or throws the wrapped value or error.
@@ -80,6 +84,8 @@ public enum Result<Value> {
             throw error
         }
     }
+
+    // MARK: Transforming
 
     /**
      Transforms a success value and wraps it in a new successful result.
