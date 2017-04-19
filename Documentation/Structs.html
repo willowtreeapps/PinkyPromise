@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Structs  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Structs  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">PinkyPromise Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/willowtreeapps/PinkyPromise"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">PinkyPromise Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Structs  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/PromiseQueue.html">PromiseQueue</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu0_rFTGOS_6Resultx_GS0_q___GS0_Txq___">zip(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu0_rFTGVS_7Promisex_GS0_q___GS0_Txq___">zip(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu1_rFTGOS_6Resultx_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu1_rFTGVS_7Promisex_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu2_rFTGOS_6Resultx_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise3zipu2_rFTGVS_7Promisex_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGOS_6Resultx__GS0_GSax__">zipArray(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGVS_7Promisex__GS0_GSax__">zipArray(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/Promise.html">Promise</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Structs</h1>
+            <p>The following structs are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:V12PinkyPromise7Promise"></a>
+                    <a name="//apple_ref/swift/Struct/Promise" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V12PinkyPromise7Promise">Promise</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A transformable, repeatable, failable asynchronous task.</p>
+
+<p>This type represents a function with a potentially failing completion callback.</p>
+
+<p>A Promise wraps a function which must eventually produce exactly one <code><a href="Enums/Result.html">Result</a></code> for each time it is run.</p>
+
+<p>Promises can be transformed, chained, and combined to construct complex asynchronous workflows.</p>
+
+<p>Unlike other implementations of promises, this type does not save its result.
+The task runs and produces a new result every time you invoke <code>call</code>.</p>
+
+<ul>
+<li>First, create a promise that wraps an asynchronous task.</li>
+<li>Use <code>flatMap</code> and other transformations to chain additional tasks that only run on success of the prior step.</li>
+<li>Use <code>onSuccess</code> or <code>onFailure</code> to process a success or failure value, then continue.</li>
+<li>After building up your composite promise, begin it with <code>call</code>.</li>
+<li>In <code>call</code>&lsquo;s completion, interpret a Result by switching on its cases, or call <code>value</code> to unwrap it and have failures thrown.</li>
+</ul>
+
+                        <a href="Structs/Promise.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="https://github.com/kconner" target="_blank" rel="external">Kevin Conner</a>. All rights reserved. (Last updated: 2017-04-21)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
