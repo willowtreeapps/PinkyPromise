@@ -317,7 +317,7 @@ public struct Promise<Value> {
 
  - parameter promiseA: The first promise to run.
  - parameter promiseB: The second promise to run.
- - returns: A promise wrapping either a tuple of all the given promises' success values, or the first error among them.
+ - returns: A promise whose task runs all the given promises and produces either a tuple of all the given promises' success values, or the first error among them.
  
  If the promises produce more than one failure, the first failure will be chosen in argument order, not completion order.
  */
@@ -348,8 +348,8 @@ public func zip<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise
  - parameter promiseA: The first promise to run.
  - parameter promiseB: The second promise to run.
  - parameter promiseC: The third promise to run.
- - returns: A promise wrapping either a tuple of all the given promises' success values, or the first error among them.
- 
+ - returns: A promise whose task runs all the given promises and produces either a tuple of all the given promises' success values, or the first error among them.
+
  If the promises produce more than one failure, the first failure will be chosen in argument order, not completion order.
  */
 public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>) -> Promise<(A, B, C)> {
@@ -385,8 +385,8 @@ public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promi
  - parameter promiseB: The second promise to run.
  - parameter promiseC: The third promise to run.
  - parameter promiseD: The fourth promise to run.
- - returns: A promise wrapping either a tuple of all the given promises' success values, or the first error among them.
- 
+ - returns: A promise whose task runs all the given promises and produces either a tuple of all the given promises' success values, or the first error among them.
+
  If the promises produce more than one failure, the first failure will be chosen in argument order, not completion order.
  */
 public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>, _ promiseD: Promise<D>) -> Promise<(A, B, C, D)> {
@@ -424,7 +424,7 @@ public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ pr
  Creates a promise that runs an array of promises simultaneously and unifies their results.
 
  - parameter promises: The array of promises to run.
- - returns: A promise wrapping either an array of all the given promises' success values, or the first error among them.
+ - returns: A promise whose task runs all the given promises and produces either an array of all the given promises' success values, or the first error among them.
  
  If the promises produce more than one failure, the first failure will be chosen in array order, not completion order.
  */
