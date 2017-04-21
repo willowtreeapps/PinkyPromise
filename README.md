@@ -12,6 +12,12 @@ PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Fu
 
 With PinkyPromise, you can run complex combinations of asynchronous operations with safe, clean, Swifty code.
 
+## Installation
+
+- With Carthage: `github "willowtreeapps/PinkyPromise"`
+- With Cocoapods: `pod 'PinkyPromise'`
+- Manually: Copy the files in the `Sources` folder into your project.
+
 ## Should I use this?
 
 PinkyPromise:
@@ -173,12 +179,6 @@ getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
     }
 }
 ````
-
-## Installation
-
-- With Carthage: `github "willowtreeapps/PinkyPromise"`
-- With Cocoapods: `pod 'PinkyPromise'`
-- Manually: Copy the files in the `Sources` folder into your project.
 
 ## Tests
 

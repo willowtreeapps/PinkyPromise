@@ -28,7 +28,7 @@
 
 import Foundation
 
-/// A simple FIFO queue that runs one Promise at a time.
+/// A simple queue that runs one Promise at a time in the order they're added.
 
 public final class PromiseQueue<Value> {
 
