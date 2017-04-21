@@ -10,7 +10,9 @@ import Foundation
 import PlaygroundSupport
 
 PlaygroundPage.current.needsIndefiniteExecution = true
-let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
+
+struct ExampleError: Error {}
+let someError = ExampleError()
 
 //: First, here are some values that a Result can be. Note that for each `Result<T>`, you can have either a value of `T` or an error.
 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PromiseQueue Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/PromiseQueue" class="dashAnchor"></a>
+    <a title="PromiseQueue Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">PinkyPromise Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/willowtreeapps/PinkyPromise"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">PinkyPromise Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        PromiseQueue Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/PromiseQueue.html">PromiseQueue</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu0_rFTGOS_6Resultx_GS0_q___GS0_Txq___">zip(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu0_rFTGVS_7Promisex_GS0_q___GS0_Txq___">zip(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu1_rFTGOS_6Resultx_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu1_rFTGVS_7Promisex_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu2_rFTGOS_6Resultx_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise3zipu2_rFTGVS_7Promisex_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGOS_6Resultx__GS0_GSax__">zipArray(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGVS_7Promisex__GS0_GSax__">zipArray(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Promise.html">Promise</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>PromiseQueue</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">PromiseQueue</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
+
+                </div>
+              </div>
+            <p>A simple queue that runs one Promise at a time in the order they&rsquo;re added.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC12PinkyPromise12PromiseQueuecFT_GS0_x_"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC12PinkyPromise12PromiseQueuecFT_GS0_x_">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a queue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC12PinkyPromise12PromiseQueue5batchFT8promisesGSaGVS_7Promisex___GS1_GSax__"></a>
+                    <a name="//apple_ref/swift/Method/batch(promises:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC12PinkyPromise12PromiseQueue5batchFT8promisesGSaGVS_7Promisex___GS1_GSax__">batch(promises:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a promise that enqueues an array of promises and unifies their results.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">batch</span><span class="p">(</span><span class="nv">promises</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/Promise.html">Promise</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/Promise.html">Promise</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt">Value</span><span class="p">]</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>promises</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The array of promises to run.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A promise whose task runs all the given promises and produces either an array of all the given promises’ success values, or the first error among them.</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="https://github.com/kconner" target="_blank" rel="external">Kevin Conner</a>. All rights reserved. (Last updated: 2017-04-21)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
