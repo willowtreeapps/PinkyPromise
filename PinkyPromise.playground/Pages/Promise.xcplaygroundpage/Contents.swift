@@ -17,7 +17,9 @@ import Foundation
 import PlaygroundSupport
 
 PlaygroundPage.current.needsIndefiniteExecution = true
-let someError = NSError(domain: "ExampleDomain", code: 101, userInfo: nil)
+
+struct ExampleError: Error {}
+let someError = ExampleError()
 
 //: Here are some simplistic Promises. When you use the `call` method, they will complete with their given value.
 
@@ -52,18 +54,18 @@ let dashedLinePromise = Promise.lift(dashedLine)
  The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes.
  */
 
-func getString(argument: String, completion: ((String?, Error?) -> Void)?) {
+func getString(withArgument argument: String, completion: ((String?, Error?) -> Void)?) {
     delay(interval: .seconds(1)) {
         let value = "Completing: \(argument)"
         completion?(value, nil)
     }
 }
 
-getString(argument: "foo") { value, error in
+getString(withArgument: "foo") { value, error in
     if let value = value {
         print(value)
     } else {
-        print(error)
+        print(String(describing: error))
     }
 }
 
@@ -73,7 +75,7 @@ getString(argument: "foo") { value, error in
  To make a new Promise, you create it with a task. A task is a block that itself has a completion block, usually called `fulfill`. The Promise runs the task to do its work, and when it's done, the task passes a `Result` to `fulfill`. Results must be a success or failure.
  */
 
-func getStringPromise(argument: String) -> Promise<String> {
+func getStringPromise(withArgument argument: String) -> Promise<String> {
     return Promise { fulfill in
         delay(interval: .seconds(2)) {
             let value = "Completing: \(argument)"
@@ -82,7 +84,7 @@ func getStringPromise(argument: String) -> Promise<String> {
     }
 }
 
-let stringPromise = getStringPromise(argument: "bar")
+let stringPromise = getStringPromise(withArgument: "bar")
 
 /*:
  `stringPromise` has captured its task, and the task has captured the argument. It is an operation waiting to begin. So with Promises you can create operations and then start them later. You can start them more than once, or not at all.
@@ -124,7 +126,7 @@ let intPromise = stringPromise.map { Int($0) }
 let stringAndIntPromise = zip(stringPromise, intPromise)
 
 let twoStepPromise = stringPromise.flatMap { string in
-    getStringPromise(argument: "\(string) baz")
+    getStringPromise(withArgument: "\(string) baz")
 }
 
 let multipleOfTwoPromise = Promise<Int> { fulfill in
@@ -143,7 +145,7 @@ let complexPromise =
         multipleOfTwoPromise.recover { _ in
             return Promise(value: 2)
         },
-        getStringPromise(argument: "computed in the background")
+        getStringPromise(withArgument: "computed in the background")
             .inBackground()
             .map { "\($0) then extended on the main queue" }
     )

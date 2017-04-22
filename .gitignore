@@ -5,9 +5,12 @@
 xcuserdata
 
 # swift-build
-.build
+/.build
 
 # fastlane
-fastlane/README.md
-fastlane/report.xml
-fastlane/test_output
+/fastlane/README.md
+/fastlane/report.xml
+/fastlane/test_output
+
+# xcodebuild via jazzy
+/build
