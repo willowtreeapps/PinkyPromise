@@ -6,5 +6,5 @@ xcodeproj: PinkyPromise.xcodeproj
 scheme: PinkyPromise_iOS
 source_directory: Sources
 ignore:
-  - PinkyPromiseTests/*
+  - Tests/*
 output_directory: <%= ENV["CIRCLE_TEST_REPORTS"] %>
