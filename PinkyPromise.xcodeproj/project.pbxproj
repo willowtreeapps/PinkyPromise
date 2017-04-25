@@ -134,7 +134,8 @@
 				0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */,
 				2CA254781D67846E008AF610 /* PromiseQueueTest.swift */,
 			);
-			path = PinkyPromiseTests;
+			name = PinkyPromiseTests;
+			path = Tests/PinkyPromiseTests;
 			sourceTree = "<group>";
 		};
 		0AE6E5B21EA4295D0089281D /* PinkyPromiseTests_iOS */ = {
