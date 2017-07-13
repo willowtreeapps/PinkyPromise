@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "PinkyPromise"
-  s.version      = "0.5.2"
+  s.version      = "0.5.3"
   s.summary      = "A tiny Promises library."
   s.description  = <<-DESC
                    PinkyPromise is a lightweight tool for coordinating asynchronous code.
