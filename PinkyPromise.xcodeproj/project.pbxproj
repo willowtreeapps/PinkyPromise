@@ -207,10 +207,10 @@
 				"_____Sources_" /* Sources */,
 				058778781E8AB5CB00921CF2 /* PinkyPromise_iOS */,
 				0A0249381EA42C2E004068D3 /* PinkyPromise_macOS */,
+				81E75E2E1F97961A00EF39D5 /* PinkyPromise_tvOS */,
 				0AB957661CB34A1100512B06 /* PinkyPromiseTests */,
 				0AE6E5B21EA4295D0089281D /* PinkyPromiseTests_iOS */,
 				0A0249441EA42C42004068D3 /* PinkyPromiseTests_macOS */,
-				81E75E2E1F97961A00EF39D5 /* PinkyPromise_tvOS */,
 				81E75E391F97961B00EF39D5 /* PinkyPromise_tvOSTests */,
 				"____Products_" /* Products */,
 			);
@@ -393,25 +393,27 @@
 					};
 					0A0249361EA42C2E004068D3 = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = VAK384QBBN;
+						DevelopmentTeam = 7UMFPW78PV;
 						ProvisioningStyle = Automatic;
 					};
 					0A0249421EA42C42004068D3 = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = VAK384QBBN;
+						DevelopmentTeam = 7UMFPW78PV;
 						ProvisioningStyle = Automatic;
 					};
 					0AE6E5B01EA4295D0089281D = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = VAK384QBBN;
+						DevelopmentTeam = 7UMFPW78PV;
 						ProvisioningStyle = Automatic;
 					};
 					81E75E2C1F97961A00EF39D5 = {
 						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = 7UMFPW78PV;
 						ProvisioningStyle = Automatic;
 					};
 					81E75E341F97961B00EF39D5 = {
 						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = 7UMFPW78PV;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -675,13 +677,13 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -731,7 +733,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -773,7 +775,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -785,7 +787,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PinkyPromiseTests_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wilowtree.PinkyPromiseTests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -814,14 +816,14 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PinkyPromiseTests_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wilowtree.PinkyPromiseTests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -846,7 +848,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -857,7 +859,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PinkyPromiseTests_iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromiseTests-iOS";
@@ -885,13 +887,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = VAK384QBBN;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = PinkyPromiseTests_iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromiseTests-iOS";
@@ -923,11 +925,13 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -984,6 +988,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1032,6 +1037,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1079,6 +1085,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7UMFPW78PV;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

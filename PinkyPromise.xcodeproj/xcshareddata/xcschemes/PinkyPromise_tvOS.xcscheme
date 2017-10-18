@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "81E75E2C1F97961A00EF39D5"
-               BuildableName = "PinkyPromise_tvOS.framework"
+               BuildableName = "PinkyPromise.framework"
                BlueprintName = "PinkyPromise_tvOS"
                ReferencedContainer = "container:PinkyPromise.xcodeproj">
             </BuildableReference>
@@ -44,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "81E75E2C1F97961A00EF39D5"
-            BuildableName = "PinkyPromise_tvOS.framework"
+            BuildableName = "PinkyPromise.framework"
             BlueprintName = "PinkyPromise_tvOS"
             ReferencedContainer = "container:PinkyPromise.xcodeproj">
          </BuildableReference>
@@ -67,7 +67,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "81E75E2C1F97961A00EF39D5"
-            BuildableName = "PinkyPromise_tvOS.framework"
+            BuildableName = "PinkyPromise.framework"
             BlueprintName = "PinkyPromise_tvOS"
             ReferencedContainer = "container:PinkyPromise.xcodeproj">
          </BuildableReference>
@@ -85,7 +85,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "81E75E2C1F97961A00EF39D5"
-            BuildableName = "PinkyPromise_tvOS.framework"
+            BuildableName = "PinkyPromise.framework"
             BlueprintName = "PinkyPromise_tvOS"
             ReferencedContainer = "container:PinkyPromise.xcodeproj">
          </BuildableReference>
