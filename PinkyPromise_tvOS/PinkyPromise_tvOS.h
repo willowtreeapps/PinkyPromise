@@ -1,12 +1,12 @@
 //
-//  PinkyPromise_iOS.h
-//  PinkyPromise_iOS
+//  PinkyPromise_tvOS.h
+//  PinkyPromise_tvOS
 //
-//  Created by Raf Cabezas on 3/28/17.
+//  Created by Evan Compton on 10/18/17.
 //
 //  The MIT License (MIT)
 //  Copyright © 2017 WillowTree, Inc. All rights reserved.
-// 
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
 //  deal in the Software without restriction, including without limitation the
@@ -28,12 +28,12 @@
 
 #import <UIKit/UIKit.h>
 
-//! Project version number for PinkyPromise_iOS.
-FOUNDATION_EXPORT double PinkyPromise_iOSVersionNumber;
+//! Project version number for PinkyPromise_tvOS.
+FOUNDATION_EXPORT double PinkyPromise_tvOSVersionNumber;
 
-//! Project version string for PinkyPromise_iOS.
-FOUNDATION_EXPORT const unsigned char PinkyPromise_iOSVersionString[];
+//! Project version string for PinkyPromise_tvOS.
+FOUNDATION_EXPORT const unsigned char PinkyPromise_tvOSVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <PinkyPromise_iOS/PublicHeader.h>
+// In this header, you should import all the public headers of your framework using statements like #import <PinkyPromise_tvOS/PublicHeader.h>
 
 
