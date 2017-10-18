@@ -25,6 +25,15 @@
 		0AE6E5BD1EA4296A0089281D /* ResultTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */; };
 		0AE6E5BE1EA4296A0089281D /* PromiseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */; };
 		0AE6E5BF1EA4296A0089281D /* PromiseQueueTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA254781D67846E008AF610 /* PromiseQueueTest.swift */; };
+		81E75E361F97961B00EF39D5 /* PinkyPromise.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81E75E2D1F97961A00EF39D5 /* PinkyPromise.framework */; };
+		81E75E3D1F97961B00EF39D5 /* PinkyPromise_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 81E75E2F1F97961A00EF39D5 /* PinkyPromise_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		81E75E441F97962800EF39D5 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAE5A21CC6EFC0009565F9 /* TestHelpers.swift */; };
+		81E75E451F97962B00EF39D5 /* ResultTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A11CB34ECD001DB5E2 /* ResultTest.swift */; };
+		81E75E461F97962E00EF39D5 /* PromiseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6F7A01CB34ECD001DB5E2 /* PromiseTest.swift */; };
+		81E75E471F97963000EF39D5 /* PromiseQueueTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA254781D67846E008AF610 /* PromiseQueueTest.swift */; };
+		81E75E481F97963B00EF39D5 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Result.swift /* Result.swift */; };
+		81E75E491F97963E00EF39D5 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Promise.swift /* Promise.swift */; };
+		81E75E4A1F97964100EF39D5 /* PromiseQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CA254761D678216008AF610 /* PromiseQueue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +50,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 058778761E8AB5CB00921CF2;
 			remoteInfo = PinkyPromise_iOS;
+		};
+		81E75E371F97961B00EF39D5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = __RootObject_ /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81E75E2C1F97961A00EF39D5;
+			remoteInfo = PinkyPromise_tvOS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -61,6 +77,11 @@
 		0AE6E5B51EA4295D0089281D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2CA254761D678216008AF610 /* PromiseQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseQueue.swift; sourceTree = "<group>"; };
 		2CA254781D67846E008AF610 /* PromiseQueueTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseQueueTest.swift; sourceTree = "<group>"; };
+		81E75E2D1F97961A00EF39D5 /* PinkyPromise.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PinkyPromise.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		81E75E2F1F97961A00EF39D5 /* PinkyPromise_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PinkyPromise_tvOS.h; sourceTree = "<group>"; };
+		81E75E301F97961A00EF39D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		81E75E351F97961B00EF39D5 /* PinkyPromise_tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PinkyPromise_tvOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81E75E3C1F97961B00EF39D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Promise.swift /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Result.swift /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
@@ -94,6 +115,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AE6E5B61EA4295D0089281D /* PinkyPromise.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E291F97961A00EF39D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E321F97961B00EF39D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81E75E361F97961B00EF39D5 /* PinkyPromise.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +182,23 @@
 			path = PinkyPromiseTests_iOS;
 			sourceTree = "<group>";
 		};
+		81E75E2E1F97961A00EF39D5 /* PinkyPromise_tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				81E75E2F1F97961A00EF39D5 /* PinkyPromise_tvOS.h */,
+				81E75E301F97961A00EF39D5 /* Info.plist */,
+			);
+			path = PinkyPromise_tvOS;
+			sourceTree = "<group>";
+		};
+		81E75E391F97961B00EF39D5 /* PinkyPromise_tvOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				81E75E3C1F97961B00EF39D5 /* Info.plist */,
+			);
+			path = PinkyPromise_tvOSTests;
+			sourceTree = "<group>";
+		};
 		"___RootGroup_" = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +210,8 @@
 				0AB957661CB34A1100512B06 /* PinkyPromiseTests */,
 				0AE6E5B21EA4295D0089281D /* PinkyPromiseTests_iOS */,
 				0A0249441EA42C42004068D3 /* PinkyPromiseTests_macOS */,
+				81E75E2E1F97961A00EF39D5 /* PinkyPromise_tvOS */,
+				81E75E391F97961B00EF39D5 /* PinkyPromise_tvOSTests */,
 				"____Products_" /* Products */,
 			);
 			sourceTree = "<group>";
@@ -168,6 +223,8 @@
 				0AE6E5B11EA4295D0089281D /* PinkyPromiseTests_iOS.xctest */,
 				0A0249371EA42C2E004068D3 /* PinkyPromise.framework */,
 				0A0249431EA42C42004068D3 /* PinkyPromiseTests_macOS.xctest */,
+				81E75E2D1F97961A00EF39D5 /* PinkyPromise.framework */,
+				81E75E351F97961B00EF39D5 /* PinkyPromise_tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -198,6 +255,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A02493B1EA42C2E004068D3 /* PinkyPromise_macOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E2A1F97961A00EF39D5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81E75E3D1F97961B00EF39D5 /* PinkyPromise_tvOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,13 +341,49 @@
 			productReference = 0AE6E5B11EA4295D0089281D /* PinkyPromiseTests_iOS.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		81E75E2C1F97961A00EF39D5 /* PinkyPromise_tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81E75E3E1F97961B00EF39D5 /* Build configuration list for PBXNativeTarget "PinkyPromise_tvOS" */;
+			buildPhases = (
+				81E75E281F97961A00EF39D5 /* Sources */,
+				81E75E291F97961A00EF39D5 /* Frameworks */,
+				81E75E2A1F97961A00EF39D5 /* Headers */,
+				81E75E2B1F97961A00EF39D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PinkyPromise_tvOS;
+			productName = PinkyPromise_tvOS;
+			productReference = 81E75E2D1F97961A00EF39D5 /* PinkyPromise.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		81E75E341F97961B00EF39D5 /* PinkyPromise_tvOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81E75E411F97961B00EF39D5 /* Build configuration list for PBXNativeTarget "PinkyPromise_tvOSTests" */;
+			buildPhases = (
+				81E75E311F97961B00EF39D5 /* Sources */,
+				81E75E321F97961B00EF39D5 /* Frameworks */,
+				81E75E331F97961B00EF39D5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81E75E381F97961B00EF39D5 /* PBXTargetDependency */,
+			);
+			name = PinkyPromise_tvOSTests;
+			productName = PinkyPromise_tvOSTests;
+			productReference = 81E75E351F97961B00EF39D5 /* PinkyPromise_tvOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		__RootObject_ /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					058778761E8AB5CB00921CF2 = {
@@ -305,6 +406,14 @@
 						DevelopmentTeam = VAK384QBBN;
 						ProvisioningStyle = Automatic;
 					};
+					81E75E2C1F97961A00EF39D5 = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+					};
+					81E75E341F97961B00EF39D5 = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = "___RootConfs_" /* Build configuration list for PBXProject "PinkyPromise" */;
@@ -323,6 +432,8 @@
 				0AE6E5B01EA4295D0089281D /* PinkyPromiseTests_iOS */,
 				0A0249361EA42C2E004068D3 /* PinkyPromise_macOS */,
 				0A0249421EA42C42004068D3 /* PinkyPromiseTests_macOS */,
+				81E75E2C1F97961A00EF39D5 /* PinkyPromise_tvOS */,
+				81E75E341F97961B00EF39D5 /* PinkyPromise_tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -350,6 +461,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0AE6E5AF1EA4295D0089281D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E2B1F97961A00EF39D5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E331F97961B00EF39D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -401,6 +526,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		81E75E281F97961A00EF39D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81E75E481F97963B00EF39D5 /* Result.swift in Sources */,
+				81E75E491F97963E00EF39D5 /* Promise.swift in Sources */,
+				81E75E4A1F97964100EF39D5 /* PromiseQueue.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81E75E311F97961B00EF39D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81E75E451F97962B00EF39D5 /* ResultTest.swift in Sources */,
+				81E75E471F97963000EF39D5 /* PromiseQueueTest.swift in Sources */,
+				81E75E461F97962E00EF39D5 /* PromiseTest.swift in Sources */,
+				81E75E441F97962800EF39D5 /* TestHelpers.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -413,6 +559,11 @@
 			isa = PBXTargetDependency;
 			target = 058778761E8AB5CB00921CF2 /* PinkyPromise_iOS */;
 			targetProxy = 0AE6E5B71EA4295D0089281D /* PBXContainerItemProxy */;
+		};
+		81E75E381F97961B00EF39D5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81E75E2C1F97961A00EF39D5 /* PinkyPromise_tvOS */;
+			targetProxy = 81E75E371F97961B00EF39D5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -547,7 +698,7 @@
 				INFOPLIST_FILE = PinkyPromise_macOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-macOS";
 				PRODUCT_NAME = PinkyPromise;
@@ -592,7 +743,7 @@
 				INFOPLIST_FILE = PinkyPromise_macOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-macOS";
 				PRODUCT_NAME = PinkyPromise;
@@ -751,6 +902,200 @@
 			};
 			name = Release;
 		};
+		81E75E3F1F97961B00EF39D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PinkyPromise_tvOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-tvOS";
+				PRODUCT_NAME = PinkyPromise;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		81E75E401F97961B00EF39D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PinkyPromise_tvOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-tvOS";
+				PRODUCT_NAME = PinkyPromise;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		81E75E421F97961B00EF39D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PinkyPromise_tvOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-tvOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		81E75E431F97961B00EF39D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PinkyPromise_tvOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.willowtree.PinkyPromise-tvOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		"_____Release_" /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -835,6 +1180,24 @@
 			buildConfigurations = (
 				0AE6E5B91EA4295D0089281D /* Debug */,
 				0AE6E5BA1EA4295D0089281D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		81E75E3E1F97961B00EF39D5 /* Build configuration list for PBXNativeTarget "PinkyPromise_tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81E75E3F1F97961B00EF39D5 /* Debug */,
+				81E75E401F97961B00EF39D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		81E75E411F97961B00EF39D5 /* Build configuration list for PBXNativeTarget "PinkyPromise_tvOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81E75E421F97961B00EF39D5 /* Debug */,
+				81E75E431F97961B00EF39D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
