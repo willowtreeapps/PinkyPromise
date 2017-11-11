@@ -446,3 +446,23 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         }
     }
 }
+
+/// Operator for Kleisli compositions. Aka the "Fish" operator. (A) -> Promise<B> >=> (B) -> Promise<C> -> (A) -> Promise<C>
+infix operator >=>: MultiplicationPrecedence
+
+/**
+Composes two functions that return promises into a single function that returns a promise.
+ 
+ - parameter lhs: The first function to be composed
+ - parameter rhs: The second function to be composed
+ - returns: A function that accepts the input of the lhs function and feeds it's promised value into the rhs function that returns a Promise of the type of the rhs function's return type.
+ 
+ If the promises produce more than one failure, the first failure will be chosen in array order, not completion order.
+ */
+public func >=><A, B, C>(_ lhs: @escaping (A) -> Promise<B>, rhs: @escaping (B) -> Promise<C>) -> (A) -> Promise<C> {
+    return { input in
+        return lhs(input).flatMap { b in
+            return rhs(b)
+        }
+    }
+}
