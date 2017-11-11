@@ -857,5 +857,41 @@ class PromiseTest: XCTestCase {
 
         waitForExpectations(timeout: 1.0, handler: nil)
     }
+    
+    func testKleisliComposition() {
+        func successIncrementFunction(_ input: Int) -> Promise<Int> {
+            return Promise(value: input + 1)
+        }
+        
+        let failureIncrementFunctionError = TestHelpers.uniqueError()
+        func failureIncrementFunction(_ input: Int) -> Promise<Int> {
+            return Promise(error: failureIncrementFunctionError)
+        }
+        
+        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T>) -> Void) {
+            let completionCalled = expectation(description: "Completed")
+            promise.call { result in
+                outerCompletion(result)
+                completionCalled.fulfill()
+            }
+        }
+        
+        let composedSuccessFunction = successIncrementFunction >=> successIncrementFunction
+        callAndTestCompletion(composedSuccessFunction(1)) {
+            TestHelpers.expectSuccess(3, result: $0, message: "Expected the given value.")
+        }
+        
+        let composedFailureFunction = successIncrementFunction >=> failureIncrementFunction
+        callAndTestCompletion(composedFailureFunction(1)) {
+            TestHelpers.expectFailure(failureIncrementFunctionError, result: $0)
+        }
+        
+        let oppositeComposedFailureFunction = failureIncrementFunction >=> successIncrementFunction
+        callAndTestCompletion(oppositeComposedFailureFunction(1)) {
+            TestHelpers.expectFailure(failureIncrementFunctionError, result: $0)
+        }
+        
+        waitForExpectations(timeout: 1.0, handler: nil)
+    }
 
 }

@@ -110,6 +110,7 @@ stringPromise.call { result in
  - `zip` to combine many Promises into one Promise that produces a tuple or array.
  - `map` to transform a produced success value. (`Promise` is a functor.)
  - `flatMap` to transform a produced success value by running a whole new Promise that can succeed or fail. (`Promise` is a monad.)
+ - `>=>` to compose two functions that return a `Promise` into a function that accepts the input type of the first function and returns the `Promise` type of the second function.
  - `recover` to handle a failure by running another Promise that might succeed.
  - `retry` to repeat the Promise until it's successful, or until a failure count is reached.
  - `inBackground` to run a Promise in the background, then complete on the main queue.
