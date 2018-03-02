@@ -8,8 +8,8 @@ jobs:
     - run:
         name: Install gems
         command: |
-          gem install bundler |
-          bundle install
+          sudo gem install bundler |
+          sudo bundle install
     - run:
         name: Run tests
         command: bundle exec fastlane run_tests
