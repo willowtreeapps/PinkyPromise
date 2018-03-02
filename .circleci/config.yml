@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    macos:
+      xcode: "9.2.0"
+    steps:
+    - checkout
+    - run:
+        name: Install gems
+        command: |
+          gem install bundler |
+          bundle install
+    - run:
+        name: Run tests
+        command: bundle exec fastlane run_tests
+    - run:
+        name: Submit coverage to Slather
+        command: bundle exec slather
