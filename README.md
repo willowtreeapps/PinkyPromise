@@ -1,8 +1,7 @@
 # PinkyPromise
 A tiny Promises library.
 
-[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise) [![Coverage Status](https://coveralls.io/repos/github/willowtreeapps/PinkyPromise/badge.svg?branch=develop)](https://coveralls.io/github/willowtreeapps/PinkyPromise?branch=develop)
-
+[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise)
 ## Summary
 
 PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Futures_and_promises) for Swift. It consists of two types:

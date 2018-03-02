@@ -13,6 +13,3 @@ jobs:
     - run:
         name: Run tests
         command: bundle exec fastlane run_tests
-    - run:
-        name: Submit coverage to Slather
-        command: bundle exec slather

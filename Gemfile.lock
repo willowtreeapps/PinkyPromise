@@ -12,7 +12,6 @@ GEM
     atomos (0.1.2)
     babosa (1.0.2)
     claide (1.0.2)
-    clamp (0.6.5)
     cocoapods (1.4.0)
       activesupport (>= 4.0.2, < 5)
       claide (>= 1.0.2, < 2.0)
@@ -51,15 +50,8 @@ GEM
     commander-fastlane (4.4.6)
       highline (~> 1.7.2)
     concurrent-ruby (1.0.5)
-    coveralls (0.8.21)
-      json (>= 1.8, < 3)
-      simplecov (~> 0.14.1)
-      term-ansicolor (~> 1.3)
-      thor (~> 0.19.4)
-      tins (~> 1.6)
     declarative (0.0.10)
     declarative-option (0.1.0)
-    docile (1.1.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.2.1)
@@ -142,7 +134,6 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_magick (4.5.1)
-    mini_portile2 (2.1.0)
     minitest (5.11.3)
     molinillo (0.6.4)
     multi_json (1.13.1)
@@ -151,8 +142,6 @@ GEM
     nanaimo (0.2.3)
     nap (1.1.0)
     netrc (0.11.0)
-    nokogiri (1.6.8.1)
-      mini_portile2 (~> 2.1.0)
     os (0.9.6)
     plist (3.4.0)
     public_suffix (2.0.5)
@@ -170,26 +159,11 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    simplecov (0.14.1)
-      docile (~> 1.1.0)
-      json (>= 1.8, < 3)
-      simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.2)
     slack-notifier (2.3.2)
-    slather (2.4.4)
-      CFPropertyList (~> 2.2)
-      activesupport (>= 4.0.2, < 5)
-      clamp (~> 0.6)
-      nokogiri (>= 1.6, < 1.7)
-      xcodeproj (~> 1.4)
-    term-ansicolor (1.6.0)
-      tins (~> 1.0)
     terminal-notifier (1.8.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
-    thor (0.19.4)
     thread_safe (0.3.6)
-    tins (1.16.3)
     tty-cursor (0.5.0)
     tty-screen (0.6.4)
     tty-spinner (0.8.0)
@@ -218,9 +192,7 @@ PLATFORMS
 
 DEPENDENCIES
   cocoapods
-  coveralls
   fastlane
-  slather
 
 BUNDLED WITH
    1.16.1
