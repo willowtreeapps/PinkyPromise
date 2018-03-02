@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    macos:
+      xcode: "9.2.0"
+    steps:
+    - checkout
+    - run:
+        name: Install gems
+        command: |
+          sudo gem install bundler |
+          sudo bundle install
+    - run:
+        name: Run tests
+        command: bundle exec fastlane run_tests
