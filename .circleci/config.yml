@@ -3,13 +3,15 @@ jobs:
   build:
     macos:
       xcode: "9.2.0"
+    shell: /bin/bash --login -eo pipefail
     steps:
     - checkout
     - run:
         name: Install gems
-        command: |
-          sudo gem install bundler |
-          sudo bundle install
+        command: bundle check || bundle install
     - run:
         name: Run tests
         command: bundle exec fastlane run_tests
+    - run:
+        name: Send coverage report to Coveralls
+        command: bundle exec slather
