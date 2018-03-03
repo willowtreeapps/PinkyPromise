@@ -1,0 +1,10 @@
+# .slather.yml
+
+ci_service: circleci
+coverage_service: coveralls
+xcodeproj: PinkyPromise.xcodeproj
+scheme: PinkyPromise_iOS
+source_directory: Sources
+ignore:
+  - Tests/*
+output_directory: <%= ENV["CIRCLE_TEST_REPORTS"] %>
