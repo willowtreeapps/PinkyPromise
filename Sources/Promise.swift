@@ -294,6 +294,20 @@ public struct Promise<Value> {
             }
         }
     }
+    
+    /**
+     Creates a promise that wraps this promise and performs a secondary task regardless of success or failure.
+     
+     - parameter resultTask: A function to be called that returns a promise.
+     - returns: A promise whose task runs this promise, and then calls the result task after it succeeds or fails.
+     */
+    public func always<U>(_ resultTask: @escaping () -> Promise<U>) -> Promise<U> {
+        return map { _ in () }.recover { _ in
+            Promise<()>(value: ())
+        }.flatMap { _ in
+            return resultTask()
+        }
+    }
 
     // MARK: Invoking the Promise
 
