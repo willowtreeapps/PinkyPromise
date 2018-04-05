@@ -558,6 +558,50 @@ class PromiseTest: XCTestCase {
             waitForExpectations(timeout: 1.0, handler: nil)
         }
     }
+    
+    func testAlways() {
+        // Success to success
+        do {
+            let expectedValue = 3
+            let unusedValue = "dummy"
+            let initialPromise = Promise(value: unusedValue)
+            
+            let resultCalled = expectation(description: "Result block was called")
+            let promise = initialPromise.always { () -> Promise<Int> in
+                resultCalled.fulfill()
+                return Promise(value: expectedValue)
+            }
+            
+            let completionCalled = expectation(description: "Completion was called")
+            promise.call { result in
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
+            }
+            
+            waitForExpectations(timeout: 1.0, handler: nil)
+        }
+        
+        // Failure to success
+        do {
+            let expectedValue = 3
+            let expectedError = TestHelpers.uniqueError()
+            let initialPromise = Promise<Any>(error: expectedError)
+            
+            let resultCalled = expectation(description: "Result block was called")
+            let promise = initialPromise.always { () -> Promise<Int> in
+                resultCalled.fulfill()
+                return Promise(value: expectedValue)
+            }
+            
+            let completionCalled = expectation(description: "Completion was called")
+            promise.call { result in
+                TestHelpers.expectSuccess(expectedValue, result: result, message: "Expected the given success value.")
+                completionCalled.fulfill()
+            }
+            
+            waitForExpectations(timeout: 1.0, handler: nil)
+        }
+    }
 
     func testSuccess() {
         // Succeed
