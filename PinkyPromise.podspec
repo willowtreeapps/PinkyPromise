@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author             = { "Kevin Conner" => "connerk@gmail.com" }
   s.social_media_url   = "https://twitter.com/connerk"
-  s.platforms    = { :ios => "8.0", :osx => "10.10", :tvos => "11.0" }
+  s.platforms    = { :ios => "8.0", :osx => "10.10", :tvos => "9.0" }
   s.source       = { :git => "https://github.com/willowtreeapps/PinkyPromise.git", :tag => s.version.to_s }
   s.source_files = "Sources", "Sources/**/*.{swift}"
 end
