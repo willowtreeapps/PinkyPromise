@@ -1,11 +1,11 @@
-lane :run_tests do
+lane :test do
     scan(
         scheme: "PinkyPromise_iOS",
         output_directory: ENV["CIRCLE_TEST_REPORTS"],
         project: "PinkyPromise.xcodeproj",
         device: "iPhone 7",
         output_style: "standard",
-        output_types: "html, junit",
+        output_types: "html,junit",
         include_simulator_logs: false,
         code_coverage: true
     )
