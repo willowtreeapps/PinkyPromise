@@ -100,7 +100,7 @@ public struct Promise<Value> {
      Creates a promise that, when called, immediately produces its result from a given function.
      
      - parameter produce: A synchronous failable function to be evaluated each time the promise is run.
-     - returns:
+     - returns: A promise whose task runs the given function and produces its returned value or its thrown error.
      
      The name `lift` refers to:
 
