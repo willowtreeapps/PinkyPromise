@@ -1,3 +1,4 @@
+// swift-tools-version:4.2
 //
 //  Package.swift
 //  PinkyPromise
@@ -29,5 +30,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "PinkyPromise"
+    name: "PinkyPromise",
+    products: [
+        .library(
+            name: "PinkyPromise",
+            targets: ["PinkyPromise"]
+        )
+    ],
+    targets: [
+        .target(
+            name: "PinkyPromise",
+            path: "Sources"
+        ),
+        .testTarget(
+            name: "PinkyPromiseTests",
+            dependencies: ["PinkyPromise"],
+            path: "Tests"
+        )
+    ]
 )
