@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "PinkyPromise"
-  s.version          = "0.6.0"
+  s.version          = "0.6.1"
   s.summary          = "A tiny Promises library."
   s.description      = <<-DESC
                        PinkyPromise is a lightweight tool for coordinating asynchronous code.
@@ -28,5 +28,5 @@ Pod::Spec.new do |s|
   s.platforms        = { :ios => "8.0", :osx => "10.10", :tvos => "9.0" }
   s.source           = { :git => "https://github.com/willowtreeapps/PinkyPromise.git", :tag => s.version.to_s }
   s.source_files     = "Sources", "Sources/**/*.{swift}"
-  s.swift_version    = "4.0"
+  s.swift_version    = "4.2"
 end

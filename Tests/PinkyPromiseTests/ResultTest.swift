@@ -56,7 +56,7 @@ class ResultTest: XCTestCase {
         let error = TestHelpers.uniqueError()
 
         let integerFormatter = NumberFormatter()
-        integerFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+        integerFormatter.locale = Locale(identifier: "en_US_POSIX")
         integerFormatter.maximumFractionDigits = 0
 
         fixtures = Fixtures(
