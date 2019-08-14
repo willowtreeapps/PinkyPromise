@@ -49,7 +49,7 @@ import Foundation
 public struct Promise<Value> {
 
     /// A completion function for the task wrapped by a promise.
-    public typealias Observer = (Result<Value>) -> Void
+    public typealias Observer = (Result<Value, Error>) -> Void
     /// A function representing the work to be done by a promise. A task must eventually call its given observer function exactly once.
     public typealias Task = (@escaping Observer) -> Void
 
@@ -72,7 +72,7 @@ public struct Promise<Value> {
 
      - parameter result: The result to be produced when the promise is run.
      */
-    public init(result: Result<Value>) {
+    public init(result: Result<Value, Error>) {
         self.init { fulfill in
             fulfill(result)
         }
@@ -137,9 +137,9 @@ public struct Promise<Value> {
      */
     public func tryMap<U>(_ transform: @escaping (Value) throws -> U) -> Promise<U> {
         return flatMap { value in
-            return Promise<U>(result: Result {
+            return Promise<U>(result: Result(create: {
                 try transform(value)
-            })
+            }))
         }
     }
 
@@ -170,7 +170,7 @@ public struct Promise<Value> {
      */
     public func recover(_ transform: @escaping (Error) -> Promise<Value>) -> Promise<Value> {
         return Promise { fulfill in
-            self.call { (result: Result<Value>) -> Void in
+            self.call { (result: Result<Value, Error>) -> Void in
                 do {
                     let value = try result.value()
                     fulfill(.success(value))
@@ -252,7 +252,7 @@ public struct Promise<Value> {
      
      This method behaves like the closure argument to `call(completion:)`, but can be used at any step in a composite promise.
      */
-    public func onResult(_ resultTask: @escaping (Result<Value>) -> Void) -> Promise<Value> {
+    public func onResult(_ resultTask: @escaping (Result<Value, Error>) -> Void) -> Promise<Value> {
         return Promise { fulfill in
             self.call { result in
                 resultTask(result)
@@ -325,8 +325,8 @@ public func zip<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA: Result<A>!
-        var resultB: Result<B>!
+        var resultA: Result<A, Error>!
+        var resultB: Result<B, Error>!
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -356,9 +356,9 @@ public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promi
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA: Result<A>!
-        var resultB: Result<B>!
-        var resultC: Result<C>!
+        var resultA: Result<A, Error>!
+        var resultB: Result<B, Error>!
+        var resultC: Result<C, Error>!
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -393,10 +393,10 @@ public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ pr
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA: Result<A>!
-        var resultB: Result<B>!
-        var resultC: Result<C>!
-        var resultD: Result<D>!
+        var resultA: Result<A, Error>!
+        var resultB: Result<B, Error>!
+        var resultC: Result<C, Error>!
+        var resultD: Result<D, Error>!
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -432,7 +432,7 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var results: [Result<T>?] = Array(repeating: nil, count: promises.count)
+        var results: [Result<T, Error>?] = Array(repeating: nil, count: promises.count)
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
