@@ -30,25 +30,6 @@ import Foundation
 
 public extension Result where Failure == Error {
 
-    // MARK: Unwrapping
-
-    /**
-     Returns or throws the wrapped value or error.
-
-     - throws: The wrapped error, if the result is a failure.
-     - returns: The wrapped value, if the result is a success.
-
-     The opposite operation is `init(create:)`.
-     */
-    func value() throws -> Success {
-        switch self {
-        case .success(let value):
-            return value
-        case .failure(let error):
-            throw error
-        }
-    }
-
     /**
      Transforms a success value into a new successful or failed result.
 
@@ -61,7 +42,7 @@ public extension Result where Failure == Error {
      */
     func tryMap<U>(_ transform: (Success) throws -> U) -> Result<U, Error> {
         return Result<U, Error>(catching: {
-            try transform(try value())
+            try transform(try get())
         })
     }
 }
@@ -75,7 +56,7 @@ public extension Result where Failure == Error {
  */
 public func zip<A, B>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>) -> Result<(A, B), Error> {
     return resultA.tryMap { a in
-        (a, try resultB.value())
+        (a, try resultB.get())
     }
 }
 
@@ -89,7 +70,7 @@ public func zip<A, B>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>) 
  */
 public func zip<A, B, C>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>) -> Result<(A, B, C), Error> {
     return zip(resultA, resultB).tryMap { a, b in
-        (a, b, try resultC.value())
+        (a, b, try resultC.get())
     }
 }
 
@@ -104,7 +85,7 @@ public func zip<A, B, C>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error
  */
 public func zip<A, B, C, D>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>, _ resultD: Result<D, Error>) -> Result<(A, B, C, D), Error> {
     return zip(resultA, resultB, resultC).tryMap { a, b, c in
-        (a, b, c, try resultD.value())
+        (a, b, c, try resultD.get())
     }
 }
 
@@ -117,7 +98,7 @@ public func zip<A, B, C, D>(_ resultA: Result<A, Error>, _ resultB: Result<B, Er
 public func zipArray<T>(_ results: [Result<T, Error>]) -> Result<[T], Error> {
     return results.reduce(Result(catching: { [] })) { arrayResult, itemResult in
         arrayResult.tryMap { array in
-            return array + [try itemResult.value()]
+            return array + [try itemResult.get()]
         }
     }
 }

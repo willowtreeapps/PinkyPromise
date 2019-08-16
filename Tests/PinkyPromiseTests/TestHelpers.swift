@@ -41,7 +41,7 @@ enum TestHelpers {
 
     static func expectSuccess<T: Equatable>(_ expected: T, result: Result<T, Error>, message: String) {
         do {
-            let value = try result.value()
+            let value = try result.get()
             XCTAssertEqual(expected, value, message)
         } catch {
             XCTFail("Expected not to catch an error.")
@@ -50,7 +50,7 @@ enum TestHelpers {
 
     static func expectSuccess<A: Equatable, B: Equatable>(_ expected: (A, B), result: Result<(A, B), Error>, message: String) {
         do {
-            let value = try result.value()
+            let value = try result.get()
             XCTAssertEqual(expected.0, value.0, message)
             XCTAssertEqual(expected.1, value.1, message)
         } catch {
@@ -60,7 +60,7 @@ enum TestHelpers {
 
     static func expectSuccess<A: Equatable, B: Equatable, C: Equatable>(_ expected: (A, B, C), result: Result<(A, B, C), Error>, message: String) {
         do {
-            let value = try result.value()
+            let value = try result.get()
             XCTAssertEqual(expected.0, value.0, message)
             XCTAssertEqual(expected.1, value.1, message)
             XCTAssertEqual(expected.2, value.2, message)
@@ -71,7 +71,7 @@ enum TestHelpers {
 
     static func expectSuccess<A: Equatable, B: Equatable, C: Equatable, D: Equatable>(_ expected: (A, B, C, D), result: Result<(A, B, C, D), Error>, message: String) {
         do {
-            let value = try result.value()
+            let value = try result.get()
             XCTAssertEqual(expected.0, value.0, message)
             XCTAssertEqual(expected.1, value.1, message)
             XCTAssertEqual(expected.2, value.2, message)
@@ -83,7 +83,7 @@ enum TestHelpers {
 
     static func expectSuccess<T: Equatable>(_ expected: [T], result: Result<[T], Error>, message: String) {
         do {
-            let value = try result.value()
+            let value = try result.get()
             XCTAssertEqual(expected, value, message)
         } catch {
             XCTFail("Expected not to catch an error.")
@@ -92,7 +92,7 @@ enum TestHelpers {
 
     static func expectFailure<T>(_ expected: NSError, result: Result<T, Error>) {
         do {
-            _ = try result.value()
+            _ = try result.get()
             XCTFail("Expected to throw an error.")
         } catch {
             XCTAssertEqual(expected, error as NSError, "Expected the given error.")

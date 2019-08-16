@@ -153,7 +153,7 @@ public struct Promise<Value> {
         return Promise<U> { fulfill in
             self.call { result in
                 do {
-                    let mappedPromise = transform(try result.value())
+                    let mappedPromise = transform(try result.get())
                     mappedPromise.call(completion: fulfill)
                 } catch {
                     fulfill(.failure(error))
@@ -172,7 +172,7 @@ public struct Promise<Value> {
         return Promise { fulfill in
             self.call { (result: Result<Value, Error>) -> Void in
                 do {
-                    let value = try result.value()
+                    let value = try result.get()
                     fulfill(.success(value))
                 } catch {
                     let mappedPromise = transform(error)
