@@ -28,81 +28,7 @@
 
 import Foundation
 
-/**
- From two results, returns one result wrapping all their values or the first error.
-
- - parameter resultA: The first result to repackage.
- - parameter resultB: The second result to repackage.
- - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
- */
-public func zip<A, B>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>) -> Result<(A, B), Error> {
-    return resultA.tryMap { a in
-        (a, try resultB.value())
-    }
-}
-
-/**
- From three results, returns one result wrapping all their values or the first error.
- 
- - parameter resultA: The first result to repackage.
- - parameter resultB: The second result to repackage.
- - parameter resultC: The third result to repackage.
- - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
- */
-public func zip<A, B, C>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>) -> Result<(A, B, C), Error> {
-    return zip(resultA, resultB).tryMap { a, b in
-        (a, b, try resultC.value())
-    }
-}
-
-/**
- From four results, returns one result wrapping all their values or the first error.
- 
- - parameter resultA: The first result to repackage.
- - parameter resultB: The second result to repackage.
- - parameter resultC: The third result to repackage.
- - parameter resultD: The fourth result to repackage.
- - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
- */
-public func zip<A, B, C, D>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>, _ resultD: Result<D, Error>) -> Result<(A, B, C, D), Error> {
-    return zip(resultA, resultB, resultC).tryMap { a, b, c in
-        (a, b, c, try resultD.value())
-    }
-}
-
-/**
- From an array of results, returns one result wrapping all their values or the first error.
- 
- - parameter results: The array of results to repackage.
- - returns: A result wrapping either an array of all the given results' success values, or the first error among them.
- */
-public func zipArray<T>(_ results: [Result<T, Error>]) -> Result<[T], Error> {
-    return results.reduce(Result(create: { [] })) { arrayResult, itemResult in
-        arrayResult.tryMap { array in
-            return array + [try itemResult.value()]
-        }
-    }
-}
-
 public extension Result where Failure == Error {
-
-    // MARK: Wrapping
-
-    /**
-     Creates a result by immediately invoking a function that returns or throws.
-
-     - parameter create: A function whose returned value or thrown error becomes wrapped by the result.
-
-     The opposite operation is `value()`.
-     */
-    init(create: () throws -> Success) {
-        do {
-            let value = try create()
-            self = .success(value)
-        } catch {
-            self = .failure(error)
-        }
-    }
 
     // MARK: Unwrapping
 
@@ -134,8 +60,64 @@ public extension Result where Failure == Error {
      This is an error-catching variation on `flatMap(_:)`.
      */
     func tryMap<U>(_ transform: (Success) throws -> U) -> Result<U, Error> {
-        return Result<U, Error>(create: {
+        return Result<U, Error>(catching: {
             try transform(try value())
         })
+    }
+}
+
+/**
+ From two results, returns one result wrapping all their values or the first error.
+
+ - parameter resultA: The first result to repackage.
+ - parameter resultB: The second result to repackage.
+ - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
+ */
+public func zip<A, B>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>) -> Result<(A, B), Error> {
+    return resultA.tryMap { a in
+        (a, try resultB.value())
+    }
+}
+
+/**
+ From three results, returns one result wrapping all their values or the first error.
+
+ - parameter resultA: The first result to repackage.
+ - parameter resultB: The second result to repackage.
+ - parameter resultC: The third result to repackage.
+ - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
+ */
+public func zip<A, B, C>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>) -> Result<(A, B, C), Error> {
+    return zip(resultA, resultB).tryMap { a, b in
+        (a, b, try resultC.value())
+    }
+}
+
+/**
+ From four results, returns one result wrapping all their values or the first error.
+
+ - parameter resultA: The first result to repackage.
+ - parameter resultB: The second result to repackage.
+ - parameter resultC: The third result to repackage.
+ - parameter resultD: The fourth result to repackage.
+ - returns: A result wrapping either a tuple of all the given results' success values, or the first error among them.
+ */
+public func zip<A, B, C, D>(_ resultA: Result<A, Error>, _ resultB: Result<B, Error>, _ resultC: Result<C, Error>, _ resultD: Result<D, Error>) -> Result<(A, B, C, D), Error> {
+    return zip(resultA, resultB, resultC).tryMap { a, b, c in
+        (a, b, c, try resultD.value())
+    }
+}
+
+/**
+ From an array of results, returns one result wrapping all their values or the first error.
+
+ - parameter results: The array of results to repackage.
+ - returns: A result wrapping either an array of all the given results' success values, or the first error among them.
+ */
+public func zipArray<T>(_ results: [Result<T, Error>]) -> Result<[T], Error> {
+    return results.reduce(Result(catching: { [] })) { arrayResult, itemResult in
+        arrayResult.tryMap { array in
+            return array + [try itemResult.value()]
+        }
     }
 }

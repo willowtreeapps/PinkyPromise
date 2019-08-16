@@ -109,7 +109,7 @@ public struct Promise<Value> {
      */
     public static func lift(_ produce: @escaping () throws -> Value) -> Promise<Value> {
         return Promise { fulfill in
-            fulfill(Result(create: produce))
+            fulfill(Result(catching: produce))
         }
     }
 
@@ -137,7 +137,7 @@ public struct Promise<Value> {
      */
     public func tryMap<U>(_ transform: @escaping (Value) throws -> U) -> Promise<U> {
         return flatMap { value in
-            return Promise<U>(result: Result(create: {
+            return Promise<U>(result: Result(catching: {
                 try transform(value)
             }))
         }

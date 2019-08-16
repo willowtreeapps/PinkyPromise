@@ -78,10 +78,10 @@ class ResultTest: XCTestCase {
     }
 
     func testInit_create() {
-        TestHelpers.expectSuccess(3, result: Result(create: { return 3 }), message: "Expected the same value as returned.")
-        TestHelpers.expectSuccess(fixtures.object, result: Result(create: { return self.fixtures.object }), message: "Expected the same object as returned.")
-        TestHelpers.expectFailure(fixtures.error, result: Result<Int, Error>(create: { throw self.fixtures.error }))
-        TestHelpers.expectFailure(fixtures.error, result: Result<NSObject, Error>(create: { throw self.fixtures.error }))
+        TestHelpers.expectSuccess(3, result: Result(catching: { return 3 }), message: "Expected the same value as returned.")
+        TestHelpers.expectSuccess(fixtures.object, result: Result(catching: { return self.fixtures.object }), message: "Expected the same object as returned.")
+        TestHelpers.expectFailure(fixtures.error, result: Result<Int, Error>(catching: { throw self.fixtures.error }))
+        TestHelpers.expectFailure(fixtures.error, result: Result<NSObject, Error>(catching: { throw self.fixtures.error }))
     }
 
     func testValue() {
