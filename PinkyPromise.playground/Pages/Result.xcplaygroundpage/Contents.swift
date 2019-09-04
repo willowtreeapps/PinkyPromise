@@ -3,7 +3,7 @@
 
  # Result
 
- PinkyPromise's `Result` type represents, in one value, the concept of a returned value or a thrown error. `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback. `Result` is based on the Either type from functional languages and the Result type from the [Result framework](https://github.com/antitypical/Result).
+ PinkyPromise uses Swift's `Result` [type](https://developer.apple.com/documentation/swift/result). `Result` makes success and failure handling code easy to write. In particular, it forms a tight contract between an asynchronous operation and its completion callback.
  */
 
 import Foundation
@@ -14,13 +14,10 @@ PlaygroundPage.current.needsIndefiniteExecution = true
 struct ExampleError: Error {}
 let someError = ExampleError()
 
-//: First, here are some values that a Result can be. Note that for each `Result<T>`, you can have either a value of `T` or an error.
+//: First, here are some values that a Result can be. Note that for each `Result<T, Error>`, you can have either a value of `T` or an error.
 
-let successfulString: Result<String> = .success("Hello, world")
-let failedString:     Result<String> = .failure(someError)
-
-let successfulVoid: Result<Void> = .success()
-let failedVoid:     Result<Void> = .failure(someError)
+let successfulString: Result<String, Error> = .success("Hello, world")
+let failedString:     Result<String, Error> = .failure(someError)
 
 //: You can `switch` to handle both cases.
 
@@ -37,22 +34,22 @@ print()
  > Look at the Debug console to see what's printed.
  
  But it's even more Swifty to use the return-and-throw pattern to create Results and read their values and errors.
- You can use a special initializer to create a Result with a returning-or-throwing function. Then you can call `value`, which returns the value or throws the error.
+ You can use a special initializer to create a Result with a returning-or-throwing function. Then you can call `get`, which returns the value or throws the error.
 
  Here we create two Results and then print their values, without ever writing enum cases or switch statements.
  */
 
 let successfulIntArray = Result { [1, 2, 3, 4] }
-let failedIntArray = Result<[Int]> { throw someError }
+let failedIntArray = Result<[Int], Error> { throw someError }
 
 do {
-    print(try successfulIntArray.value())
+    print(try successfulIntArray.get())
 } catch {
     print(error)
 }
 
 do {
-    print(try failedIntArray.value())
+    print(try failedIntArray.get())
 } catch {
     print(error)
 }
@@ -60,16 +57,14 @@ do {
 print()
 
 /*:
- With this initializer and the `value` function, our code is simple and compact. Creating a Result encodes a returned value or thrown error, and then `value` can return or throw in a new context.
+ With this initializer and the `get` function, our code is simple and compact. Creating a Result encodes a returned value or thrown error, and then `get` can return or throw in a new context.
  
- > `init(create:)` and `value` are like other frameworks' `materialize` and `dematerialize`.
+ > `init(catching:)` and `get` are like other frameworks' `materialize` and `dematerialize`.
  */
 
 print(successfulString)
-print(successfulVoid)
 
 print(failedString)
-print(failedVoid)
 
 print()
 
@@ -94,7 +89,7 @@ let sumOfIntsAsString = successfulIntArray.map { intArray in
     "The sum is: \(sum)"
 }
 
-let firstInt: Result<Int> = successfulIntArray.flatMap { intArray in
+let firstInt: Result<Int, Error> = successfulIntArray.flatMap { intArray in
     return Result {
         if let first = intArray.first {
             return first
@@ -125,17 +120,17 @@ print()
 
  Synchronous operations (regular function calls) can avoid this problem because they have two ways to produce a value: `return` and `throw`. The Swifty thing to do is for a failable function to either return its value or throw an error. No optionals are involved, and only one or the other case will happen. Writing code to handle both cases is straightforward. This is a nice strict contract, but it doesn't solve our problem for asynchronous operations. You can only throw errors up the call stack, not down into a completion block.
 
- `Result<T>` is an `enum` with two cases: `.Success(T)` and `.Failure(ErrorType)`. These are the same two cases as above, but they are expressed in a single value that can be sent back to a completion block. Instead of a completion block type of `(T?, ErrorType?) -> Void`, you can use `(Result<T>) -> Void`. There are no optionals to unwrap, no possibility of getting both or neither, and the compiler will still require you to handle both cases.
+ `Result<T, Error>` is an `enum` with two cases: `.Success(T)` and `.Failure(Error)`. These are the same two cases as above, but they are expressed in a single value that can be sent back to a completion block. Instead of a completion block type of `(T?, Error?) -> Void`, you can use `(Result<T, Error>) -> Void`. There are no optionals to unwrap, no possibility of getting both or neither, and the compiler will still require you to handle both cases.
 
  Let's use `Result` in an asynchronous context with a completion block, where `throw` can't be used to return an error. Here, our function is like a network request function, and our completion block neatly handles two cases.
  */
 
-func getJSONAndParseValue(completion: ((Result<Int>) -> Void)?) {
+func getJSONAndParseValue(completion: ((Result<Int, Error>) -> Void)?) {
     delay(interval: .seconds(3)) {
         // Suppose we did a network request to get this response body from an API.
         let jsonStringResult = Result { "{ \"key\": 101 }" }
 
-        let parsedValueResult: Result<Int> = jsonStringResult.tryMap { jsonString in
+        let parsedValueResult: Result<Int, Error> = jsonStringResult.tryMap { jsonString in
             // Interpret the response body as JSON.
 
             // Fail if the string wasn't encodable in UTF-8.
@@ -164,7 +159,7 @@ print("Asynchronous operation starting.")
 getJSONAndParseValue { result in
     print("Asynchronous operation completed:")
     do {
-        print(try result.value())
+        print(try result.get())
     } catch {
         print(error)
     }
@@ -172,6 +167,6 @@ getJSONAndParseValue { result in
     PlaygroundPage.current.finishExecution()
 }
 
-//: Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T>` lets us work cleanly across asynchronous boundaries.
+//: Even though the asynchronous operation can't `throw` an error into the completion block, it can `throw` to construct a failing Result. We can also `catch` to handle that same failure. By precisely describing what it means to throw an error, `Result<T, Error>` lets us work cleanly across asynchronous boundaries.
 
 //: [Index](Index) • [Promise >>](@next)
