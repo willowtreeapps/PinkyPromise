@@ -7,7 +7,7 @@ A tiny Promises library.
 
 PinkyPromise is an implementation of [Promises](https://en.wikipedia.org/wiki/Futures_and_promises) for Swift. It consists of two types:
 
-- `Result` - A value or error. The Result type adapts the return-or-throw function pattern for use with asynchronous callbacks.
+- `Result` - A value or error. We use Swift's built in [Result Type](https://developer.apple.com/documentation/swift/result)
 - `Promise` - An operation that produces a Result sometime after it is called. Promises can be composed and sequenced.
 
 With PinkyPromise, you can run complex combinations of asynchronous operations with safe, clean, Swifty code.
@@ -75,7 +75,7 @@ Compare with the standard Swift pattern for failable synchronous methods: A func
 Here's how you'd write that asynchronous operation with a tighter contract, using Result. The Result is a success or failure. It can be created with `return` or `throw`, and inspected with `value`, which will either return or throw.
 
 ````swift
-func getStringResult(withArgument argument: String, completion: ((Result<String>) -> Void)?) {
+func getStringResult(withArgument argument: String, completion: ((Result<String, Error>) -> Void)?) {
     …
     completion?(Result {
         if successful {
@@ -88,14 +88,14 @@ func getStringResult(withArgument argument: String, completion: ((Result<String>
  
 getStringResult(withArgument: "foo") { result in
     do {
-        print(try result.value())
+        print(try result.get())
     } catch {
         print(error)
     }
 }
 ````
 
-Under the hood, `Result<T>` is an `enum` with two cases: `.Success(T)` and `.Failure(ErrorType)`. It's possible to create a Result using an enum case and inspect it using `switch`. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.
+Under the hood, `Result<T, Error>` is an `enum` with two cases: `.Success(T)` and `.Failure(Error)`. It's possible to create a Result using an enum case and inspect it using `switch`. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.
 
 ### Why Promise?
 
@@ -127,7 +127,7 @@ Next, we ask `stringPromise` to run by passing a completion block to the `call` 
 ````swift
 stringPromise.call { result in
     do {
-        print(try result.value())
+        print(try result.get())
     } catch {
         print(error)
     }
@@ -173,7 +173,7 @@ Even though this operation has many steps that depend on prior operations' succe
 ````swift
 getFirstThreeChildrenOfObjectWithIDPromise.call { [weak self] result in
     do {
-        self?.updateViews(withObjects: try result.value())
+        self?.updateViews(withObjects: try result.get())
     } catch {
         self?.showError(error)
     }

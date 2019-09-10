@@ -36,13 +36,13 @@ class ResultTest: XCTestCase {
         let object: NSObject
         let error: NSError
 
-        let successfulInt: Result<Int>
-        let failedInt: Result<Int>
-        let successfulObject: Result<NSObject>
-        let failedObject: Result<NSObject>
-        let successfulNumberString: Result<String>
-        let successfulJSONArrayString: Result<String>
-        let failedString: Result<String>
+        let successfulInt: Result<Int, Error>
+        let failedInt: Result<Int, Error>
+        let successfulObject: Result<NSObject, Error>
+        let failedObject: Result<NSObject, Error>
+        let successfulNumberString: Result<String, Error>
+        let successfulJSONArrayString: Result<String, Error>
+        let failedString: Result<String, Error>
 
         let integerFormatter: NumberFormatter
     }
@@ -78,10 +78,10 @@ class ResultTest: XCTestCase {
     }
 
     func testInit_create() {
-        TestHelpers.expectSuccess(3, result: Result { return 3 }, message: "Expected the same value as returned.")
-        TestHelpers.expectSuccess(fixtures.object, result: Result { return self.fixtures.object }, message: "Expected the same object as returned.")
-        TestHelpers.expectFailure(fixtures.error, result: Result<Int> { throw self.fixtures.error })
-        TestHelpers.expectFailure(fixtures.error, result: Result<NSObject> { throw self.fixtures.error })
+        TestHelpers.expectSuccess(3, result: Result(catching: { return 3 }), message: "Expected the same value as returned.")
+        TestHelpers.expectSuccess(fixtures.object, result: Result(catching: { return self.fixtures.object }), message: "Expected the same object as returned.")
+        TestHelpers.expectFailure(fixtures.error, result: Result<Int, Error>(catching: { throw self.fixtures.error }))
+        TestHelpers.expectFailure(fixtures.error, result: Result<NSObject, Error>(catching: { throw self.fixtures.error }))
     }
 
     func testValue() {
@@ -108,7 +108,7 @@ class ResultTest: XCTestCase {
     func testFlatMap() {
         let parseError = TestHelpers.uniqueError()
 
-        let stringAsInt: (String) -> Result<Int> = { string in
+        let stringAsInt: (String) -> Result<Int, Error> = { string in
             if let number = self.fixtures.integerFormatter.number(from: string) as? Int {
                 return .success(number)
             } else {
@@ -149,7 +149,7 @@ class ResultTest: XCTestCase {
             return Set(array)
         }
 
-        let successfulSetParse: Result<Set<Int>> = fixtures.successfulJSONArrayString.tryMap(jsonStringAsIntSet)
+        let successfulSetParse: Result<Set<Int>, Error> = fixtures.successfulJSONArrayString.tryMap(jsonStringAsIntSet)
         let failedNumberParse = fixtures.successfulNumberString.tryMap(jsonStringAsIntSet)
         let sameFailedString = fixtures.failedString.tryMap(jsonStringAsIntSet)
 
@@ -164,15 +164,15 @@ class ResultTest: XCTestCase {
         let error3 = TestHelpers.uniqueError()
         let error4 = TestHelpers.uniqueError()
 
-        let success1: Result<Int> = .success(1)
-        let success2: Result<String> = .success("hi")
-        let success3: Result<Int> = .success(3)
-        let success4: Result<String> = .success("bye")
+        let success1: Result<Int, Error> = .success(1)
+        let success2: Result<String, Error> = .success("hi")
+        let success3: Result<Int, Error> = .success(3)
+        let success4: Result<String, Error> = .success("bye")
 
-        let failure1: Result<Int> = .failure(error1)
-        let failure2: Result<String> = .failure(error2)
-        let failure3: Result<Int> = .failure(error3)
-        let failure4: Result<String> = .failure(error4)
+        let failure1: Result<Int, Error> = .failure(error1)
+        let failure2: Result<String, Error> = .failure(error2)
+        let failure3: Result<Int, Error> = .failure(error3)
+        let failure4: Result<String, Error> = .failure(error4)
 
         TestHelpers.expectSuccess((1, "hi"), result: zip(success1, success2), message: "Expected to zip 1 and \"hi\" into (1, \"hi\").")
         TestHelpers.expectFailure(error2, result: zip(success1, failure2))
@@ -211,13 +211,13 @@ class ResultTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Result<Int> = .success(112)
-        let success2: Result<Int> = .success(-15)
-        let success3: Result<Int> = .success(3)
+        let success1: Result<Int, Error> = .success(112)
+        let success2: Result<Int, Error> = .success(-15)
+        let success3: Result<Int, Error> = .success(3)
 
-        let failure1: Result<Int> = .failure(error1)
-        let failure2: Result<Int> = .failure(error2)
-        let failure3: Result<Int> = .failure(error3)
+        let failure1: Result<Int, Error> = .failure(error1)
+        let failure2: Result<Int, Error> = .failure(error2)
+        let failure3: Result<Int, Error> = .failure(error3)
 
         TestHelpers.expectSuccess([112, -15, 3], result: zipArray([success1, success2, success3]), message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
         TestHelpers.expectFailure(error3, result: zipArray([success1, success2, failure3]))

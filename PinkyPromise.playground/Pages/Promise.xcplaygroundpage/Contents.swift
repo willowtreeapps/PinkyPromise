@@ -5,7 +5,7 @@
  
  PinkyPromise's `Promise` type represents an asynchronous operation that produces a value or an error after you start it.
 
- You start a `Promise<T>` by passing a completion block to the `call` method. When the work completes, it returns the value or error to the completion block as a `Result<T>`.
+ You start a `Promise<T>` by passing a completion block to the `call` method. When the work completes, it returns the value or error to the completion block as a `Result<T, Error>`.
 
  There are lots of implementations of Promises out there. This one is intended to be lightweight and hip to the best parts of Swift.
 
@@ -94,7 +94,7 @@ let stringPromise = getStringPromise(withArgument: "bar")
 
 stringPromise.call { result in
     do {
-        print(try result.value())
+        print(try result.get())
     } catch {
         print(error)
     }
@@ -172,7 +172,7 @@ let complexPromise =
 
 complexPromise.call { result in
     do {
-        print(try result.value())
+        print(try result.get())
     } catch {
         print(error)
     }

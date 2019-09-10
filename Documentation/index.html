@@ -36,10 +36,10 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Enums.html">Enums</a>
+            <a href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Enums/Result.html">Result</a>
+                <a href="Extensions/Result.html">Result</a>
               </li>
             </ul>
           </li>
@@ -47,33 +47,33 @@
             <a href="Functions.html">Functions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu0_rFTGOS_6Resultx_GS0_q___GS0_Txq___">zip(_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipyAA0B0Vyx_q_tGADyxG_ADyq_Gtr0_lF">zip(_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu0_rFTGVS_7Promisex_GS0_q___GS0_Txq___">zip(_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipys6ResultOyx_q_ts5Error_pGADyxsAE_pG_ADyq_sAE_pGtr0_lF">zip(_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu1_rFTGOS_6Resultx_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipyAA0B0Vyx_q_q0_tGADyxG_ADyq_GADyq0_Gtr1_lF">zip(_:_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu1_rFTGVS_7Promisex_GS0_q__GS0_q0___GS0_Txq_q0___">zip(_:_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipys6ResultOyx_q_q0_ts5Error_pGADyxsAE_pG_ADyq_sAE_pGADyq0_sAE_pGtr1_lF">zip(_:_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu2_rFTGOS_6Resultx_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipyAA0B0Vyx_q_q0_q1_tGADyxG_ADyq_GADyq0_GADyq1_Gtr2_lF">zip(_:_:_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise3zipu2_rFTGVS_7Promisex_GS0_q__GS0_q0__GS0_q1___GS0_Txq_q0_q1___">zip(_:_:_:_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise3zipys6ResultOyx_q_q0_q1_ts5Error_pGADyxsAE_pG_ADyq_sAE_pGADyq0_sAE_pGADyq1_sAE_pGtr2_lF">zip(_:_:_:_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGOS_6Resultx__GS0_GSax__">zipArray(_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise8zipArrayyAA0B0VySayxGGSayADyxGGlF">zipArray(_:)</a>
               </li>
               <li class="nav-group-task">
-                <a href="Functions.html#/s:F12PinkyPromise8zipArrayurFGSaGVS_7Promisex__GS0_GSax__">zipArray(_:)</a>
+                <a href="Functions.html#/s:12PinkyPromise8zipArrayys6ResultOySayxGs5Error_pGSayADyxsAF_pGGlF">zipArray(_:)</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Structs.html">Structs</a>
+            <a href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/Promise.html">Promise</a>
@@ -86,29 +86,29 @@
         <section>
           <section class="section">
             
-            <a href='#pinkypromise' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='pinkypromise'>PinkyPromise</h1>
+            <h1 id='pinkypromise' class='heading'>PinkyPromise</h1>
 
 <p>A tiny Promises library.</p>
 
 <p><a href="https://circleci.com/gh/willowtreeapps/PinkyPromise"><img src="https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg" alt="Circle CI"></a> <a href="https://coveralls.io/github/willowtreeapps/PinkyPromise?branch=develop"><img src="https://coveralls.io/repos/github/willowtreeapps/PinkyPromise/badge.svg?branch=develop" alt="Coverage Status"></a></p>
-<a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
+<h2 id='summary' class='heading'>Summary</h2>
 
 <p>PinkyPromise is an implementation of <a href="https://en.wikipedia.org/wiki/Futures_and_promises">Promises</a> for Swift. It consists of two types:</p>
 
 <ul>
-<li><code>Result</code> - A value or error. The Result type adapts the return-or-throw function pattern for use with asynchronous callbacks.</li>
-<li><code>Promise</code> - An operation that produces a Result sometime after it is called. Promises can be composed and sequenced.</li>
+<li><code>Result</code> - A value or error. We use Swift&rsquo;s built in <a href="https://developer.apple.com/documentation/swift/result">Result Type</a></li>
+<li><code><a href="Structs/Promise.html">Promise</a></code> - An operation that produces a Result sometime after it is called. Promises can be composed and sequenced.</li>
 </ul>
 
 <p>With PinkyPromise, you can run complex combinations of asynchronous operations with safe, clean, Swifty code.</p>
-<a href='#installation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='installation'>Installation</h2>
+<h2 id='installation' class='heading'>Installation</h2>
 
 <ul>
 <li>With Carthage: <code>github &quot;willowtreeapps/PinkyPromise&quot;</code></li>
 <li>With Cocoapods: <code>pod &#39;PinkyPromise&#39;</code></li>
 <li>Manually: Copy the files in the <code>Sources</code> folder into your project.</li>
 </ul>
-<a href='#should-i-use-this' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='should-i-use-this'>Should I use this?</h2>
+<h2 id='should-i-use-this' class='heading'>Should I use this?</h2>
 
 <p>PinkyPromise:</p>
 
@@ -122,19 +122,19 @@
 </ul>
 
 <p>PinkyPromise is meant to be a lightweight tool that does a lot of heavy lifting. More elaborate implementations include <a href="https://github.com/antitypical/Result">Result</a> and <a href="http://promisekit.org">PromiseKit</a>.</p>
-<a href='#learning' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='learning'>Learning</h2>
+<h2 id='learning' class='heading'>Learning</h2>
 
 <p>Start with the <a href="#examples">Examples</a> section below.</p>
 
 <p>We&rsquo;ve also written a playground to demonstrate the benefits and usage of PinkyPromise. Please clone the repository and open <code>PinkyPromise.playground</code> in Xcode.</p>
 
 <p>A natural next step beyond Results and Promises is the <a href="https://www.youtube.com/watch?v=looJcaeboBY">Observable</a> type. You might use PinkyPromise as a first step toward learning <a href="https://github.com/ReactiveX/RxSwift">RxSwift</a>, which we recommend.</p>
-<a href='#examples' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='examples'>Examples</h2>
+<h2 id='examples' class='heading'>Examples</h2>
 
 <p>A Promise is best at running an asynchronous operation that can succeed or fail.</p>
 
 <p>A Result is best at representing a success or failure from such an operation.</p>
-<a href='#why-result' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='why-result'>Why Result?</h3>
+<h3 id='why-result' class='heading'>Why Result?</h3>
 
 <p>The usual asynchronous operation pattern on iOS is a function that takes arguments and a completion block, then begins the work. The completion block will receive an optional value and an optional error when the work completes:</p>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="n">withArgument</span> <span class="nv">argument</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt">String</span><span class="p">?,</span> <span class="kt">ErrorType</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?)</span> <span class="p">{</span>
@@ -160,7 +160,7 @@
 <p>Compare with the standard Swift pattern for failable synchronous methods: A function like <code>Data(contentsOf:options:)</code> will either return a value or throw an error, not both, and not neither, and not optionally. This is an airtight contract. But you can&rsquo;t use that pattern in asynchronous calls, because you can only throw backward out of the function you&rsquo;re in, not forward into a completion block.</p>
 
 <p>Here&rsquo;s how you&rsquo;d write that asynchronous operation with a tighter contract, using Result. The Result is a success or failure. It can be created with <code>return</code> or <code>throw</code>, and inspected with <code>value</code>, which will either return or throw.</p>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">getStringResult</span><span class="p">(</span><span class="n">withArgument</span> <span class="nv">argument</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?)</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">getStringResult</span><span class="p">(</span><span class="n">withArgument</span> <span class="nv">argument</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?)</span> <span class="p">{</span>
     <span class="err">…</span>
     <span class="nf">completion</span><span class="p">?(</span><span class="kt">Result</span> <span class="p">{</span>
         <span class="k">if</span> <span class="n">successful</span> <span class="p">{</span>
@@ -173,15 +173,15 @@
 
 <span class="nf">getStringResult</span><span class="p">(</span><span class="nv">withArgument</span><span class="p">:</span> <span class="s">"foo"</span><span class="p">)</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
     <span class="k">do</span> <span class="p">{</span>
-        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">value</span><span class="p">())</span>
+        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">get</span><span class="p">())</span>
     <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
         <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 
-<p>Under the hood, <code>Result&lt;T&gt;</code> is an <code>enum</code> with two cases: <code>.Success(T)</code> and <code>.Failure(ErrorType)</code>. It&rsquo;s possible to create a Result using an enum case and inspect it using <code>switch</code>. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.</p>
-<a href='#why-promise' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='why-promise'>Why Promise?</h3>
+<p>Under the hood, <code>Result&lt;T, Error&gt;</code> is an <code>enum</code> with two cases: <code>.Success(T)</code> and <code>.Failure(Error)</code>. It&rsquo;s possible to create a Result using an enum case and inspect it using <code>switch</code>. But since Result represents a returned value or a thrown error, we prefer to use it in the style shown above.</p>
+<h3 id='why-promise' class='heading'>Why Promise?</h3>
 
 <p>Promises are useful for combining many asynchronous operations into one. To do that, we need to be able to create an asynchronous operation without starting it right away.</p>
 
@@ -207,7 +207,7 @@
 <p>Next, we ask <code>stringPromise</code> to run by passing a completion block to the <code>call</code> method. <code>call</code> runs the task and routes the Result back to the completion block. When the Promise completes, our completion block will receive the Result, and can get the value or error with <code>try</code> and <code>catch</code>.</p>
 <pre class="highlight swift"><code><span class="n">stringPromise</span><span class="o">.</span><span class="n">call</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
     <span class="k">do</span> <span class="p">{</span>
-        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">value</span><span class="p">())</span>
+        <span class="nf">print</span><span class="p">(</span><span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">get</span><span class="p">())</span>
     <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
         <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="p">}</span>
@@ -251,25 +251,25 @@
 <p>Even though this operation has many steps that depend on prior operations&rsquo; success, we don&rsquo;t have to coordinate them by writing multiple completion blocks. Instead, we just handle the final result, using the tight contract afforded by Result:</p>
 <pre class="highlight swift"><code><span class="n">getFirstThreeChildrenOfObjectWithIDPromise</span><span class="o">.</span><span class="n">call</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">result</span> <span class="k">in</span>
     <span class="k">do</span> <span class="p">{</span>
-        <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="nf">updateViews</span><span class="p">(</span><span class="nv">withObjects</span><span class="p">:</span> <span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">value</span><span class="p">())</span>
+        <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="nf">updateViews</span><span class="p">(</span><span class="nv">withObjects</span><span class="p">:</span> <span class="k">try</span> <span class="n">result</span><span class="o">.</span><span class="nf">get</span><span class="p">())</span>
     <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
         <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="nf">showError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<a href='#tests' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='tests'>Tests</h2>
+<h2 id='tests' class='heading'>Tests</h2>
 
 <p>We intend to keep PinkyPromise fully unit tested.</p>
 
 <p>You can run tests in Xcode, or use <code>bundle exec fastlane run_tests</code> with <a href="https://fastlane.tools">Fastlane</a>.</p>
 
 <p>We run continuous integration on <a href="https://circleci.com/gh/willowtreeapps/PinkyPromise">CircleCI</a>.</p>
-<a href='#roadmap' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='roadmap'>Roadmap</h2>
+<h2 id='roadmap' class='heading'>Roadmap</h2>
 
 <ul>
 <li>More Promise transformations?</li>
 </ul>
-<a href='#contributing-to-pinkypromise' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='contributing-to-pinkypromise'>Contributing to PinkyPromise</h2>
+<h2 id='contributing-to-pinkypromise' class='heading'>Contributing to PinkyPromise</h2>
 
 <p>Contributions are welcome. Please see the <a href="CONTRIBUTING.md">Contributing guidelines</a>.</p>
 
@@ -278,8 +278,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://github.com/kconner" target="_blank" rel="external">Kevin Conner</a>. All rights reserved. (Last updated: 2017-04-21)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/kconner" target="_blank" rel="external">Kevin Conner</a>. All rights reserved. (Last updated: 2019-09-04)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

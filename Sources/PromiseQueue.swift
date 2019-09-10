@@ -48,7 +48,7 @@ public final class PromiseQueue<Value> {
      */
     public func batch(promises: [Promise<Value>]) -> Promise<[Value]> {
         return Promise { fulfill in
-            var results: [Result<Value>] = []
+            var results: [Result<Value, Error>] = []
 
             guard let lastPromise = promises.last else {
                 fulfill(zipArray(results))
@@ -115,7 +115,7 @@ public extension Promise {
      In order to work with a `PromiseQueue`, use `enqueue` instead of `call`.
      The queue will invoke `call` when all its previously enqueued promises have completed.
      */
-    public func enqueue(in queue: PromiseQueue<Value>) {
+    func enqueue(in queue: PromiseQueue<Value>) {
         queue.add(self)
     }
     

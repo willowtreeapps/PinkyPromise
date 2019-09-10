@@ -43,7 +43,7 @@ class PromiseTest: XCTestCase {
         // Create with successful task
         do {
             let expectedValue = 3
-            let result = Result { expectedValue }
+            let result = Result(catching: { expectedValue })
             let taskCalled = expectation(description: "Task was called")
             let promise = Promise<Int> { fulfill in
                 fulfill(result)
@@ -60,7 +60,7 @@ class PromiseTest: XCTestCase {
         // Create with failing task
         do {
             let expectedError = TestHelpers.uniqueError()
-            let result = Result<String> { throw expectedError }
+            let result = Result<String, Error>(catching: { throw expectedError })
             let taskCalled = expectation(description: "Task was called")
             let promise = Promise<String> { fulfill in
                 fulfill(result)
@@ -79,7 +79,7 @@ class PromiseTest: XCTestCase {
         // Create with successful result
         do {
             let expectedValue = "Hi there"
-            let result = Result { expectedValue }
+            let result = Result(catching: { expectedValue })
             let promise = Promise(result: result)
 
             let completionCalled = expectation(description: "Completion was called")
@@ -94,7 +94,7 @@ class PromiseTest: XCTestCase {
         // Create with failed result
         do {
             let expectedError = TestHelpers.uniqueError()
-            let result = Result<String> { throw expectedError }
+            let result = Result<String, Error>(catching: { throw expectedError })
             let promise = Promise(result: result)
 
             let completionCalled = expectation(description: "Completion was called")
@@ -396,7 +396,7 @@ class PromiseTest: XCTestCase {
             let promise = Promise<Int> { fulfill in
                 taskRunCount += 1
 
-                fulfill(Result { expectedValue })
+                fulfill(Result(catching: { expectedValue }))
             }
 
             let attemptCount = 3
@@ -414,7 +414,7 @@ class PromiseTest: XCTestCase {
         do {
             let error1 = TestHelpers.uniqueError()
             let expectedValue = 3
-            var results: [Result<Int>] = [Result { throw error1 }, Result { expectedValue }]
+            var results: [Result<Int, Error>] = [Result(catching: { throw error1 }), Result(catching: { expectedValue })]
 
             var taskRunCount = 0
             let promise = Promise<Int> { fulfill in
@@ -439,7 +439,7 @@ class PromiseTest: XCTestCase {
             let error1 = TestHelpers.uniqueError()
             let error2 = TestHelpers.uniqueError()
             let expectedError = TestHelpers.uniqueError()
-            var results: [Result<Int>] = [Result { throw error1 }, Result { throw error2 }, Result { throw expectedError }]
+            var results: [Result<Int, Error>] = [Result(catching: { throw error1 }), Result(catching: { throw error2 }), Result(catching: { throw expectedError })]
 
             var taskRunCount = 0
             let promise = Promise<Int> { fulfill in
@@ -469,7 +469,7 @@ class PromiseTest: XCTestCase {
 
             XCTAssertFalse(Thread.isMainThread, "Expected the task to run in the background.")
 
-            fulfill(Result { expectedValue })
+            fulfill(Result(catching: { expectedValue }))
         }
 
         let completionCalled = expectation(description: "Promise completed.")
@@ -492,7 +492,7 @@ class PromiseTest: XCTestCase {
         let promise = Promise<Int> { fulfill in
             XCTAssertTrue(Thread.isMainThread, "Expected the task to run on the main thread.")
 
-            fulfill(Result { expectedValue })
+            fulfill(Result(catching: { expectedValue }))
 
             taskCalled.fulfill()
         }
@@ -645,7 +645,7 @@ class PromiseTest: XCTestCase {
 
         let taskCalled = expectation(description: "Task was called")
         let promise = Promise<Int> { fulfill in
-            fulfill(Result { expectedResult })
+            fulfill(Result(catching: { expectedResult }))
 
             taskCalled.fulfill()
         }
@@ -665,7 +665,7 @@ class PromiseTest: XCTestCase {
 
             let taskCalled = expectation(description: "Task was called")
             let promise = Promise<Int> { fulfill in
-                fulfill(Result { expectedResult })
+                fulfill(Result(catching: { expectedResult }))
 
                 taskCalled.fulfill()
             }
@@ -684,7 +684,7 @@ class PromiseTest: XCTestCase {
 
             let taskCalled = expectation(description: "Task was called")
             let promise = Promise<Int> { fulfill in
-                fulfill(Result { expectedResult })
+                fulfill(Result(catching: { expectedResult }))
 
                 taskCalled.fulfill()
             }
@@ -711,7 +711,7 @@ class PromiseTest: XCTestCase {
         let failure3: Promise<Int> = Promise(error: error3)
         let failure4: Promise<String> = Promise(error: error4)
 
-        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T>) -> Void) {
+        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
             let completionCalled = expectation(description: "Completed")
             promise.call { result in
                 outerCompletion(result)
@@ -822,7 +822,7 @@ class PromiseTest: XCTestCase {
         let failure2: Promise<Int> = Promise(error: error2)
         let failure3: Promise<Int> = Promise(error: error3)
 
-        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T>) -> Void) {
+        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
             let completionCalled = expectation(description: "Completed")
             promise.call { result in
                 outerCompletion(result)
