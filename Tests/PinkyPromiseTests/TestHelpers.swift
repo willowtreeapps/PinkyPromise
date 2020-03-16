@@ -39,12 +39,13 @@ enum TestHelpers {
         return NSError(domain: "Test", code: lastErrorCode, userInfo: nil)
     }
 
-    static func expectSuccess<T: Equatable>(_ expected: T, result: Result<T, Error>, message: String) {
+    static func expectSuccess<T: Equatable>(_ expected: T, result: Result<T, Error>, message: String,
+                                            file: StaticString = #file, line: UInt = #line) {
         do {
             let value = try result.get()
-            XCTAssertEqual(expected, value, message)
+            XCTAssertEqual(expected, value, message, file: file, line: line)
         } catch {
-            XCTFail("Expected not to catch an error.")
+            XCTFail("Expected not to catch an error.", file: file, line: line)
         }
     }
 
@@ -81,21 +82,23 @@ enum TestHelpers {
         }
     }
 
-    static func expectSuccess<T: Equatable>(_ expected: [T], result: Result<[T], Error>, message: String) {
+    static func expectSuccess<T: Equatable>(_ expected: [T], result: Result<[T], Error>, message: String,
+                                            file: StaticString = #file, line: UInt = #line) {
         do {
             let value = try result.get()
-            XCTAssertEqual(expected, value, message)
+            XCTAssertEqual(expected, value, message, file: file, line: line)
         } catch {
-            XCTFail("Expected not to catch an error.")
+            XCTFail("Expected not to catch an error.", file: file, line: line)
         }
     }
 
-    static func expectFailure<T>(_ expected: NSError, result: Result<T, Error>) {
+    static func expectFailure<T>(_ expected: NSError, result: Result<T, Error>,
+                                    file: StaticString = #file, line: UInt = #line) {
         do {
             _ = try result.get()
-            XCTFail("Expected to throw an error.")
+            XCTFail("Expected to throw an error.", file: file, line: line)
         } catch {
-            XCTAssertEqual(expected, error as NSError, "Expected the given error.")
+            XCTAssertEqual(expected, error as NSError, "Expected the given error.", file: file, line: line)
         }
     }
 
