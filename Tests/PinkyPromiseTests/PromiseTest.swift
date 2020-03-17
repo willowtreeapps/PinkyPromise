@@ -808,6 +808,40 @@ class PromiseTest: XCTestCase {
         
         waitForExpectations(timeout: 1.0, handler: nil)
     }
+    
+    /// Test that zip throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
+    func testZipABCThrowsUnknownErrorWhenUnwrappingNilResult() {
+    
+        let overFilled: Promise<String> = Promise<String> { fulfill in
+            DispatchQueue.global(qos: .userInitiated).async {
+                sleep(1)
+                fulfill(.success("112"))
+                sleep(1)
+                fulfill(.success("112"))
+            }
+        }
+        
+        let filled: Promise<Int> = Promise<Int> { fulfill in
+            fulfill(.success(-15))
+        }
+
+        let unFilled: Promise<Bool> = Promise<Bool> { fulfill in }
+        
+        callAndTestCompletion(zip(overFilled, filled, unFilled)) { result in
+            do {
+                _ = try result.get()
+                XCTFail("Expected to throw an error.")
+            } catch {
+                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
+                    XCTFail("Expected to throw a PromiseError.")
+                    return
+                }
+                XCTAssertEqual(index, 2) // 3rd Promise is unfulfilled
+            }
+        }
+        
+        waitForExpectations(timeout: 3.0, handler: nil)
+    }
 
     func testZipArray() {
         let error1 = TestHelpers.uniqueError()
@@ -822,13 +856,7 @@ class PromiseTest: XCTestCase {
         let failure2: Promise<Int> = Promise(error: error2)
         let failure3: Promise<Int> = Promise(error: error3)
 
-        func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
-            let completionCalled = expectation(description: "Completed")
-            promise.call { result in
-                outerCompletion(result)
-                completionCalled.fulfill()
-            }
-        }
+       
 
         callAndTestCompletion(zipArray([success1, success2, success3])) {
             TestHelpers.expectSuccess([112, -15, 3], result: $0, message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
@@ -857,5 +885,46 @@ class PromiseTest: XCTestCase {
 
         waitForExpectations(timeout: 1.0, handler: nil)
     }
+    
+    func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
+        let completionCalled = expectation(description: "Completed")
+        promise.call { result in
+            outerCompletion(result)
+            completionCalled.fulfill()
+        }
+    }
+    
+    /// Test that zipArray throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
+    func testZipArrayThrowsUnknownErrorWhenUnwrappingResultsMapNil() {
+    
+        let overFilled: Promise<Int> = Promise<Int> { fulfill in
+            DispatchQueue.global(qos: .userInitiated).async {
+                sleep(1)
+                fulfill(.success(112))
+                sleep(1)
+                fulfill(.success(112))
+            }
+        }
+        
+        let filled: Promise<Int> = Promise<Int> { fulfill in
+            fulfill(.success(-15))
+        }
 
+        let unFilled: Promise<Int> = Promise<Int> { fulfill in }
+        
+        callAndTestCompletion(zipArray([overFilled, filled, unFilled])) { result in
+            do {
+                _ = try result.get()
+                XCTFail("Expected to throw an error.")
+            } catch {
+                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
+                    XCTFail("Expected to throw a PromiseError.")
+                    return
+                }
+                XCTAssertEqual(index, 2) // 3rd Promise is unfulfilled
+            }
+        }
+        
+        waitForExpectations(timeout: 3.0, handler: nil)
+    }
 }
