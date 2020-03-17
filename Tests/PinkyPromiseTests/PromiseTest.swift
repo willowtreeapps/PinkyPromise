@@ -832,7 +832,7 @@ class PromiseTest: XCTestCase {
                 _ = try result.get()
                 XCTFail("Expected to throw an error.")
             } catch {
-                guard case PromiseError.unfulfilledZipArrayPromise(let index) = error else {
+                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
                     XCTFail("Expected to throw a PromiseError.")
                     return
                 }
@@ -917,7 +917,7 @@ class PromiseTest: XCTestCase {
                 _ = try result.get()
                 XCTFail("Expected to throw an error.")
             } catch {
-                guard case PromiseError.unfulfilledZipArrayPromise(let index) = error else {
+                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
                     XCTFail("Expected to throw a PromiseError.")
                     return
                 }

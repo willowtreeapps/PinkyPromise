@@ -325,8 +325,8 @@ public func zip<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 0) }
-        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 1) }
+        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 0) }
+        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 1) }
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -356,9 +356,9 @@ public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promi
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 0) }
-        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 1) }
-        var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 2) }
+        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 0) }
+        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 1) }
+        var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 2) }
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -393,10 +393,10 @@ public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ pr
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 0) }
-        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 1) }
-        var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 2) }
-        var resultD = Result<D, Error> { throw PromiseError.unfulfilledZipArrayPromise(atIndex: 3) }
+        var resultA = Result<A, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 0) }
+        var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 1) }
+        var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 2) }
+        var resultD = Result<D, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 3) }
 
         promiseA.inDispatchGroup(group).call { result in
             resultA = result
@@ -442,7 +442,7 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         
         group.notify(queue: DispatchQueue.main) {
             let unwrappedResults = results.enumerated().map { (index, result) in
-                result ?? Result { throw PromiseError.unfulfilledZipArrayPromise(atIndex: index) }
+                result ?? Result { throw PromiseError.unfulfilledZipPromise(atIndex: index) }
             }
             fulfill(zipArray(unwrappedResults))
         }
@@ -450,6 +450,6 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 }
 
 public enum PromiseError : Error {
-    /// Index of first unfulfilled Promise in zipArray
-    case unfulfilledZipArrayPromise(atIndex: Int)
+    /// Index of first unfulfilled Promise
+    case unfulfilledZipPromise(atIndex: Int)
 }
