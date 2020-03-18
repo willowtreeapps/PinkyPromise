@@ -233,11 +233,18 @@ public struct Promise<Value> {
      The dispatch group task begins when the resulting promise is called. It ends after the promise produces its value.
      */
     public func inDispatchGroup(_ group: DispatchGroup) -> Promise<Value> {
+        var optionalGroup: DispatchGroup? = group
         return Promise { fulfill in
-            group.enter()
+            optionalGroup = group
+            optionalGroup?.enter()
             self.call { result in
+                guard let group = optionalGroup else {
+                    fulfill( Result<Value, Error> { throw PromiseError.overfulfilledZipPromise } )
+                    return
+                }
                 fulfill(result)
                 group.leave()
+                optionalGroup = nil
             }
         }
     }
@@ -452,4 +459,5 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 public enum PromiseError : Error {
     /// Index of first unfulfilled Promise
     case unfulfilledZipPromise(atIndex: Int)
+    case overfulfilledZipPromise
 }

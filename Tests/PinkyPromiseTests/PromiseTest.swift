@@ -809,6 +809,45 @@ class PromiseTest: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
+    func testZipABDuplicateFulfillThrowsError() {
+    
+        let duplicateFilled: Promise<Int> = Promise<Int> { fulfill in
+            fulfill(.success(0))
+            fulfill(.success(0))
+        }
+        
+        let filled: Promise<Int> = Promise<Int> { fulfill in
+            fulfill(.success(-15))
+        }
+        
+        let zipPromise = zip(duplicateFilled, filled)
+        callAndTestCompletion(zipPromise) { result in
+            do {
+                _ = try result.get()
+                XCTFail("Expected to throw an error.")
+            } catch {
+                guard case PromiseError.overfulfilledZipPromise = error else {
+                    XCTFail("Expected to throw a PromiseError.overfulfilledZipPromise")
+                    return
+                }
+            }
+        }
+        
+        callAndTestCompletion(zipPromise) { result in
+            do {
+                _ = try result.get()
+                XCTFail("Expected to throw an error.")
+            } catch {
+                guard case PromiseError.overfulfilledZipPromise = error else {
+                    XCTFail("Expected to throw a PromiseError.overfulfilledZipPromise")
+                    return
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 3.0, handler: nil)
+    }
+    
     /// Test that zip throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
     func testZipABCThrowsUnknownErrorWhenUnwrappingNilResult() {
     
