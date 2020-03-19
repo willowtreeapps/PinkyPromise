@@ -808,6 +808,38 @@ class PromiseTest: XCTestCase {
         
         waitForExpectations(timeout: 1.0, handler: nil)
     }
+        
+    /// 
+    func testEnforcingFulfillOnce() {
+        
+        let overFilled: Promise<String> = Promise<String> { fulfill in
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                sleep(1)
+                fulfill(.success("A"))
+                sleep(1)
+            }
+            
+            DispatchQueue.global(qos: .unspecified).async {
+                sleep(2)
+                fulfill(.success("B"))
+            }
+            
+        }.enforcingFulfillOnce()
+                
+        callAndTestCompletion(overFilled, numAllowedFulfills: 2) { result in
+            do {
+                _ = try result.get() // first go doesn't throw, 2nd time throws
+            } catch {
+                guard case PromiseError.overfulfilledPromise = error else {
+                    XCTFail("Expected to throw a PromiseError.overfulfilledPromise")
+                    return
+                }
+            }
+        }
+                
+        waitForExpectations(timeout: 90.0, handler: nil)
+    }
     
     /// Test that zip throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
     func testZipABCThrowsUnknownErrorWhenUnwrappingNilResult() {
@@ -848,13 +880,13 @@ class PromiseTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Promise<Int> = Promise(value: 112)
-        let success2: Promise<Int> = Promise(value: -15)
-        let success3: Promise<Int> = Promise(value: 3)
+        let success1: Promise<Int> = Promise(value: 112).enforcingFulfillOnce()
+        let success2: Promise<Int> = Promise(value: -15).enforcingFulfillOnce()
+        let success3: Promise<Int> = Promise(value: 3).enforcingFulfillOnce()
 
-        let failure1: Promise<Int> = Promise(error: error1)
-        let failure2: Promise<Int> = Promise(error: error2)
-        let failure3: Promise<Int> = Promise(error: error3)
+        let failure1: Promise<Int> = Promise(error: error1).enforcingFulfillOnce()
+        let failure2: Promise<Int> = Promise(error: error2).enforcingFulfillOnce()
+        let failure3: Promise<Int> = Promise(error: error3).enforcingFulfillOnce()
 
        
 
@@ -886,11 +918,18 @@ class PromiseTest: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
-        let completionCalled = expectation(description: "Completed")
+    func callAndTestCompletion<T>(_ promise: Promise<T>,
+                                  numAllowedFulfills: Int = 1,
+                                  completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
+        var expectationIndex = 0
+        var completionCalleds: [XCTestExpectation] = []
+        for i in 1...numAllowedFulfills {
+            completionCalleds.append(expectation(description: "Completed \(i)"))
+        }
         promise.call { result in
             outerCompletion(result)
-            completionCalled.fulfill()
+            completionCalleds[expectationIndex].fulfill()
+            expectationIndex += 1
         }
     }
     

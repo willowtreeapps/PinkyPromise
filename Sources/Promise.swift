@@ -183,6 +183,28 @@ public struct Promise<Value> {
     }
 
     // MARK: Planning Execution
+    
+    /**
+     Creates a promise that wraps this promise and throw an Error when fulfill is call more than once
+
+     - returns: A promise whose task calls this promise and throws PromiseError.overfulfilledPromise if fulfill is called more than once
+     */
+    public func enforcingFulfillOnce() -> Promise<Value> {
+        return Promise { fulfill in
+            let queue = DispatchQueue(label: "ThreadSafePromiseFulfill.queue", attributes: .concurrent)
+            var filled = false
+            self.call { result in
+                queue.sync(flags: .barrier) {
+                    guard !filled else {
+                        fulfill(.failure(PromiseError.overfulfilledPromise))
+                        return
+                    }
+                    filled = true
+                    fulfill(result)
+                }
+            }
+        }
+    }
 
     /**
      Creates a promise that wraps this promise and repeatedly runs it until it succeeds, up to a maximum number of runs.
@@ -436,7 +458,9 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
-                results[index] = result
+                DispatchQueue.main.async {
+                    results[index] = result
+                }
             }
         }
         
@@ -452,4 +476,5 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 public enum PromiseError : Error {
     /// Index of first unfulfilled Promise
     case unfulfilledZipPromise(atIndex: Int)
+    case overfulfilledPromise
 }
