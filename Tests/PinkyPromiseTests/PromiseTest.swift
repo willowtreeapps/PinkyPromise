@@ -880,13 +880,13 @@ class PromiseTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Promise<Int> = Promise(value: 112).enforcingFulfillOnce()
-        let success2: Promise<Int> = Promise(value: -15).enforcingFulfillOnce()
-        let success3: Promise<Int> = Promise(value: 3).enforcingFulfillOnce()
+        let success1: Promise<Int> = Promise(value: 112)
+        let success2: Promise<Int> = Promise(value: -15)
+        let success3: Promise<Int> = Promise(value: 3)
 
-        let failure1: Promise<Int> = Promise(error: error1).enforcingFulfillOnce()
-        let failure2: Promise<Int> = Promise(error: error2).enforcingFulfillOnce()
-        let failure3: Promise<Int> = Promise(error: error3).enforcingFulfillOnce()
+        let failure1: Promise<Int> = Promise(error: error1)
+        let failure2: Promise<Int> = Promise(error: error2)
+        let failure3: Promise<Int> = Promise(error: error3)
 
        
 
