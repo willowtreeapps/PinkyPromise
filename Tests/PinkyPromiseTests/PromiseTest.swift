@@ -812,6 +812,8 @@ class PromiseTest: XCTestCase {
     /// 
     func testEnforcingFulfillOnce() {
         
+        let group = DispatchGroup()
+        
         let overFilled: Promise<String> = Promise<String> { fulfill in
             
             DispatchQueue.global(qos: .userInitiated).async {
@@ -825,7 +827,7 @@ class PromiseTest: XCTestCase {
                 fulfill(.success("B"))
             }
             
-        }.enforcingFulfillOnce()
+        }.inDispatchGroup(group).enforcingFulfillOnce()
                 
         callAndTestCompletion(overFilled, numAllowedFulfills: 2) { result in
             do {
