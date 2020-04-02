@@ -848,7 +848,11 @@ class PromiseTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Promise<Int> = Promise(value: 112)
+        let success1: Promise<Int> = Promise { fulfill in
+            DispatchQueue.global(qos: .userInitiated).async {
+                fulfill(.success(112))
+            }
+        }
         let success2: Promise<Int> = Promise(value: -15)
         let success3: Promise<Int> = Promise(value: 3)
 
