@@ -436,7 +436,9 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
-                results[index] = result
+                DispatchQueue.main.async {
+                    results[index] = result
+                }
             }
         }
         
