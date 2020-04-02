@@ -860,8 +860,6 @@ class PromiseTest: XCTestCase {
         let failure2: Promise<Int> = Promise(error: error2)
         let failure3: Promise<Int> = Promise(error: error3)
 
-       
-
         callAndTestCompletion(zipArray([success1, success2, success3])) {
             TestHelpers.expectSuccess([112, -15, 3], result: $0, message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
         }
