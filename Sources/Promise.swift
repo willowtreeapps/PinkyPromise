@@ -233,11 +233,24 @@ public struct Promise<Value> {
      The dispatch group task begins when the resulting promise is called. It ends after the promise produces its value.
      */
     public func inDispatchGroup(_ group: DispatchGroup) -> Promise<Value> {
+        var fulfilled = false;
+        let fulfillmentBarrier = DispatchQueue(label: "ThreadSafeResultsArray.queue", attributes: .concurrent)
         return Promise { fulfill in
             group.enter()
             self.call { result in
-                fulfill(result)
-                group.leave()
+                fulfillmentBarrier.sync(flags: .barrier) {
+                    // Double fulfilling a promise in a dispatch group will result
+                    // in overcalling group.leave(). This prevents that issue and sets
+                    // the promise to error out.
+                    guard !fulfilled else {
+                        let errorResult = Result<Value, Error>.failure(PromiseError.overfulfilledPromise)
+                        fulfill(errorResult)
+                        return
+                    }
+                    fulfill(result)
+                    fulfilled = true
+                    group.leave()
+                }
             }
         }
     }
@@ -329,11 +342,11 @@ public func zip<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise
         var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 1) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = result
+            resultA = result.checkOverfulfilled(atIndex: 0)
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = result
+            resultB = result.checkOverfulfilled(atIndex: 1)
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -361,15 +374,15 @@ public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promi
         var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 2) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = result
+            resultA = result.checkOverfulfilled(atIndex: 0)
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = result
+            resultB = result.checkOverfulfilled(atIndex: 1)
         }
 
         promiseC.inDispatchGroup(group).call { result in
-            resultC = result
+            resultC = result.checkOverfulfilled(atIndex: 2)
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -399,19 +412,19 @@ public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ pr
         var resultD = Result<D, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 3) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = result
+            resultA = result.checkOverfulfilled(atIndex: 0)
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = result
+            resultB = result.checkOverfulfilled(atIndex: 1)
         }
 
         promiseC.inDispatchGroup(group).call { result in
-            resultC = result
+            resultC = result.checkOverfulfilled(atIndex: 2)
         }
 
         promiseD.inDispatchGroup(group).call { result in
-            resultD = result
+            resultD = result.checkOverfulfilled(atIndex: 3)
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -441,8 +454,16 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         }
         
         group.notify(queue: DispatchQueue.main) {
-            let unwrappedResults = results.enumerated().map { (index, result) in
-                result ?? Result { throw PromiseError.unfulfilledZipPromise(atIndex: index) }
+            let unwrappedResults = results.enumerated().map { arg -> Result<T, Error> in
+                let (index, result) = arg
+                switch result {
+                case nil:
+                    return .failure(PromiseError.unfulfilledZipPromise(atIndex: index))
+                case .failure(PromiseError.overfulfilledPromise):
+                    return .failure(PromiseError.overfulfilledZipPromise(atIndex: index))
+                case let result?:
+                    return result
+                }
             }
             fulfill(zipArray(unwrappedResults))
         }
@@ -452,4 +473,6 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
 public enum PromiseError : Error {
     /// Index of first unfulfilled Promise
     case unfulfilledZipPromise(atIndex: Int)
+    case overfulfilledPromise
+    case overfulfilledZipPromise(atIndex: Int)
 }
