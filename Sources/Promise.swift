@@ -444,10 +444,14 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         var results: [Result<T, Error>] = Array( (0..<promises.count).lazy.map { (index) in
             Result { throw PromiseError.unfulfilledZipPromise(atIndex: index) }
         })
+        let resultsArrayBarrierQueue = DispatchQueue(label: "ThreadSafeResultsArray.queue", attributes: .concurrent)
+
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
-                results[index] = result
+                resultsArrayBarrierQueue.sync(flags: .barrier) {
+                    results[index] = result
+                }
             }
         }
         
