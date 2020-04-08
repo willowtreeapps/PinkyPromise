@@ -45,19 +45,6 @@ public extension Result where Failure == Error {
             try transform(try get())
         })
     }
-    
-    /**
-    Transforms an overfulfilled promise error to a version that exposes the index of the error
-
-    - parameter toIndex: The index of this promise in its zip
-    - returns: The original result  or failure or a transformed PromiseError.overfulfilledZipPromise with index.
-    */
-    func checkOverfulfilled(atIndex: Int) -> Result<Success, Error> {
-        if case .failure(PromiseError.overfulfilledPromise) = self {
-            return .failure(PromiseError.overfulfilledZipPromise(atIndex: atIndex))
-        }
-        return self;
-    }
 }
 
 /**
