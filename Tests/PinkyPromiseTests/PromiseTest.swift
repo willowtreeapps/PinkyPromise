@@ -848,15 +848,17 @@ class PromiseTest: XCTestCase {
         let error2 = TestHelpers.uniqueError()
         let error3 = TestHelpers.uniqueError()
 
-        let success1: Promise<Int> = Promise(value: 112)
+        let success1: Promise<Int> = Promise { fulfill in
+            DispatchQueue.global(qos: .userInitiated).async {
+                fulfill(.success(112))
+            }
+        }
         let success2: Promise<Int> = Promise(value: -15)
         let success3: Promise<Int> = Promise(value: 3)
 
         let failure1: Promise<Int> = Promise(error: error1)
         let failure2: Promise<Int> = Promise(error: error2)
         let failure3: Promise<Int> = Promise(error: error3)
-
-       
 
         callAndTestCompletion(zipArray([success1, success2, success3])) {
             TestHelpers.expectSuccess([112, -15, 3], result: $0, message: "Expected to zip 112, -15, and 3 into [112, -15, 3].")
