@@ -239,17 +239,13 @@ public struct Promise<Value> {
             group.enter()
             self.call { result in
                 fulfillmentBarrier.sync(flags: .barrier) {
-                    // Double fulfilling a promise in a dispatch group will result
-                    // in overcalling group.leave(). This prevents that issue and sets
-                    // the promise to error out.
-                    guard !fulfilled else {
-                        let errorResult = Result<Value, Error>.failure(PromiseError.overfulfilledPromise)
-                        fulfill(errorResult)
-                        return
-                    }
                     fulfill(result)
-                    fulfilled = true
-                    group.leave()
+                    // Prevent a double fulfilling a promise from over-leaving the
+                    // dispatch group
+                    if !fulfilled {
+                        group.leave()
+                        fulfilled = true
+                    }
                 }
             }
         }
@@ -342,11 +338,11 @@ public func zip<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise
         var resultB = Result<B, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 1) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = checkOverfulfilled(result, atIndex: 0)
+            resultA = result
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = checkOverfulfilled(result, atIndex: 1)
+            resultB = result
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -374,15 +370,15 @@ public func zip<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promi
         var resultC = Result<C, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 2) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = checkOverfulfilled(result, atIndex: 0)
+            resultA = result
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = checkOverfulfilled(result, atIndex: 1)
+            resultB = result
         }
 
         promiseC.inDispatchGroup(group).call { result in
-            resultC = checkOverfulfilled(result, atIndex: 2)
+            resultC = result
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -412,19 +408,19 @@ public func zip<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ pr
         var resultD = Result<D, Error> { throw PromiseError.unfulfilledZipPromise(atIndex: 3) }
 
         promiseA.inDispatchGroup(group).call { result in
-            resultA = checkOverfulfilled(result, atIndex: 0)
+            resultA = result
         }
 
         promiseB.inDispatchGroup(group).call { result in
-            resultB = checkOverfulfilled(result, atIndex: 1)
+            resultB = result
         }
 
         promiseC.inDispatchGroup(group).call { result in
-            resultC = checkOverfulfilled(result, atIndex: 2)
+            resultC = result
         }
 
         promiseD.inDispatchGroup(group).call { result in
-            resultD = checkOverfulfilled(result, atIndex: 3)
+            resultD = result
         }
 
         group.notify(queue: DispatchQueue.main) {
@@ -456,31 +452,12 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         }
         
         group.notify(queue: DispatchQueue.main) {
-            let unwrappedResults = results.enumerated().map { (index, result) in
-                checkOverfulfilled(result, atIndex: index)
-            }
-            fulfill(zipArray(unwrappedResults))
+            fulfill(zipArray(results))
         }
     }
-}
-
-/**
-Transforms an overfulfilled promise error to a version that exposes the index of the error
-
-- parameter result: The result to check for overfulfillment
-- parameter toIndex: The index of this promise in its zip
-- returns: The original result  or failure or a transformed PromiseError.overfulfilledZipPromise with index.
-*/
-func checkOverfulfilled<T>(_ result: Result<T, Error>, atIndex: Int) -> Result<T, Error> {
-    if case .failure(PromiseError.overfulfilledPromise) = result {
-        return .failure(PromiseError.overfulfilledZipPromise(atIndex: atIndex))
-    }
-    return result;
 }
 
 public enum PromiseError : Error {
     /// Index of first unfulfilled Promise
     case unfulfilledZipPromise(atIndex: Int)
-    case overfulfilledPromise
-    case overfulfilledZipPromise(atIndex: Int)
 }

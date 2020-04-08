@@ -810,14 +810,14 @@ class PromiseTest: XCTestCase {
     }
     
     /// Test that zip throws Overfullfilled Error when fulfill is called Twice for one Promise and Zero times for a second Promise
-    func testZipABCThrowsOverfulfilledWhenOverfulfilled() {
+    func testZipABCWaitsForAllFulfilled() {
     
         let overFilled: Promise<String> = Promise<String> { fulfill in
             DispatchQueue.global(qos: .userInitiated).async {
                 sleep(1)
                 fulfill(.success("112"))
                 sleep(1)
-                fulfill(.success("112"))
+                fulfill(.success("123"))
             }
         }
         
@@ -831,15 +831,14 @@ class PromiseTest: XCTestCase {
         }
         
         callAndTestCompletion(zip(overFilled, filled, filled2)) { result in
+
             do {
-                _ = try result.get()
-                XCTFail("Expected to throw an error.")
+                let (a, b, c) = try result.get()
+                XCTAssertEqual("123", a)
+                XCTAssertEqual(-15, b)
+                XCTAssert(c)
             } catch {
-                guard case PromiseError.overfulfilledZipPromise(let index) = error else {
-                    XCTFail("Expected to throw a PromiseError.")
-                    return
-                }
-                XCTAssertEqual(index, 0) // 1st Promise is over fulfilled
+                XCTFail("Expected not to throw an error.")
             }
         }
         
@@ -898,14 +897,14 @@ class PromiseTest: XCTestCase {
     }
     
     /// Test that zipArray throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
-    func testZipArrayThrowsOverfulfilledErrorWhenOverfulfilled() {
+    func testZipArrayWaitsForAllFulcilled() {
     
         let overFilled: Promise<Int> = Promise<Int> { fulfill in
             DispatchQueue.global(qos: .userInitiated).async {
                 sleep(1)
                 fulfill(.success(112))
                 sleep(1)
-                fulfill(.success(112))
+                fulfill(.success(123))
             }
         }
         
@@ -920,14 +919,12 @@ class PromiseTest: XCTestCase {
         
         callAndTestCompletion(zipArray([overFilled, filled, filled2])) { result in
             do {
-                _ = try result.get()
-                XCTFail("Expected to throw an error.")
+                let resultArray = try result.get()
+                XCTAssertEqual(123, resultArray[0])
+                XCTAssertEqual(-15, resultArray[1])
+                XCTAssertEqual(124, resultArray[2])
             } catch {
-                guard case PromiseError.overfulfilledZipPromise(let index) = error else {
-                    XCTFail("Expected to throw a PromiseError.")
-                    return
-                }
-                XCTAssertEqual(index, 0) // 1st promise overfulfills
+                XCTFail("Did not expect an error")
             }
         }
         
