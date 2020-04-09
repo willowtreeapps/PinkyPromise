@@ -234,10 +234,19 @@ public struct Promise<Value> {
      */
     public func inDispatchGroup(_ group: DispatchGroup) -> Promise<Value> {
         return Promise { fulfill in
+            var fulfilled = false;
+            let fulfillmentBarrier = DispatchQueue(label: "ThreadSafeFulfillment.queue", attributes: .concurrent)
             group.enter()
             self.call { result in
-                fulfill(result)
-                group.leave()
+                fulfillmentBarrier.sync(flags: .barrier) {
+                    fulfill(result)
+                    // Prevent a double fulfilling a promise from over-leaving the
+                    // dispatch group
+                    if !fulfilled {
+                        group.leave()
+                        fulfilled = true
+                    }
+                }
             }
         }
     }
@@ -432,8 +441,11 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
     return Promise { fulfill in
         let group = DispatchGroup()
 
-        var results: [Result<T, Error>?] = Array(repeating: nil, count: promises.count)
+        var results: [Result<T, Error>] = Array( (0..<promises.count).lazy.map { (index) in
+            Result { throw PromiseError.unfulfilledZipPromise(atIndex: index) }
+        })
         let resultsArrayBarrierQueue = DispatchQueue(label: "ThreadSafeResultsArray.queue", attributes: .concurrent)
+
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
@@ -444,10 +456,7 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         }
         
         group.notify(queue: DispatchQueue.main) {
-            let unwrappedResults = results.enumerated().map { (index, result) in
-                result ?? Result { throw PromiseError.unfulfilledZipPromise(atIndex: index) }
-            }
-            fulfill(zipArray(unwrappedResults))
+            fulfill(zipArray(results))
         }
     }
 }
