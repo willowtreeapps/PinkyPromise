@@ -304,9 +304,21 @@ public struct Promise<Value> {
      
      A promise won't do any work until you use `call`.
      */
-    public func call(completion: Observer? = nil) {
+//    public func call(completion: Observer? = nil) {
+//        task { result in
+//            completion?(result)
+//        }
+//    }
+    public func call(onDuplicateResult: Observer? = nil,
+                     completion: Observer? = nil) {
+        var _completion = completion
         task { result in
-            completion?(result)
+            guard let comp = _completion else {
+                onDuplicateResult?(result)
+                return
+            }
+            _completion = nil
+            comp(result)
         }
     }
 

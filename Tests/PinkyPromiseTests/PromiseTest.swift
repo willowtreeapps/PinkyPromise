@@ -825,19 +825,12 @@ class PromiseTest: XCTestCase {
             fulfill(.success(-15))
         }
 
-        let unFilled: Promise<Bool> = Promise<Bool> { fulfill in }
+        let unFilled: Promise<Bool> = Promise<Bool> { fulfill in
+             fulfill(.success(true))
+        }
         
         callAndTestCompletion(zip(overFilled, filled, unFilled)) { result in
-            do {
-                _ = try result.get()
-                XCTFail("Expected to throw an error.")
-            } catch {
-                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
-                    XCTFail("Expected to throw a PromiseError.")
-                    return
-                }
-                XCTAssertEqual(index, 2) // 3rd Promise is unfulfilled
-            }
+            TestHelpers.expectSuccess( ("112", -15, true), result: result, message: "")
         }
         
         waitForExpectations(timeout: 3.0, handler: nil)
