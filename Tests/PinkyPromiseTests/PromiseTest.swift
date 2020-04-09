@@ -888,13 +888,30 @@ class PromiseTest: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
-        let completionCalled = expectation(description: "Completed")
-        promise.call { result in
-            outerCompletion(result)
-            completionCalled.fulfill()
-        }
-    }
+//    func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
+//        let completionCalled = expectation(description: "Completed")
+//        promise.call { result in
+//            outerCompletion(result)
+//            completionCalled.fulfill()
+//        }
+//    }
+    
+    func callAndTestCompletion<T>(_ promise: Promise<T>,
+                                     numAllowedFulfills: Int = 1,
+                                     completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
+           var expectationIndex = 0
+           var completionCalleds: [XCTestExpectation] = []
+           for i in 1...numAllowedFulfills {
+               completionCalleds.append(expectation(description: "Completed \(i)"))
+           }
+           promise.call { result in
+               outerCompletion(result)
+               DispatchQueue.main.async {
+                   completionCalleds[expectationIndex].fulfill()
+                   expectationIndex += 1
+               }
+           }
+       }
     
     /// Test that zipArray throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
     func testZipArrayThrowsUnknownErrorWhenUnwrappingResultsMapNil() {
