@@ -897,39 +897,6 @@ class PromiseTest: XCTestCase {
         }
     }
     
-    func testZipABCThrowsUnfulfilledErrorWhenUnwrappingNilResult() {
-    
-        let overFilled: Promise<String> = Promise<String> { fulfill in
-            DispatchQueue.global(qos: .userInitiated).async {
-                sleep(1)
-                fulfill(.success("112"))
-                sleep(1)
-                fulfill(.success("112"))
-            }
-        }
-        
-        let filled: Promise<Int> = Promise<Int> { fulfill in
-            fulfill(.success(-15))
-        }
-
-        let unFilled: Promise<Bool> = Promise<Bool> { fulfill in }
-        
-        callAndTestCompletion(zip(overFilled, filled, unFilled)) { result in
-            do {
-                _ = try result.get()
-                XCTFail("Expected to throw an error.")
-            } catch {
-                guard case PromiseError.unfulfilledZipPromise(let index) = error else {
-                    XCTFail("Expected to throw a PromiseError.")
-                    return
-                }
-                XCTAssertEqual(index, 2) // 3rd Promise is unfulfilled
-            }
-        }
-        
-        waitForExpectations(timeout: 3.0, handler: nil)
-    }
-    
     func testZipArrayWaitsForAllFulfilled() {
     
         let overFilled: Promise<Int> = Promise<Int> { fulfill in
