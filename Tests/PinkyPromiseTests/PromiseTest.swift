@@ -827,20 +827,13 @@ class PromiseTest: XCTestCase {
                 fulfill(.success("B"))
             }
             
-        }.inDispatchGroup(group).enforcingFulfillOnce()
+        }.inDispatchGroup(group)
                 
-        callAndTestCompletion(overFilled, numAllowedFulfills: 2) { result in
-            do {
-                _ = try result.get() // first go doesn't throw, 2nd time throws
-            } catch {
-                guard case PromiseError.overfulfilledPromise = error else {
-                    XCTFail("Expected to throw a PromiseError.overfulfilledPromise")
-                    return
-                }
-            }
+        callAndTestCompletion(overFilled, numAllowedFulfills: 1) { result in
+            TestHelpers.expectSuccess("A", result: result, message: "")
         }
                 
-        waitForExpectations(timeout: 90.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
     
     /// Test that zip throws Unknown Error when fulfill is called Twice for one Promise and Zero times for a second Promise
@@ -932,8 +925,10 @@ class PromiseTest: XCTestCase {
         }
         promise.call { result in
             outerCompletion(result)
-            completionCalleds[expectationIndex].fulfill()
-            expectationIndex += 1
+            DispatchQueue.main.async {
+                completionCalleds[expectationIndex].fulfill()
+                expectationIndex += 1
+            }
         }
     }
     
