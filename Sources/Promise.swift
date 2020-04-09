@@ -455,10 +455,11 @@ public func zipArray<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
         let group = DispatchGroup()
 
         var results: [Result<T, Error>?] = Array(repeating: nil, count: promises.count)
+        let resultsArrayBarrierQueue = DispatchQueue(label: "ThreadSafeResultsArray.queue", attributes: .concurrent)
 
         for (index, promise) in promises.enumerated() {
             promise.inDispatchGroup(group).call { result in
-                DispatchQueue.main.async {
+                resultsArrayBarrierQueue.sync(flags: .barrier) {
                     results[index] = result
                 }
             }
