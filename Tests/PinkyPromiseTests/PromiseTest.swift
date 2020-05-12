@@ -808,6 +808,33 @@ class PromiseTest: XCTestCase {
         
         waitForExpectations(timeout: 1.0, handler: nil)
     }
+        
+    /// 
+    func testEnforcingFulfillOnce() {
+        
+        let group = DispatchGroup()
+        
+        let overFilled: Promise<String> = Promise<String> { fulfill in
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                sleep(1)
+                fulfill(.success("A"))
+                sleep(1)
+            }
+            
+            DispatchQueue.global(qos: .unspecified).async {
+                sleep(2)
+                fulfill(.success("B"))
+            }
+            
+        }.inDispatchGroup(group)
+                
+        callAndTestCompletion(overFilled, numAllowedFulfills: 1) { result in
+            TestHelpers.expectSuccess("A", result: result, message: "")
+        }
+                
+        waitForExpectations(timeout: 5.0, handler: nil)
+    }
     
     func testZipABCWaitsForAllFulfilled() {
     
@@ -889,11 +916,20 @@ class PromiseTest: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func callAndTestCompletion<T>(_ promise: Promise<T>, completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
-        let completionCalled = expectation(description: "Completed")
+    func callAndTestCompletion<T>(_ promise: Promise<T>,
+                                  numAllowedFulfills: Int = 1,
+                                  completion outerCompletion: @escaping (Result<T, Error>) -> Void) {
+        var expectationIndex = 0
+        var completionCalleds: [XCTestExpectation] = []
+        for i in 1...numAllowedFulfills {
+            completionCalleds.append(expectation(description: "Completed \(i)"))
+        }
         promise.call { result in
             outerCompletion(result)
-            completionCalled.fulfill()
+            DispatchQueue.main.async {
+                completionCalleds[expectationIndex].fulfill()
+                expectationIndex += 1
+            }
         }
     }
     
