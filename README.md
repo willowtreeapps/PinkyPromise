@@ -1,7 +1,23 @@
+## Legacy note
+
+PinkyPromise has retired in success. Its features have been implemented by the Swift language and first party libraries—the best case scenario for long term support.
+
+If you've been a PinkyPromise user, please look into your migration path:
+
+- Results: Use the Swift standard library `Result` type.
+  - But you can often do without `Result`. An `async` function can return or throw, so there is now a way to deliver success and failure results with plain syntax and no wrapping type.
+- Promises: Use Swift Concurrency.
+  - `async` functions provide regular Promise functionality with greater safety.
+  - Where you would have adapted a completion block function by wrapping it in a Promise, first look to see if there is now an `async` version of the function. If not, use `withCheckedContinuation` or `withCheckedThrowingContinuation`. They require the same complete-once contract but offer runtime checks on that condition.
+  - Structured concurrency can run many async functions concurrently, like `zip` and `zipArray` would do with Promises. Cancellation is available too.
+  - Actor isolation can, among other things, require work to happen on the main thread. If you had to pair PinkyPromise with Dispatch, you can migrate away from Dispatch too and get greater safety against data races.
+  - The `AsyncSequence` type lifts `for` loops into the async world to consume multiple-result tasks, while this library only offered single-result tasks. The Combine framework's `AsyncPublisher` type bridges from RxSwift-like observable streams to `AsyncSequence`.
+  - [Swift Async Algorithms](https://github.com/apple/swift-async-algorithms) has ways to build on async work tasks in useful ways, like debouncing a sequence.
+
+Thanks for using PinkyPromise!
+
 # PinkyPromise
 A tiny Promises library.
-
-[![Circle CI](https://circleci.com/gh/willowtreeapps/PinkyPromise.svg?style=svg)](https://circleci.com/gh/willowtreeapps/PinkyPromise) [![Coverage Status](https://coveralls.io/repos/github/willowtreeapps/PinkyPromise/badge.svg?branch=develop)](https://coveralls.io/github/willowtreeapps/PinkyPromise?branch=develop)
 
 ## Summary
 
